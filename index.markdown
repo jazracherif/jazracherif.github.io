@@ -124,7 +124,6 @@ hide_title: true
   <div class="bio-photos">
     <div class="bio-photo">
       <img src="/assets/img/cherif-2025.png" alt="Cherif Jazra 2025"/>
-      <p>2025</p>
     </div>
   </div>
   
