@@ -25,7 +25,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   systems, and computer architectures. I'll draw from experiences in wireless technologies
   as well as ML/Data systems from work at Palm, Apple, Postmates, and C3 AI.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://jazracherif.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
 github_username:  jazracherif
 linkedin_username: cherifjazra
