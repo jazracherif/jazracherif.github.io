@@ -93,5 +93,3 @@ The conference was energetic and well-presented, with valuable networking opport
 - [Part 1: Keynote and Main Announcements]({% post_url 2025-03-27-2025-nvidia-gtc-conference-part1-keynote %})
 - [Part 2: Deep Dive into CUDA]({% post_url 2025-03-28-2025-nvidia-gtc-conference-part2-cuda %})
 - [Part 3: Exhibit Hall - Hardware and Robotics]({% post_url 2025-03-29-2025-nvidia-gtc-conference-part3-exhibit-hall %})
-
-Or read the [full single article with all photos]({% post_url 2025-03-26-2025-nvidia-gtc-conference-full %}).
