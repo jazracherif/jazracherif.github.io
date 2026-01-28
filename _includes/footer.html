@@ -26,7 +26,10 @@
       </div>
 
       <div class="footer-col footer-col-3">
-        <p>{{- site.description | escape -}}</p>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <img src="{{ '/assets/img/cherif-2025.png' | relative_url }}" alt="Cherif Jazra" style="width: 60px; height: 60px; border-radius: 50%; flex-shrink: 0;">
+          <p>{{- site.description | escape -}}</p>
+        </div>
       </div>
     </div>
 

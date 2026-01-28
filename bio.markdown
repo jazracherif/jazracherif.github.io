@@ -4,45 +4,203 @@ title: Bio
 permalink: /bio/
 ---
 
-Hello, I'm Cherif Jazra! 
+<style>
+.bio-intro {
+  text-align: center;
+  margin: 40px 0 60px 0;
+}
 
-<img style="display: block; width: 200px;  margin: 0 25px 0 0" src="/assets/img/cherif.jpeg"/>
-<br/><br/>
-I'm an engineer with work experiences in the fields of Wireless Technologies as well as Machine Learning Systems. I'm currently interested in work at the interface of Software and Hardware within the context of Heterogeneous Systems. 
-<br/><br/>
+.bio-intro h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+  color: #333;
+}
 
-<img style="display: block; float: left; width: 200px;  margin: 0 25px 0 0" src="/assets/img/logos/usj-logo.jpg"/>
+.bio-intro p {
+  font-size: 1.2em;
+  line-height: 1.8;
+  max-width: 700px;
+  margin: 20px auto;
+  color: #555;
+}
 
-I got my Engineering diploma from the [Ecole Superieure d'Ingenierie de Beyrouth (ESIB/USJ)](https://www.usj.edu.lb/esib/) in 2005.
+.bio-photos {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin: 40px 0;
+  flex-wrap: wrap;
+}
 
-<br/><br/>
-<br/><br/>
+.bio-photo {
+  text-align: center;
+}
 
-<img style="display: block; float: left; width: 200px;  margin: 0 25px 0 0" src="/assets/img/logos/cornell-logo.jpg"/>
+.bio-photo img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
 
-I got my Masters in Electrical Engineering with a focus on digital communications from [Cornell University](https://www.ece.cornell.edu/ece) in 2006.
+.bio-photo p {
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: #666;
+  max-width: 200px;
+}
 
-<br/><br/>
-<br/><br/>
+.timeline-section {
+  max-width: 800px;
+  margin: 60px auto;
+}
 
-<img style="display: block; float: left; width: 200px;  margin: 0 25px 0 0" src="/assets/img/logos/palm-logo.jpg"/>
+.timeline-section h2 {
+  text-align: center;
+  margin-bottom: 50px;
+  font-size: 1.8em;
+  color: #333;
+}
 
-From 2006 to 2009, I worked at **Palm** in the Wireless technologies group.
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 50px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
 
-<br/><br/>
+.timeline-item:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease;
+}
 
-<img style="display: block; float: left; width: 200px;  margin: 0 25px 0 0" src="/assets/img/logos/apple-logo.jpg"/> 
+.timeline-logo {
+  flex-shrink: 0;
+  margin-right: 25px;
+}
 
-From 2009 to 2017, I worked at **Apple** in the Wireless technologies group.
+.timeline-logo img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 8px;
+}
 
-<br/><br/>
+.timeline-content {
+  flex-grow: 1;
+}
 
-<img style="display: block; float: left; width: 200px; margin: 0 25px 0 0" src="/assets/img/logos/postmates-logo.jpg"/>
+.timeline-content h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 1.3em;
+}
 
-From 2017 to 2020, I worked at **Postmates** in the Fraud Detection team, training, deploying and evaluating Machine Learning models used by the Fraud Service.
+.timeline-content .period {
+  color: #888;
+  font-size: 0.9em;
+  margin-bottom: 10px;
+  font-style: italic;
+}
 
-<br/><br/>
+.timeline-content p {
+  margin: 0;
+  line-height: 1.6;
+  color: #555;
+}
+</style>
 
-<img style="display: block; float: left; width: 200px; margin: 0 25px 0 0" src="/assets/img/logos/c3ai-logo.jpg"/>
+<div class="bio-intro">
+  <h2>Hello, I'm Cherif Jazra!</h2>
+  
+  <p>I'm an engineer with work experiences in the fields of Wireless Technologies as well as Machine Learning Systems. I'm currently interested in work at the interface of Software and Hardware within the context of Heterogeneous Systems.</p>
+  
+  <div class="bio-photos">
+    <div class="bio-photo">
+      <img src="/assets/img/cherif-2025.png" alt="Cherif Jazra 2025"/>
+      <p>2025</p>
+    </div>
+    <div class="bio-photo">
+      <img src="/assets/img/cherif.jpeg" alt="Cherif at Cafe de Flore"/>
+      <p>At Cafe de Flore, Paris (2017)</p>
+    </div>
+  </div>
+</div>
 
-From 2020 to 2023, I worked at **C3 AI** in the Platform Data Group on C3 AI Dataset product.
+<div class="timeline-section">
+  <h2>Education</h2>
+  
+  <div class="timeline-item">
+    <div class="timeline-logo">
+      <img src="/assets/img/logos/cornell-logo.jpg" alt="Cornell University"/>
+    </div>
+    <div class="timeline-content">
+      <h3><a href="https://www.ece.cornell.edu/ece">Cornell University</a></h3>
+      <div class="period">2006</div>
+      <p>Masters in Electrical Engineering with a focus on digital communications</p>
+    </div>
+  </div>
+  
+  <div class="timeline-item">
+    <div class="timeline-logo">
+      <img src="/assets/img/logos/usj-logo.jpg" alt="USJ"/>
+    </div>
+    <div class="timeline-content">
+      <h3><a href="https://www.usj.edu.lb/esib/">Ecole Superieure d'Ingenierie de Beyrouth (ESIB/USJ)</a></h3>
+      <div class="period">2005</div>
+      <p>Engineering diploma</p>
+    </div>
+  </div>
+</div>
+
+<div class="timeline-section">
+  <h2>Experience</h2>
+  
+  <div class="timeline-item">
+    <div class="timeline-logo">
+      <img src="/assets/img/logos/c3ai-logo.jpg" alt="C3 AI"/>
+    </div>
+    <div class="timeline-content">
+      <h3>C3 AI</h3>
+      <div class="period">2020 - 2023</div>
+      <p>Platform Data Group on C3 AI Dataset product</p>
+    </div>
+  </div>
+  
+  <div class="timeline-item">
+    <div class="timeline-logo">
+      <img src="/assets/img/logos/postmates-logo.jpg" alt="Postmates"/>
+    </div>
+    <div class="timeline-content">
+      <h3>Postmates</h3>
+      <div class="period">2017 - 2020</div>
+      <p>Fraud Detection team, training, deploying and evaluating Machine Learning models used by the Fraud Service</p>
+    </div>
+  </div>
+  
+  <div class="timeline-item">
+    <div class="timeline-logo">
+      <img src="/assets/img/logos/apple-logo.jpg" alt="Apple"/>
+    </div>
+    <div class="timeline-content">
+      <h3>Apple</h3>
+      <div class="period">2009 - 2017</div>
+      <p>Wireless technologies group</p>
+    </div>
+  </div>
+  
+  <div class="timeline-item">
+    <div class="timeline-logo">
+      <img src="/assets/img/logos/palm-logo.jpg" alt="Palm"/>
+    </div>
+    <div class="timeline-content">
+      <h3>Palm</h3>
+      <div class="period">2006 - 2009</div>
+      <p>Wireless technologies group</p>
+    </div>
+  </div>
+</div>
