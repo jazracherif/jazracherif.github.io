@@ -11,8 +11,8 @@ I attended NVIDIA's GTC conference in San Jose this year, from March 16th to 21s
 
 *This is Part 1 of a 3-part series covering GTC 2025:*
 - **Part 1: Keynote and Main Announcements** (this post)
-- [Part 2: Deep Dive into CUDA](/conference/nvidia/gpu/2025/03/28/2025-nvidia-gtc-conference-part2-cuda.html)
-- [Part 3: Exhibit Hall - Hardware and Robotics](/conference/nvidia/gpu/2025/03/29/2025-nvidia-gtc-conference-part3-exhibit-hall.html)
+- [Part 2: Deep Dive into CUDA]({% post_url 2025-03-28-2025-nvidia-gtc-conference-part2-cuda %})
+- [Part 3: Exhibit Hall - Hardware and Robotics]({% post_url 2025-03-29-2025-nvidia-gtc-conference-part3-exhibit-hall %})
 
 ## Main Highlights
 
@@ -51,6 +51,9 @@ Other key announcements included Isaac Groot N1 humanoid model, Newton physics e
 
 ![GTC 2025 keynote highlights](/assets/img/gtc-2025/img08.jpg)
 
+<br>
+<br>
+
 ---
 
-*Continue to [Part 2: Deep Dive into CUDA](/conference/nvidia/gpu/2025/03/28/2025-nvidia-gtc-conference-part2-cuda.html) to learn about the CUDA workshops, CuTile programming paradigm, and the comprehensive CUDA-X library ecosystem.*
+*Continue to [Part 2: Deep Dive into CUDA]({% post_url 2025-03-28-2025-nvidia-gtc-conference-part2-cuda %}) to learn about the CUDA workshops, CuTile programming paradigm, and the comprehensive CUDA-X library ecosystem.*

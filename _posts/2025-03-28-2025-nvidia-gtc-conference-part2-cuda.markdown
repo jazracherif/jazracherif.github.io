@@ -6,11 +6,11 @@ categories: conference nvidia gpu cuda
 ---
 
 *This is Part 2 of a 3-part series covering GTC 2025:*
-- [Part 1: Keynote and Main Announcements](/conference/nvidia/gpu/2025/03/27/2025-nvidia-gtc-conference-part1-keynote.html)
+- [Part 1: Keynote and Main Announcements]({% post_url 2025-03-27-2025-nvidia-gtc-conference-part1-keynote %})
 - **Part 2: Deep Dive into CUDA** (this post)
-- [Part 3: Exhibit Hall - Hardware and Robotics](/conference/nvidia/gpu/2025/03/29/2025-nvidia-gtc-conference-part3-exhibit-hall.html)
+- [Part 3: Exhibit Hall - Hardware and Robotics]({% post_url 2025-03-29-2025-nvidia-gtc-conference-part3-exhibit-hall %})
 
-## Here are some of the technical highlights of my experience at the conference
+Here are some of the technical highlights of my experience at the conference
 
 ### CUDA C++ Workshop
 
@@ -74,6 +74,9 @@ Compiled from [https://developer.nvidia.com/gpu-accelerated-libraries](https://d
 | **Quantum Libraries** | cuQuantum | Set of highly optimized libraries for accelerating quantum computing simulations |
 | | cuPQC | SDK of optimized libraries for Post Quantum Cryptography |
 
+<br>
+<br>
+
 ---
 
-*Continue to [Part 3: Exhibit Hall - Hardware and Robotics](/conference/nvidia/gpu/2025/03/29/2025-nvidia-gtc-conference-part3-exhibit-hall.html) to explore the cutting-edge hardware, liquid cooling systems, and robotics demonstrations from the exhibit hall.*
+*Continue to [Part 3: Exhibit Hall - Hardware and Robotics]({% post_url 2025-03-29-2025-nvidia-gtc-conference-part3-exhibit-hall %}) to explore the cutting-edge hardware, liquid cooling systems, and robotics demonstrations from the exhibit hall.*

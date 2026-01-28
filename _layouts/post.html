@@ -21,7 +21,9 @@ comments: true
   </div>
 
   {%- if site.disqus.shortname -%}
-    {%- include disqus_comments.html -%}
+    <div style="margin-top: 80px; padding-top: 60px; border-top: 1px solid #e8e8e8;">
+      {%- include disqus_comments.html -%}
+    </div>
   {%- endif -%}
 
   <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>

@@ -6,8 +6,8 @@ categories: conference nvidia gpu hardware
 ---
 
 *This is Part 3 of a 3-part series covering GTC 2025:*
-- [Part 1: Keynote and Main Announcements](/conference/nvidia/gpu/2025/03/27/2025-nvidia-gtc-conference-part1-keynote.html)
-- [Part 2: Deep Dive into CUDA](/conference/nvidia/gpu/2025/03/28/2025-nvidia-gtc-conference-part2-cuda.html)
+- [Part 1: Keynote and Main Announcements]({% post_url 2025-03-27-2025-nvidia-gtc-conference-part1-keynote %})
+- [Part 2: Deep Dive into CUDA]({% post_url 2025-03-28-2025-nvidia-gtc-conference-part2-cuda %})
 - **Part 3: Exhibit Hall - Hardware and Robotics** (this post)
 
 
@@ -64,6 +64,9 @@ Finally, doris.ai had a digital screen next to the conference store to help peop
 
 ![Trying on Jensen's leather jacket digitally](/assets/img/gtc-2025/img25.jpg)
 
+<br>
+<br>
+
 ---
 
-*This concludes the 3-part series on GTC 2025. Check out [Part 1](/conference/nvidia/gpu/2025/03/27/2025-nvidia-gtc-conference-part1-keynote.html) and [Part 2](/conference/nvidia/gpu/2025/03/28/2025-nvidia-gtc-conference-part2-cuda.html) if you missed them.*
+*This concludes the 3-part series on GTC 2025. Check out [Part 1]({% post_url 2025-03-27-2025-nvidia-gtc-conference-part1-keynote %}) and [Part 2]({% post_url 2025-03-28-2025-nvidia-gtc-conference-part2-cuda %}) if you missed them.*
