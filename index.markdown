@@ -3,6 +3,9 @@
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
 layout: page
+title: Main
+hide_title: true
+
 ---
 
 <style>
@@ -118,18 +121,14 @@ layout: page
 <div class="bio-intro">
   <h2>Hello, I'm Cherif Jazra!</h2>
   
-  <p>I'm an engineer with over a decade of experience in embedded software, cellular communications, and real-time systems at Palm and Apple, followed by roles in ML-powered fraud detection at Postmates and data platforms at C3 AI. I hold a Masters from Cornell University in Wireless Digital Communications and completed advanced studies at Stanford in machine learning and data science. I'm the inventor on 8+ US patents and am passionate about the intersection of software and hardware, particularly heterogeneous computing, GPU acceleration, and CUDA development.</p>
-  
   <div class="bio-photos">
     <div class="bio-photo">
       <img src="/assets/img/cherif-2025.png" alt="Cherif Jazra 2025"/>
       <p>2025</p>
     </div>
-    <div class="bio-photo">
-      <img src="/assets/img/cherif.jpeg" alt="Cherif at Cafe de Flore"/>
-      <p>At Cafe de Flore, Paris (2017)</p>
-    </div>
   </div>
+  
+  <p>I'm an engineer with over a decade of experience in embedded software, cellular communications, and real-time systems at Palm and Apple, followed by roles in ML-powered fraud detection at Postmates and data platforms at C3 AI. I hold a Masters from Cornell University in Wireless Digital Communications and completed advanced studies at Stanford in machine learning and data science. I'm the inventor on 8+ US patents and am passionate about the intersection of software and hardware, particularly heterogeneous computing, GPU acceleration, and CUDA development.</p>
 </div>
 
 <div class="timeline-section">
@@ -204,4 +203,17 @@ layout: page
       <p>Wireless technologies group</p>
     </div>
   </div>
+</div>
+
+<div class="timeline-section">
+  <h2>Miscellaneous</h2>
+  
+  <div class="bio-photos">
+    <div class="bio-photo">
+      <img src="/assets/img/cherif.jpeg" alt="Cherif at Cafe de Flore"/>
+      <p>At Cafe de Flore, Paris (2017)</p>
+    </div>
+  </div>
+  
+  <p style="text-align: center; color: #888; font-style: italic; margin-top: 30px;">More to come...</p>
 </div>
