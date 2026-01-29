@@ -20,10 +20,9 @@ hide_title: true
     </div>
   </div>
   
-  <p>I am an engineer with over two decades of experience bridging the gap between hardware constraints and software intelligence. My career began in the world of embedded software and real-time systems at Palm and Apple, where I focused on cellular protools and application to baseband communications. I later pivoted to apply this systems-first mindset to large-scale machine learning and data infrastructure challenges, leading efforts in ML-powered fraud detection at Postmates and architecting robust data platforms at C3 AI.</p>
+  <p>I am an engineer with over two decades of experience integrating cutting edge technologies in different industries. At <b>Palm</b> and <b>Apple</b> I led the integration of Wireless Cellular Software and GPS for end user applications on Iphone and Ipads. At <b>Postmates</b> I re-designed the cloud based toolset for exploration and productionization of Machine Learning models for the Risk and Fraud Detection team. For the <b>C3 AI</b> Platform engineering, I helped architect and bring to life the C3 Dataset product, a solution that integrates different data execution engines like pandas, Modin, and Spark into a single fron end user interface, thus enabling smoother transition from exploration to productionization</p>
 
-  <p>I hold a Masters in Wireless Digital Communications from Cornell University and have deepened my expertise through advanced studies in Machine Learning and Software systems at Stanford. Today, my work is driven by a fascination with heterogeneous computing, accelerated data systems, and the infrastructure that powers modern AI. I am passionately focused on peeling back the layers of abstraction — specifically in GPU acceleration and CUDA development—to build systems that are not just functional, but highly performant.</p>
-</div>
+ <p>Please enjoying exploring my website!</p>
 
 <div class="featured-post">
   <h2>Featured Blog Post</h2>
@@ -36,6 +35,7 @@ hide_title: true
     </div>
   </a>
 </div>
+
 
 <div class="timeline-section">
   <h2>Education</h2>
@@ -133,6 +133,18 @@ hide_title: true
       <img src="/assets/img/nvidia-gpus-personal-project2.jpg" alt="NVIDIA GPU Personal Project 2"/>
     </div>
   </div>
-  
-  <p style="text-align: center; color: #888; font-style: italic; margin-top: 30px;">Coming Soon</p>
+
+  <p style="text-align: center; color: #888; font-style: italic; margin-top: 30px;">Coming Soon!</p>
+
 </div>
+
+<div class="timeline-section">
+  <h2>Interested in Collaborating?</h2>
+  
+  <div style="text-align: center; margin: 20px 0;">
+    <img src="/assets/img/collaboration-illustration.jpg" alt="AI Collaboration Workspace" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"/>
+  </div>
+  
+  <p>The last decade's Deep Learning and LLM revolution has fundamentally changed the technological stack needed to engineer performant AI-powered solutions. Now more than ever, engineers must leverage the best capabilities from CPU and GPU hardware while integrating complex software system infrastructure tailored to their enterprise needs, tools like NVIDIA's CUDA, PyTorch, Ray, vLLM, as well as data engine products like DataFusion, Velox, and many others. Reach out if you would like to talk more about these topics!</p>  
+</div>
+
