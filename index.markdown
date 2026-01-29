@@ -84,7 +84,7 @@ hide_title: true
     <div class="timeline-content">
       <h3>C3 AI</h3>
       <div class="period">2020 - 2023</div>
-      <p>Platform Data Group on C3 AI Dataset product</p>
+      <p>Platform Engineering - C3 AI Dataset product</p>
     </div>
   </div>
   
@@ -95,7 +95,7 @@ hide_title: true
     <div class="timeline-content">
       <h3>Postmates</h3>
       <div class="period">2017 - 2020</div>
-      <p>Fraud Detection team, training, deploying and evaluating Machine Learning models used by the Fraud Service</p>
+      <p>Risk and Fraud Detection team, training.</p>
     </div>
   </div>
   
@@ -106,7 +106,7 @@ hide_title: true
     <div class="timeline-content">
       <h3>Apple</h3>
       <div class="period">2009 - 2017</div>
-      <p>Wireless technologies group</p>
+      <p>Wireless technologies group - iphone and ipad</p>
     </div>
   </div>
   
@@ -117,7 +117,7 @@ hide_title: true
     <div class="timeline-content">
       <h3>Palm</h3>
       <div class="period">2006 - 2009</div>
-      <p>Wireless technologies group</p>
+      <p>Wireless technologies group - Palm Treo and Palm Pre smartphones</p>
     </div>
   </div>
 </div>
