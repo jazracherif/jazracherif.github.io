@@ -4,7 +4,6 @@ title:  "2025 NVIDIA GTC Conference - Summary"
 date:   2025-03-26 10:00:00 -0700
 categories: conference nvidia gpu
 ---
-
 ![At GTC 2025, San Jose McEnery Convention Center](/assets/img/gtc-2025-cover.jpg)
 
 I attended NVIDIA's GTC conference in San Jose from March 16-21, 2025. It was a lot of fun and a very inspiring experience for technical professionals seeking insights into accelerated hardware and CUDA software ecosystems.

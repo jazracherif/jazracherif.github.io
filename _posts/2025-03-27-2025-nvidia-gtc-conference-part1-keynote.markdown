@@ -27,25 +27,27 @@ The conference seemed to be more packed than last year, and extended beyond the 
 
 ## GTC Keynote
 
-![SAP Center packed for the keynote](/assets/img/gtc-2025/img01.jpg)
-
-![Jensen Huang on stage](/assets/img/gtc-2025/img02.jpg)
-
-![Selfie at the keynote with the Acquired podcast on screen](/assets/img/gtc-2025/img03.jpg)
+<div class="image-grid">
+  <img src="/assets/img/gtc-2025/img01.jpg" alt="SAP Center packed for the keynote">
+  <img src="/assets/img/gtc-2025/img02.jpg" alt="Jensen Huang on stage">
+  <img src="/assets/img/gtc-2025/img03.jpg" alt="Selfie at the keynote with the Acquired podcast on screen">
+</div>
 
 The keynote summarized the trend and direction of accelerated computing, which continues to "eat" cpu-only software applications, and spread to more and more fields, from hard sciences, to wireless communications, to industrial robotics, to enterprise AI.
 
 Training and inference workloads for large language models remains a huge focus for the next generation of high performance accelerated hardware, with the argument that agentic AI will require "10-100x more compute" for inference than traditional one-shot prompts. Data center energy constraints also drive the need for more efficient hardware.
 
-![Vera Rubin NVL144 specs](/assets/img/gtc-2025/img04.jpg)
-
-![Rubin Ultra NVL576 specs](/assets/img/gtc-2025/img05.jpg)
+<div class="image-grid">
+  <img src="/assets/img/gtc-2025/img04.jpg" alt="Vera Rubin NVL144 specs">
+  <img src="/assets/img/gtc-2025/img05.jpg" alt="Rubin Ultra NVL576 specs">
+</div>
 
 Nvidia sneak-peeked the next generation Exaflops compute hardware, Vera Rubin NVL144 for 2026 and Rubin Ultra NVL576 for 2027. Feynman will be the name of the architecture following Rubin.
 
-![NVIDIA Photonics](/assets/img/gtc-2025/img06.jpg)
-
-![NVIDIA AI Infrastructure for Enterprise Computing](/assets/img/gtc-2025/img07.jpg)
+<div class="image-grid">
+  <img src="/assets/img/gtc-2025/img06.jpg" alt="NVIDIA Photonics">
+  <img src="/assets/img/gtc-2025/img07.jpg" alt="NVIDIA AI Infrastructure for Enterprise Computing">
+</div>
 
 Other key announcements included Isaac Groot N1 humanoid model, Newton physics engine, Grace-Blackwell DGX systems, and photonics-based Spectrum-X for scaled clusters.
 

@@ -20,39 +20,38 @@ The exhibit hall was a lot of fun! Here are some of the most interesting exhibit
 
 ### Server Racks and Infrastructure
 
-![Liquid-cooled server rack](/assets/img/gtc-2025/img14.jpg)
-
-![QCT QuantaGrid D75U-1U](/assets/img/gtc-2025/img15.jpg)
-
-![Hyve rack-level deployment](/assets/img/gtc-2025/img16.jpg)
-
-![HPE liquid-cooled rack](/assets/img/gtc-2025/img17.jpg)
+<div class="image-grid">
+  <img src="/assets/img/gtc-2025/img14.jpg" alt="Liquid-cooled server rack">
+  <img src="/assets/img/gtc-2025/img15.jpg" alt="QCT QuantaGrid D75U-1U">
+  <img src="/assets/img/gtc-2025/img16.jpg" alt="Hyve rack-level deployment">
+  <img src="/assets/img/gtc-2025/img17.jpg" alt="HPE liquid-cooled rack">
+</div>
 
 Liquid-cooled racks consuming 150KW+ were on display — air cooling is no longer viable at these power levels.
 
 ### GB300 Hardware
 
-![NVIDIA GB300 Grace Blackwell Ultra Superchip](/assets/img/gtc-2025/img18.jpg)
-
-![NVIDIA GB300 Compute Tray](/assets/img/gtc-2025/img19.jpg)
-
-![NVIDIA GB300 NVLink Switch Tray](/assets/img/gtc-2025/img20.jpg)
+<div class="image-grid">
+  <img src="/assets/img/gtc-2025/img18.jpg" alt="NVIDIA GB300 Grace Blackwell Ultra Superchip">
+  <img src="/assets/img/gtc-2025/img19.jpg" alt="NVIDIA GB300 Compute Tray">
+  <img src="/assets/img/gtc-2025/img20.jpg" alt="NVIDIA GB300 NVLink Switch Tray">
+</div>
 
 The NVIDIA GB300 Grace Blackwell Ultra Superchip features four NVIDIA Blackwell Ultra GPUs, two NVIDIA Grace CPUs, and four NVIDIA ConnectX-8 SuperNICs. The compute trays and NVLink switch trays are the building blocks of the GB300 NVL72 rack-scale solution.
 
 ### Cooling Solutions
 
-![Supermicro Liquid Cooling display](/assets/img/gtc-2025/img21.jpg)
+<img src="/assets/img/gtc-2025/img21.jpg" alt="Supermicro Liquid Cooling display" style="max-height: 400px;">
 
 Water has 1000X more cooling capacity than air, is 25X better at transferring heat, and requires 10X less energy to move heat — making liquid cooling essential for modern AI infrastructure.
 
 ### Robotics
 
-![NEURA humanoid robot](/assets/img/gtc-2025/img22.jpg)
-
-![Agile Robots cooking demo](/assets/img/gtc-2025/img23.jpg)
-
-![Agility Robotics Digit robot](/assets/img/gtc-2025/img24.jpg)
+<div class="image-grid">
+  <img src="/assets/img/gtc-2025/img22.jpg" alt="NEURA humanoid robot">
+  <img src="/assets/img/gtc-2025/img23.jpg" alt="Agile Robots cooking demo">
+  <img src="/assets/img/gtc-2025/img24.jpg" alt="Agility Robotics Digit robot">
+</div>
 
 Humanoid robots, exoskeleton demonstrations, and autonomous robots were on display throughout the exhibit hall, showcasing the physical AI capabilities powered by NVIDIA's Isaac platform.
 
@@ -62,7 +61,7 @@ Overall the conference was a lot of fun, with many interesting sessions and oppo
 
 Finally, doris.ai had a digital screen next to the conference store to help people digitally try clothes on, and I couldn't resist trying Jensen's signature black leather jacket:
 
-![Trying on Jensen's leather jacket digitally](/assets/img/gtc-2025/img25.jpg)
+<img src="/assets/img/gtc-2025/img25.jpg" alt="Trying on Jensen's leather jacket digitally" style="max-height: 500px;">
 
 <br>
 <br>
