@@ -1,0 +1,127 @@
+/**
+ * Bio Introduction and Timeline Styling
+ * 
+ * Design: Clean, centered bio section followed by chronological timeline cards
+ * for education and experience.
+ * 
+ * Bio Section:
+ * - Centered introduction with photo and descriptive text
+ * - Photo cropped at 75% horizontal position for optimal framing
+ * - Responsive flexbox layout for photo gallery
+ * 
+ * Timeline Section:
+ * - Card-based layout with company/university logos on the left
+ * - Hover effects for interactivity (shadow enhancement)
+ * - Light grey background (#f9f9f9) for card distinction
+ * - Consistent spacing and typography throughout
+ * - Logos displayed at 120x120px with contained object-fit
+ */
+
+.bio-intro {
+  text-align: center;
+  margin: 40px 0 60px 0;
+}
+
+.bio-intro h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.bio-intro p {
+  font-size: 1.2em;
+  line-height: 1.8;
+  max-width: 700px;
+  margin: 20px auto;
+  color: #555;
+}
+
+.bio-photos {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin: 40px 0;
+  flex-wrap: wrap;
+}
+
+.bio-photo {
+  text-align: center;
+}
+
+.bio-photo img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  object-position: 75% center;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.bio-photo p {
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: #666;
+  max-width: 200px;
+}
+
+.timeline-section {
+  max-width: 800px;
+  margin: 60px auto;
+}
+
+.timeline-section h2 {
+  text-align: center;
+  margin-bottom: 50px;
+  font-size: 1.8em;
+  color: #333;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 50px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.timeline-item:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.timeline-logo {
+  flex-shrink: 0;
+  margin-right: 25px;
+}
+
+.timeline-logo img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.timeline-content {
+  flex-grow: 1;
+}
+
+.timeline-content h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 1.3em;
+}
+
+.timeline-content .period {
+  color: #888;
+  font-size: 0.9em;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+.timeline-content p {
+  margin: 0;
+  line-height: 1.6;
+  color: #555;
+}

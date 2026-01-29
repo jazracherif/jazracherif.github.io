@@ -1,3 +1,27 @@
+/**
+ * Blog Post Image and Grid Styling
+ * 
+ * Design: Responsive image display with lightbox modal functionality and
+ * grid layouts for photo galleries.
+ * 
+ * Image Styling:
+ * - Centered images with rounded corners and shadows
+ * - Hover effects: slight scale (1.02x) and enhanced shadow
+ * - Responsive sizing: 80% width on desktop, 100% on mobile
+ * - Max height constraints: 600px mobile, 700px desktop
+ * 
+ * Grid Layout:
+ * - 2-column grid on desktop (768px+), single column on mobile
+ * - Images in grid: max 400px height, pointer cursor
+ * - Stronger hover effect in grid: 1.05x scale
+ * 
+ * Lightbox Modal:
+ * - Full-screen dark overlay (90% opacity black background)
+ * - Images displayed at 90% viewport size
+ * - Close via X button, background click, or Escape key
+ * - Prevents page scrolling when active
+ */
+
 .post-content img {
   max-width: 100%;
   max-height: 600px;

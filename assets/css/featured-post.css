@@ -1,0 +1,93 @@
+/**
+ * Featured Post Card Styling
+ * 
+ * Design: Modern card-based layout with gradient background for highlighting
+ * featured blog posts on the homepage.
+ * 
+ * Features:
+ * - Grey/silver gradient background with hover lift effect
+ * - Horizontal flexbox layout with image on left, content on right
+ * - Responsive: switches to vertical layout on mobile (< 768px)
+ * - Image cropped at 23% horizontal position to center subject
+ * - Blue accent color for call-to-action links
+ * - Smooth transitions and shadows for interactive feedback
+ */
+
+.featured-post {
+  max-width: 800px;
+  margin: 60px auto;
+  padding: 30px;
+  background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.featured-post:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+.featured-post h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.8em;
+}
+
+.featured-post-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 25px;
+  text-decoration: none;
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.featured-post-card img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  object-position: 23% center;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .featured-post-card {
+    flex-direction: column;
+  }
+  
+  .featured-post-card img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.featured-post-content {
+  flex: 1;
+}
+
+.featured-post-card h3 {
+  color: #333;
+  margin: 0 0 15px 0;
+  font-size: 1.5em;
+}
+
+.featured-post-card p {
+  color: #666;
+  line-height: 1.6;
+  margin: 0 0 15px 0;
+}
+
+.featured-post-card .read-more {
+  color: #2563eb;
+  font-weight: bold;
+  display: inline-block;
+  transition: color 0.3s ease;
+}
+
+.featured-post-card:hover .read-more {
+  color: #1d4ed8;
+}

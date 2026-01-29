@@ -8,115 +8,8 @@ hide_title: true
 
 ---
 
-<style>
-.bio-intro {
-  text-align: center;
-  margin: 40px 0 60px 0;
-}
-
-.bio-intro h2 {
-  font-size: 2em;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.bio-intro p {
-  font-size: 1.2em;
-  line-height: 1.8;
-  max-width: 700px;
-  margin: 20px auto;
-  color: #555;
-}
-
-.bio-photos {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin: 40px 0;
-  flex-wrap: wrap;
-}
-
-.bio-photo {
-  text-align: center;
-}
-
-.bio-photo img {
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.bio-photo p {
-  margin-top: 10px;
-  font-size: 0.9em;
-  color: #666;
-  max-width: 200px;
-}
-
-.timeline-section {
-  max-width: 800px;
-  margin: 60px auto;
-}
-
-.timeline-section h2 {
-  text-align: center;
-  margin-bottom: 50px;
-  font-size: 1.8em;
-  color: #333;
-}
-
-.timeline-item {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 50px;
-  padding: 20px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.timeline-item:hover {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  transition: box-shadow 0.3s ease;
-}
-
-.timeline-logo {
-  flex-shrink: 0;
-  margin-right: 25px;
-}
-
-.timeline-logo img {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  border-radius: 8px;
-}
-
-.timeline-content {
-  flex-grow: 1;
-}
-
-.timeline-content h3 {
-  margin: 0 0 10px 0;
-  color: #333;
-  font-size: 1.3em;
-}
-
-.timeline-content .period {
-  color: #888;
-  font-size: 0.9em;
-  margin-bottom: 10px;
-  font-style: italic;
-}
-
-.timeline-content p {
-  margin: 0;
-  line-height: 1.6;
-  color: #555;
-}
-</style>
+<link rel="stylesheet" href="{{ "/assets/css/featured-post.css" | relative_url }}">
+<link rel="stylesheet" href="{{ "/assets/css/timeline.css" | relative_url }}">
 
 <div class="bio-intro">
   <h2>Hello, I'm Cherif Jazra!</h2>
@@ -128,6 +21,18 @@ hide_title: true
   </div>
   
   <p>I'm an engineer with over a decade of experience in embedded software, cellular communications, and real-time systems at Palm and Apple, followed by roles in ML-powered fraud detection at Postmates and data platforms at C3 AI. I hold a Masters from Cornell University in Wireless Digital Communications and completed advanced studies at Stanford in machine learning and data science. I'm the inventor on 8+ US patents and am passionate about the intersection of software and hardware, particularly heterogeneous computing, GPU acceleration, and CUDA development.</p>
+</div>
+
+<div class="featured-post">
+  <h2>Featured Blog Post</h2>
+  <a href="{% post_url 2025-03-26-2025-nvidia-gtc-conference %}" class="featured-post-card">
+    <img src="/assets/img/gtc-2025-cover.jpg" alt="GTC 2025 Conference">
+    <div class="featured-post-content">
+      <h3>2025 NVIDIA GTC Conference - Summary</h3>
+      <p>I attended NVIDIA's GTC conference in San Jose from March 16-21, 2025. A comprehensive 3-part series covering Jensen Huang's keynote, deep dives into CUDA programming, and hands-on exploration of the latest GPU hardware and robotics in the exhibit hall.</p>
+      <span class="read-more">Read the full series →</span>
+    </div>
+  </a>
 </div>
 
 <div class="timeline-section">
