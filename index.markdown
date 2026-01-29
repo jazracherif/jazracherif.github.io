@@ -20,7 +20,9 @@ hide_title: true
     </div>
   </div>
   
-  <p>I'm an engineer with over a decade of experience in embedded software, cellular communications, and real-time systems at Palm and Apple, followed by roles in ML-powered fraud detection at Postmates and data platforms at C3 AI. I hold a Masters from Cornell University in Wireless Digital Communications and completed advanced studies at Stanford in machine learning and data science. I'm the inventor on 8+ US patents and am passionate about the intersection of software and hardware, particularly heterogeneous computing, GPU acceleration, and CUDA development.</p>
+  <p>I am an engineer with over two decades of experience bridging the gap between hardware constraints and software intelligence. My career began in the world of embedded software and real-time systems at Palm and Apple, where I focused on cellular protools and application to baseband communications. I later pivoted to apply this systems-first mindset to large-scale machine learning and data infrastructure challenges, leading efforts in ML-powered fraud detection at Postmates and architecting robust data platforms at C3 AI.</p>
+
+  <p>I hold a Masters in Wireless Digital Communications from Cornell University and have deepened my expertise through advanced studies in Machine Learning and Software systems at Stanford. Today, my work is driven by a fascination with heterogeneous computing, accelerated data systems, and the infrastructure that powers modern AI. I am passionately focused on peeling back the layers of abstraction — specifically in GPU acceleration and CUDA development—to build systems that are not just functional, but highly performant.</p>
 </div>
 
 <div class="featured-post">
@@ -40,11 +42,22 @@ hide_title: true
   
   <div class="timeline-item">
     <div class="timeline-logo">
+      <img src="/assets/img/logos/stanford-logo.png" alt="Stanford University - CGOE"/>
+    </div>
+    <div class="timeline-content">
+      <h3><a href="https://cgoe.stanford.edu">Stanford University</a></h3>
+      <div class="period">Since 2012</div>
+      <p>Graduate Courses in machine learning, Software Systems, and Computer Architecture</p>
+    </div>
+  </div>
+  
+  <div class="timeline-item">
+    <div class="timeline-logo">
       <img src="/assets/img/logos/cornell-logo.jpg" alt="Cornell University"/>
     </div>
     <div class="timeline-content">
       <h3><a href="https://www.ece.cornell.edu/ece">Cornell University</a></h3>
-      <div class="period">2006</div>
+      <div class="period">2005-2006</div>
       <p>Masters in Electrical Engineering with a focus on digital communications</p>
     </div>
   </div>
@@ -55,7 +68,7 @@ hide_title: true
     </div>
     <div class="timeline-content">
       <h3><a href="https://www.usj.edu.lb/esib/">Ecole Superieure d'Ingenierie de Beyrouth (ESIB/USJ)</a></h3>
-      <div class="period">2005</div>
+      <div class="period">200-2005</div>
       <p>Engineering diploma</p>
     </div>
   </div>
