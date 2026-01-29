@@ -69,7 +69,7 @@ hide_title: true
     <div class="timeline-content">
       <h3><a href="https://www.usj.edu.lb/esib/">Ecole Superieure d'Ingenierie de Beyrouth (ESIB/USJ)</a></h3>
       <div class="period">200-2005</div>
-      <p>Engineering diploma</p>
+      <p>Engineering diploma in Telecommunication and Neworks</p>
     </div>
   </div>
 </div>
@@ -95,7 +95,7 @@ hide_title: true
     <div class="timeline-content">
       <h3>Postmates</h3>
       <div class="period">2017 - 2020</div>
-      <p>Risk and Fraud Detection team, training.</p>
+      <p>Risk and Fraud Detection team</p>
     </div>
   </div>
   
