@@ -20,9 +20,9 @@ hide_title: true
     </div>
   </div>
   
-  <p>I am an engineer with over two decades of experience integrating cutting edge technologies in different industries. At <b>Palm</b> and <b>Apple</b> I led the integration of Wireless Cellular Software and GPS for end user applications on Iphone and Ipads. At <b>Postmates</b> I re-designed the cloud based toolset for exploration and productionization of Machine Learning models for the Risk and Fraud Detection team. For the <b>C3 AI</b> Platform engineering, I helped architect and bring to life the C3 Dataset product, a solution that integrates different data execution engines like pandas, Modin, and Spark into a single fron end user interface, thus enabling smoother transition from exploration to productionization</p>
+  <p>I am an engineer with over two decades of experience integrating cutting-edge technologies across different industries. At <b>Palm</b> and <b>Apple</b>, I led the integration of wireless cellular software and GPS for end-user applications on iPhone and iPad. At <b>Postmates</b>, I re-designed the cloud-based toolset for exploration and productionization of machine learning models for the Risk and Fraud Detection team. For the <b>C3 AI</b> Platform engineering team, I helped architect and bring to life the C3 Dataset product, a solution that integrates different data execution engines like pandas, Modin, and Spark into a single front-end user interface, enabling smoother transitions from exploration to productionization.</p>
 
- <p>Please enjoying exploring my website!</p>
+ <p>Please enjoy exploring my website!</p>
 
 <div class="featured-post">
   <h2>Featured Blog Post</h2>
