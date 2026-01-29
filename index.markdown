@@ -42,12 +42,12 @@ hide_title: true
   
   <div class="timeline-item">
     <div class="timeline-logo">
-      <img src="/assets/img/logos/stanford-logo.png" alt="Stanford University - CGOE"/>
+      <img src="/assets/img/logos/stanford-logo.png" alt="Stanford University"/>
     </div>
     <div class="timeline-content">
       <h3><a href="https://cgoe.stanford.edu">Stanford University</a></h3>
-      <div class="period">Since 2012</div>
-      <p>Graduate Courses in machine learning, Software Systems, and Computer Architecture</p>
+      <div class="period">Since 2011</div>
+      <p>CGOE Graduate Courses in machine learning, Software Systems, and Computer Architecture</p>
     </div>
   </div>
   
