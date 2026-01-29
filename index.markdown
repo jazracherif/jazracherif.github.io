@@ -110,14 +110,13 @@ hide_title: true
 </div>
 
 <div class="timeline-section">
-  <h2>Miscellaneous</h2>
+  <h2>Personal Projects</h2>
   
   <div class="bio-photos">
     <div class="bio-photo">
-      <img src="/assets/img/cherif.jpeg" alt="Cherif at Cafe de Flore"/>
-      <p>At Cafe de Flore, Paris (2017)</p>
+      <img src="/assets/img/nvidia-gpus-personal-project.jpg" alt="NVIDIA GPU Personal Project"/>
     </div>
   </div>
   
-  <p style="text-align: center; color: #888; font-style: italic; margin-top: 30px;">More to come...</p>
+  <p style="text-align: center; color: #888; font-style: italic; margin-top: 30px;">Coming Soon</p>
 </div>
