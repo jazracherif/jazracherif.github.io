@@ -1,12 +1,6 @@
 # Website TODO List
 
 ## Content Updates
-
-- [ ] Remove double dashes from bio intro sentence: "abstraction — specifically in GPU acceleration and CUDA development—to"
-  - Replace `—` with proper formatting or remove entirely
-  
-- [ ] Shorten the intro paragraph by ~20%
-  - Current intro is too long, make it more concise
   
 - [ ] Plan for another GTC conference blog series in 2026
   - The 2025 GTC pic is powerful, repeat for next year
@@ -32,4 +26,3 @@
   - Coming soon
   - Add when article is published
   
-- [ ] Review and potentially remove duplicate/redundant mention of "cherif" in the footer
