@@ -29,3 +29,52 @@ comments: true
 
   <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
 </article>
+
+<!-- Image Modal -->
+<div id="imageModal" class="image-modal">
+  <span class="image-modal-close">&times;</span>
+  <img id="modalImage" src="" alt="">
+</div>
+
+<script>
+(function() {
+  const modal = document.getElementById('imageModal');
+  const modalImg = document.getElementById('modalImage');
+  const closeBtn = document.querySelector('.image-modal-close');
+  
+  // Add click handlers to all images in post content
+  document.querySelectorAll('.post-content img').forEach(img => {
+    img.addEventListener('click', function(e) {
+      e.stopPropagation();
+      modal.classList.add('active');
+      modalImg.src = this.src;
+      modalImg.alt = this.alt;
+      document.body.style.overflow = 'hidden';
+    });
+  });
+  
+  // Close modal on background click or close button
+  modal.addEventListener('click', function() {
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  });
+  
+  closeBtn.addEventListener('click', function() {
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  });
+  
+  // Prevent closing when clicking on the image itself
+  modalImg.addEventListener('click', function(e) {
+    e.stopPropagation();
+  });
+  
+  // Close on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+  });
+})();
+</script>

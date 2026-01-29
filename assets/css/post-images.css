@@ -9,6 +9,7 @@
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   object-fit: contain;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .post-content img:hover {
@@ -47,4 +48,47 @@
 .image-grid img:hover {
   transform: scale(1.05);
   box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+}
+
+/* Modal/Lightbox styles */
+.image-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  cursor: pointer;
+}
+
+.image-modal.active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-modal img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  border-radius: 0;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+  cursor: default;
+}
+
+.image-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.image-modal-close:hover {
+  color: #ccc;
 }
