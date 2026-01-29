@@ -21,9 +21,9 @@
 title: Cherif Jazra
 email: cherif@jazra.dev
 description: >- # this means to ignore newlines until "baseurl:"
-  Welcome to my Page! My interests spans the field of communication protocols, Distributed
-  systems, and computer architectures. I'll draw from experiences in wireless technologies
-  as well as ML/Data systems from work at Palm, Apple, Postmates, and C3 AI.
+  Hi! I'm an Engineer with expertise in Embedded Systems, Wireless Technologies, and ML/Data platforms engineering.
+  I've worked at Palm, Apple, Postmates, and C3 AI and I'm currently passionate about heterogeneous computing
+  and GPU accelerated Software.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://jazracherif.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
