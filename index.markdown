@@ -116,6 +116,9 @@ hide_title: true
     <div class="bio-photo">
       <img src="/assets/img/nvidia-gpus-personal-project.jpg" alt="NVIDIA GPU Personal Project"/>
     </div>
+    <div class="bio-photo">
+      <img src="/assets/img/nvidia-gpus-personal-project2.jpg" alt="NVIDIA GPU Personal Project 2"/>
+    </div>
   </div>
   
   <p style="text-align: center; color: #888; font-style: italic; margin-top: 30px;">Coming Soon</p>
