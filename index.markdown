@@ -22,8 +22,6 @@ hide_title: true
   
   <p>I am an engineer with over two decades of experience integrating cutting-edge technologies across different industries. At <b>Palm</b> and <b>Apple</b>, I led the integration of wireless cellular software and GPS for end-user applications on iPhone and iPad. At <b>Postmates</b>, I re-designed the cloud-based toolset for exploration and productionization of machine learning models for the Risk and Fraud Detection team. For the <b>C3 AI</b> Platform engineering team, I helped architect and bring to life the C3 Dataset product, a solution that integrates different data execution engines like pandas, Modin, and Spark into a single front-end user interface, enabling smoother transitions from exploration to productionization.</p>
 
- <p>Please enjoy exploring my website!</p>
-
 <div class="featured-post">
   <h2>Featured Blog Post</h2>
   <a href="{% post_url 2025-03-26-2025-nvidia-gtc-conference %}" class="featured-post-card">
@@ -139,12 +137,13 @@ hide_title: true
 </div>
 
 <div class="timeline-section">
-  <h2>Interested in Collaborating?</h2>
+  <h2>Interested in Chatting?</h2>
   
   <div style="text-align: center; margin: 20px 0;">
     <img src="/assets/img/collaboration-illustration.jpg" alt="AI Collaboration Workspace" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"/>
   </div>
   
-  <p>The last decade's Deep Learning and LLM revolution has fundamentally changed the technological stack needed to engineer performant AI-powered solutions. Now more than ever, engineers must leverage the best capabilities from CPU and GPU hardware while integrating complex software system infrastructure tailored to their enterprise needs, tools like NVIDIA's CUDA, PyTorch, Ray, vLLM, as well as data engine products like DataFusion, Velox, and many others. Reach out if you would like to talk more about these topics!</p>  
+  <p>The last decade's Deep Learning and LLM revolution has fundamentally changed the technological stack needed to engineer performant AI-powered products. Now more than ever, engineers must leverage the best capabilities from CPU and GPU hardware while integrating complex software system infrastructure tailored to their enterprise needs, tools like NVIDIA's CUDA, PyTorch, Ray, vLLM, as well as data engine like DataFusion, Velox. Reach out if you are interested in these topics!</p>  
+
 </div>
 

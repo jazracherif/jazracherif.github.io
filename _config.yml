@@ -21,8 +21,7 @@
 title: Cherif Jazra
 email: cherif@jazra.dev
 description: >- # this means to ignore newlines until "baseurl:"
-  Hi! I'm an Engineer with expertise in Wireless Technologies and ML/Data platform engineering.
-  Let's connect if you're interested in the modern AI stack, accelerated computing, or if your building with your DGX Spark!
+  Interested in the modern AI & Data engineering stack? Or Just hacking with the DGX Spark? Let's chat!
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://jazracherif.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
