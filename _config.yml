@@ -28,6 +28,10 @@ url: "https://jazracherif.github.io" # the base hostname & protocol for your sit
 # twitter_username: jekyllrb
 github_username:  jazracherif
 linkedin_username: cherifjazra
+
+# Google Analytics
+google_analytics: G-YDK5GCC83C
+
 # Build settings
 theme: minima
 plugins:
