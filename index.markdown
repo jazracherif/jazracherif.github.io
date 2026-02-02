@@ -20,8 +20,11 @@ hide_title: true
     </div>
   </div>
   
-  <p>I am an engineer with over two decades of experience integrating cutting-edge technologies across different industries. At <b>Palm</b> and <b>Apple</b>, I led the integration of wireless cellular software and GPS for end-user applications on iPhone and iPad. At <b>Postmates</b>, I re-designed the cloud-based toolset for exploration and productionization of machine learning models for the Risk and Fraud Detection team. For the <b>C3 AI</b> Platform engineering team, I helped architect and bring to life the C3 Dataset product, a solution that integrates different data execution engines like pandas, Modin, and Spark into a single front-end user interface, enabling smoother transitions from exploration to productionization.</p>
-
+  <p>I am an engineer with two decades of experience working across different technology stacks, from real-time embedded wireless cellular technology to large-scale cloud-based data systems for Machine Learning operations.</p>
+  <p>At <b>Palm</b> and <b>Apple</b>, I led the baseband processor integration of GPS and wireless cellular protocols for end-user applications on smartphones and tablets. I also led the development of the Knowledge Discovery Framework to help accelerate the adoption of Machine Learning for Apple's wireless technology group.</p>
+  <p>At <b>Postmates</b>, I initiated the development of neural network modeling approaches for fraud detection and re-designed the cloud-based toolset for exploration and productionization of machine learning models.</p>
+  <p>At <b>C3 AI</b>, I helped architect and bring to life the C3 Dataset product, a solution that integrates different data execution engines into a single front-end user interface to enable smoother transitions from ML exploration to productionization.</p>
+  <p>I am currently focused on the accelerated computing stack and its potential for data infrastructure and AI-powered products.</p>
 <div class="featured-post">
   <h2>Featured Blog Post</h2>
   <a href="{% post_url 2025-03-26-2025-nvidia-gtc-conference %}" class="featured-post-card">
