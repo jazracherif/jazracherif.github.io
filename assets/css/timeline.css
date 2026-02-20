@@ -78,12 +78,13 @@
 
 .timeline-item {
   display: flex;
-  align-items: flex-start;
-  margin-bottom: 50px;
-  padding: 20px;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 24px;
   background: #f9f9f9;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border-left: 3px solid #e8e8e8;
 }
 
 .timeline-item:hover {
@@ -97,10 +98,14 @@
 }
 
 .timeline-logo img {
-  width: 120px;
-  height: 120px;
+  width: 150px;
+  height: 150px;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 8px;
+  border: 1px solid #e8e8e8;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .timeline-content {
@@ -108,20 +113,74 @@
 }
 
 .timeline-content h3 {
-  margin: 0 0 10px 0;
-  color: #333;
-  font-size: 1.3em;
+  margin: 0 0 6px 0;
+  color: #222;
+  font-size: 1.2em;
 }
 
 .timeline-content .period {
-  color: #888;
-  font-size: 0.9em;
+  display: inline-block;
+  color: #666;
+  font-size: 0.8em;
   margin-bottom: 10px;
-  font-style: italic;
+  font-style: normal;
+  background: #e4e4e4;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+.cta-text {
+  margin: 20px 0 10px 0;
+  text-align: center;
+  font-size: 1em;
+  color: #4a90d9;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.focus-cards {
+  display: flex;
+  gap: 16px;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+
+.focus-card {
+  flex: 1;
+  min-width: 180px;
+  padding: 18px 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  border-left: 3px solid #e8e8e8;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.focus-card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.focus-card-title {
+  font-weight: 600;
+  color: #222;
+  font-size: 0.95em;
+  margin-bottom: 8px;
+  letter-spacing: 0.01em;
+}
+
+.focus-card p {
+  margin: 0;
+  font-size: 0.88em;
+  line-height: 1.6;
+  color: #666;
 }
 
 .timeline-content p {
-  margin: 0;
-  line-height: 1.6;
-  color: #555;
+  margin: 10px 0 0 0;
+  line-height: 1.7;
+  color: #666;
+  text-align: left;
+  border-top: 1px solid #e5e5e5;
+  padding-top: 10px;
 }
