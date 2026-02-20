@@ -36,7 +36,7 @@ hide_title: true
 <div class="timeline-section">
   <h2>Current Focus</h2>
 
-  <p>The <a href="https://www.anthropic.com/research/how-ai-is-transforming-work-at-anthropic" target="_blank">AI Revolution</a> is fundamentally changing the way we work as engineers, giving rise to powerful AI software agents now automating a much larger part of the traditional software engineering workflow. My response has been to double down on the fundamentals.</p>
+  <p>The AI Revolution is <a href="https://www.anthropic.com/research/how-ai-is-transforming-work-at-anthropic" target="_blank">fundamentally changing</a> the way we work as engineers, giving rise to powerful AI software agents now automating a much larger part of the traditional software engineering workflow. My response has been to double down on the fundamentals.</p>
 
   <div class="focus-cards">
     <div class="focus-card">
