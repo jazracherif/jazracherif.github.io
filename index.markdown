@@ -20,7 +20,7 @@ hide_title: true
     </div>
   </div>
   
-  <p>I am an engineer with two decades of experience working across different technology stacks, from real-time embedded wireless cellular technology to large-scale cloud-based data systems for Machine Learning operations.</p>
+  <p>I am an engineer with two decades of Silicon Valley experience working across different technology stacks, from real-time embedded wireless cellular technology to large-scale cloud-based data systems for Machine Learning operations.</p>
 <div class="featured-post">
   <h2>Featured Blog Post</h2>
   <a href="{% post_url 2025-03-26-2025-nvidia-gtc-conference %}" class="featured-post-card">
@@ -36,7 +36,7 @@ hide_title: true
 <div class="timeline-section">
   <h2>Current Focus</h2>
 
-  <p>The deep learning and AI revolution is fundamentally changing the way we work as engineers, giving rise to powerful AI software agents now automating a much larger part of the traditional software engineering workflow. My response has been to double down on the fundamentals.</p>
+  <p>The <a href="https://www.anthropic.com/research/how-ai-is-transforming-work-at-anthropic" target="_blank">AI Revolution</a> is fundamentally changing the way we work as engineers, giving rise to powerful AI software agents now automating a much larger part of the traditional software engineering workflow. My response has been to double down on the fundamentals.</p>
 
   <div class="focus-cards">
     <div class="focus-card">
@@ -116,7 +116,7 @@ hide_title: true
     <div class="timeline-content">
       <h3><a href="https://cgoe.stanford.edu">Stanford University</a></h3>
       <div class="period">Since 2011</div>
-      <p>CGOE Graduate Courses in machine learning, Software Systems, and Computer Architecture</p>
+      <p>CGOE Graduate Courses in Software systems and AI/ML - Continuing studies in Entrepreneurship and startups.</p>
     </div>
   </div>
   
@@ -127,7 +127,7 @@ hide_title: true
     <div class="timeline-content">
       <h3><a href="https://www.ece.cornell.edu/ece">Cornell University</a></h3>
       <div class="period">2005-2006</div>
-      <p>Masters in Electrical Engineering with a focus on digital communications</p>
+      <p>Masters in Electrical Engineering with a focus on Digital Communications and Wireless Networks.</p>
     </div>
   </div>
   
@@ -136,9 +136,9 @@ hide_title: true
       <img src="/assets/img/logos/usj-logo.jpg" alt="USJ"/>
     </div>
     <div class="timeline-content">
-      <h3><a href="https://www.usj.edu.lb/esib/">Ecole Superieure d'Ingenierie de Beyrouth (ESIB/USJ)</a></h3>
+      <h3><a href="https://www.usj.edu.lb/esib/?lang=2">Ecole Supérieure d'Ingénierie de Beyrouth (ESIB/USJ)</a></h3>
       <div class="period">2000-2005</div>
-      <p>Engineering diploma in Telecommunication and Neworks</p>
+      <p>Engineering diploma in Telecommunication and Networks</p>
     </div>
   </div>
 </div>
@@ -155,13 +155,13 @@ hide_title: true
     </div>
   </div>
 
-  <p style="text-align: center; color: #888; font-style: italic; margin-top: 30px;">Coming Soon!</p>
+  <p style="text-align: center; color: #888; font-style: italic; margin-top: 30px;">More Coming Soon!</p>
 
 </div>
 
 <div class="timeline-section">
   <h2>Beyond Engineering</h2>
-  <p>Beyond my daily work of engineering, I have a deep interest in the political and legal history of nations and how founding ideas inform their historical process up to the present. I am also deeply interested in existentialist philosophy and its potential to answer questions of what makes individual and communal life most meaningful, at a time highly characterized by constant change, isolation, and uprootedness. Together, these explorations shape my engagement with the world as a husband, father of 2 boys, and a Lebanese-American 🇱🇧 🇺🇸. </p>
+  <p>Beyond engineering, I have a deep interest in the political and legal history of nations and how their founding ideas shape their historical trajectory to the present day. I am also deeply drawn to existentialist philosophy and its potential to answer questions about what makes individual and communal life most meaningful, particularly in a time characterized by constant change, isolation, and up-rootedness. Together, these explorations inform how I engage with the world as a husband, father of two boys, and Lebanese-American 🇱🇧 🇺🇸.</p>
 </div>
 
 
