@@ -1,3 +1,97 @@
+:root {
+  --card-bg: #f6f9fc;
+}
+
+/**
+ * Global Typography
+ */
+body {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+h1, h2, h3, h4, h5, h6,
+.site-title, .site-nav,
+.page-link, nav {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.site-header {
+  background-color: #3d4a7a;
+  border-top: 3px solid #252e52;
+  border-bottom: 1px solid #4d5a8a;
+}
+
+.site-header .site-title,
+.site-header .site-title:visited,
+.site-header .page-link {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.site-header .page-link:hover,
+.site-header .site-title:hover {
+  color: #b0c8e0;
+}
+
+body {
+  background-color: #e8eef5;
+}
+
+.site-header .wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;
+  padding: 0.8rem 2rem;
+}
+
+.site-nav {
+  float: none;
+  margin-left: auto;
+}
+
+.site-nav .trigger {
+  display: flex;
+  gap: 0;
+}
+
+.site-nav .page-link {
+  padding: 0.5rem 1.1rem;
+  border-radius: 6px;
+  border: none;
+  transition: background 0.2s;
+  text-decoration: none;
+  margin: 0;
+}
+
+.site-nav .page-link:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.site-nav .page-link-active {
+  background: rgba(0,0,0,0.25);
+  font-weight: 600;
+}
+
+.site-footer {
+  background-color: #ffffff;
+}
+
+.footer-copyright {
+  border-top: 1px solid #e8e3da;
+  text-align: center;
+  padding: 1rem 2rem;
+  font-size: 0.75rem;
+  color: #999;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+code, pre {
+  font-family: 'IBM Plex Mono', Menlo, monospace;
+}
+
 /**
  * Bio Introduction and Timeline Styling
  * 
@@ -16,6 +110,119 @@
  * - Consistent spacing and typography throughout
  * - Logos displayed at 120x120px with contained object-fit
  */
+
+/* Hero section */
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin: 40px 0 20px 0;
+}
+
+.hero-photo img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 60% center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  flex-shrink: 0;
+}
+
+.hero-content {
+  flex: 1;
+}
+
+.hero-name {
+  font-size: 1.8em;
+  font-weight: 700;
+  color: #222;
+  margin: 0 0 4px 0;
+}
+
+.hero-tagline {
+  font-size: 1em;
+  color: #888;
+  margin: 0 0 12px 0;
+}
+
+.hero-bio {
+  font-size: 0.95em;
+  color: #555;
+  line-height: 1.7;
+  margin: 0 0 10px 0;
+}
+
+.hero-companies {
+  font-size: 0.82em;
+  color: #999;
+  margin: 0 0 14px 0;
+}
+
+.hero-companies span {
+  color: #444;
+  font-weight: 600;
+}
+
+.hero-social {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.hero-social a {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #666;
+  text-decoration: none;
+  font-size: 0.85em;
+  transition: color 0.2s;
+}
+
+.hero-social a:hover {
+  color: #222;
+}
+
+.hero-social .svg-icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+@media (max-width: 600px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+  .hero-social {
+    justify-content: center;
+  }
+}
+
+/* About page illustration */
+.about-beyond {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.about-illustration {
+  width: 220px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 600px) {
+  .about-beyond {
+    flex-direction: column;
+  }
+  .about-illustration {
+    width: 100%;
+  }
+}
 
 .bio-intro {
   text-align: center;
@@ -81,7 +288,7 @@
   align-items: center;
   margin-bottom: 30px;
   padding: 24px;
-  background: #f9f9f9;
+  background: var(--card-bg);
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   border-left: 3px solid #e8e8e8;
@@ -150,7 +357,7 @@
   flex: 1;
   min-width: 180px;
   padding: 18px 20px;
-  background: #f9f9f9;
+  background: var(--card-bg);
   border-radius: 10px;
   border-left: 3px solid #e8e8e8;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
@@ -183,4 +390,92 @@
   text-align: left;
   border-top: 1px solid #e5e5e5;
   padding-top: 10px;
+}
+
+/* Section label (wesmckinney-style) */
+.section-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #2a4060;
+  border-bottom: 2px solid #a8bcd4;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+
+/* Blog post card list */
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.post-card {
+  padding: 1rem 1.1rem;
+  background: var(--card-bg);
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  transition: box-shadow 0.2s ease;
+}
+
+.post-card:hover {
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.post-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.post-card-title {
+  font-size: 1em;
+  font-weight: 600;
+  color: #222;
+  text-decoration: none;
+}
+
+.post-card-title:hover {
+  color: #4a90d9;
+}
+
+.post-card-date {
+  font-size: 0.8rem;
+  color: #999;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.post-card-tags {
+  margin-top: 0.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.post-card-excerpt {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.88em;
+  color: #555;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.post-tag {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #3a5878;
+  background: #dce8f4;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+@media (max-width: 600px) {
+  .post-card-header {
+    flex-direction: column;
+    gap: 0.2rem;
+  }
 }

@@ -3,6 +3,10 @@ layout: default
 comments: true
 ---
 <link rel="stylesheet" href="{{ "/assets/css/post-images.css" | relative_url }}">
+<link rel="stylesheet" href="{{ "/assets/css/timeline.css" | relative_url }}">
+<style>
+  .post-header-tags { margin-top: 0.6rem; display: flex; flex-wrap: wrap; gap: 0.3rem; }
+</style>
 <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
@@ -15,6 +19,13 @@ comments: true
       {%- if page.author -%}
         • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">{{ page.author }}</span></span>
       {%- endif -%}</p>
+    {%- if page.categories.size > 0 -%}
+    <div class="post-header-tags">
+      {%- for tag in page.categories -%}
+      <span class="post-tag">#{{ tag }}</span>
+      {%- endfor -%}
+    </div>
+    {%- endif -%}
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">

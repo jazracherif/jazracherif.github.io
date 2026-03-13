@@ -3,7 +3,7 @@
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
 layout: page
-title: Main
+title: Home
 hide_title: true
 
 ---
@@ -11,157 +11,61 @@ hide_title: true
 <link rel="stylesheet" href="{{ "/assets/css/featured-post.css" | relative_url }}">
 <link rel="stylesheet" href="{{ "/assets/css/timeline.css" | relative_url }}">
 
-<div class="bio-intro">
-  <h2>Hello, I'm Cherif Jazra!</h2>
-  
-  <div class="bio-photos">
-    <div class="bio-photo">
-      <img src="/assets/img/cherif-2025.png" alt="Cherif Jazra 2025"/>
-    </div>
+<div class="hero">
+  <div class="hero-photo">
+    <img src="/assets/img/cherif-2025.png" alt="Cherif Jazra"/>
   </div>
-  
-  <p>I am an engineer with two decades of Silicon Valley experience working across different technology stacks, from real-time embedded wireless cellular technology to large-scale cloud-based data systems for Machine Learning operations.</p>
-<div class="featured-post">
-  <h2>Featured Blog Post</h2>
-  <a href="{% post_url 2025-03-26-2025-nvidia-gtc-conference %}" class="featured-post-card">
-    <img src="/assets/img/gtc-2025-cover.jpg" alt="GTC 2025 Conference">
-    <div class="featured-post-content">
-      <h3>2025 NVIDIA GTC Conference - Summary</h3>
-      <p>I attended NVIDIA's GTC conference in San Jose from March 16-21, 2025. A comprehensive 3-part series covering Jensen Huang's keynote, deep dives into CUDA programming, and hands-on exploration of the latest GPU hardware and robotics in the exhibit hall.</p>
-      <span class="read-more">Read the full series →</span>
-    </div>
-  </a>
-</div>
-
-<div class="timeline-section">
-  <h2>Current Focus</h2>
-
-  <p>The AI Revolution is <a href="https://www.anthropic.com/research/how-ai-is-transforming-work-at-anthropic" target="_blank">fundamentally changing</a> the way we work as engineers, giving rise to powerful AI software agents now automating a much larger part of the traditional software engineering workflow. My response has been to double down on the fundamentals.</p>
-
-  <div class="focus-cards">
-    <div class="focus-card">
-      <div class="focus-card-title">Computer Architecture</div>
-      <p>Deepening my understanding of CPU, GPU, and accelerator hardware to design systems that extract maximum performance.</p>
-    </div>
-    <div class="focus-card">
-      <div class="focus-card-title">Distributed Systems</div>
-      <p>Studying how modern databases and data engines need to evolve to fully leverage increased hardware heterogeneity.</p>
-    </div>
-    <div class="focus-card">
-      <div class="focus-card-title">AI-Accelerated Insights</div>
-      <p>Combining AI agents with accelerated database systems to democratize high-quality insights from multimodal data sources.</p>
-    </div>
-  </div>
-  <p class="cta-text">Reach out if you are interested!</p>
-  <div style="text-align: center; margin: 30px 0 10px 0;">
-    <img src="/assets/img/collaboration-illustration.jpg" alt="AI Collaboration Workspace" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"/>
-  </div>
-</div>
-
-<div class="timeline-section">
-  <h2>Previous Experience</h2>
-  
-  <div class="timeline-item">
-    <div class="timeline-logo">
-      <img src="/assets/img/logos/c3ai-logo.jpg" alt="C3 AI"/>
-    </div>
-    <div class="timeline-content">
-      <h3>C3 AI</h3>
-      <div class="period">2020 - 2023</div>
-      <p>Helped architect and bring to life the C3 Dataset product, a solution that integrates different data execution engines into a single front-end user interface to enable smoother transitions from ML exploration to productionization.</p>
-    </div>
-  </div>
-  
-  <div class="timeline-item">
-    <div class="timeline-logo">
-      <img src="/assets/img/logos/postmates-logo.jpg" alt="Postmates"/>
-    </div>
-    <div class="timeline-content">
-      <h3>Postmates</h3>
-      <div class="period">2017 - 2020</div>
-      <p>Initiated the development of neural network modeling approaches for fraud detection and re-designed the cloud-based toolset for exploration and productionization of machine learning models.</p>
-    </div>
-  </div>
-  
-  <div class="timeline-item">
-    <div class="timeline-logo">
-      <img src="/assets/img/logos/apple-logo.jpg" alt="Apple"/>
-    </div>
-    <div class="timeline-content">
-      <h3>Apple</h3>
-      <div class="period">2009 - 2017</div>
-      <p>Led the baseband processor integration of GPS and wireless cellular protocols for iPhone and iPad. Also led the development of the Knowledge Discovery Framework to accelerate the adoption of Machine Learning for the wireless technology group.</p>
-    </div>
-  </div>
-  
-  <div class="timeline-item">
-    <div class="timeline-logo">
-      <img src="/assets/img/logos/palm-logo.jpg" alt="Palm"/>
-    </div>
-    <div class="timeline-content">
-      <h3>Palm</h3>
-      <div class="period">2006 - 2009</div>
-      <p>Led the baseband processor integration of GPS and wireless cellular protocols for end-user applications on the Palm Treo and Pre smartphones.</p>
+  <div class="hero-content">
+    <h1 class="hero-name">Cherif Jazra</h1>
+    <p class="hero-tagline">Software Engineer &middot; Palo Alto, California</p>
+    <p class="hero-bio">I have two decades of experience working on complex engineering problems, from real-time embedded wireless systems to large-scale cloud data platforms for Data processing and machine learning. I'm currently focused on GPU-accelerated computing for AI Agent driven data exploration.</p>
+    <p class="hero-companies">I've worked at: <span>Palm</span> &middot; <span>Apple</span> &middot; <span>Postmates</span> &middot; <span>C3 AI</span></p>
+    <div class="hero-social">
+      <a href="https://github.com/{{ site.github_username }}" target="_blank" rel="noopener noreferrer">
+        <svg class="svg-icon"><use xlink:href="{{ '/assets/minima-social-icons.svg#github' | relative_url }}"></use></svg>
+        GitHub
+      </a>
+      <a href="https://www.linkedin.com/in/{{ site.linkedin_username }}" target="_blank" rel="noopener noreferrer">
+        <svg class="svg-icon"><use xlink:href="{{ '/assets/minima-social-icons.svg#linkedin' | relative_url }}"></use></svg>
+        LinkedIn
+      </a>
+      <a href="mailto:{{ site.email }}">
+        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        Email
+      </a>
     </div>
   </div>
 </div>
 
 <div class="timeline-section">
-  <h2>Education</h2>
-  
-  <div class="timeline-item">
-    <div class="timeline-logo">
-      <img src="/assets/img/logos/stanford-logo.png" alt="Stanford University"/>
-    </div>
-    <div class="timeline-content">
-      <h3><a href="https://cgoe.stanford.edu">Stanford University</a></h3>
-      <div class="period">Since 2011</div>
-      <p>CGOE Graduate Courses in Software systems and AI/ML - Continuing studies in Entrepreneurship and startups.</p>
-    </div>
-  </div>
-  
-  <div class="timeline-item">
-    <div class="timeline-logo">
-      <img src="/assets/img/logos/cornell-logo.jpg" alt="Cornell University"/>
-    </div>
-    <div class="timeline-content">
-      <h3><a href="https://www.ece.cornell.edu/ece">Cornell University</a></h3>
-      <div class="period">2005-2006</div>
-      <p>Masters in Electrical Engineering with a focus on Digital Communications and Wireless Networks.</p>
-    </div>
-  </div>
-  
-  <div class="timeline-item">
-    <div class="timeline-logo">
-      <img src="/assets/img/logos/usj-logo.jpg" alt="USJ"/>
-    </div>
-    <div class="timeline-content">
-      <h3><a href="https://www.usj.edu.lb/esib/?lang=2">Ecole Supérieure d'Ingénierie de Beyrouth (ESIB/USJ)</a></h3>
-      <div class="period">2000-2005</div>
-      <p>Engineering diploma in Telecommunication and Networks</p>
-    </div>
-  </div>
+  <p>The AI revolution is fundamentally changing the work of data scientists and engineers. Powerful AI software agents will soon be automating a much larger part of the traditional engineering workflow. As more capable GPU accelerators come to market and the software stack for accelerated query engines matures, we are entering a new era of GPU-accelerated data exploration, one increasingly driven by AI data agents in the enterprise.
+  </p>
+  <ul>
+    <li><strong>Accelerator hardware breakthroughs</strong> and deeper CPU and GPU integration in data centers will help overcome memory and communication bottlenecks, enabling massively parallelized query engines that are orders of magnitude faster.</li>
+    <li><strong>Maturing software stack</strong> and frameworks like RAPIDS AI will provide the building blocks for distributed, multi-node systems that take full advantage of GPU hardware capability and at a lower total cost of ownership.</li>
+    <li><strong>AI-accelerated insights</strong> driven by AI agents orchestrating data pipelines end-to-end will make high-quality insights accessible to a much broader audience.</li>
+  </ul>
+  <p> In my writing I will cover industry and research work being done on GPU accelerated data system, and will offer deep technical dive into the software and hardware stack needed to help bring to life this vision.</p>
 </div>
 
 <div class="timeline-section">
-  <h2>Personal Projects</h2>
-  
-  <div class="bio-photos">
-    <div class="bio-photo">
-      <img src="/assets/img/nvidia-gpus-personal-project.jpg" alt="NVIDIA GPU Personal Project"/>
+  <div class="section-label">Recent Writings</div>
+  <div class="post-list">
+    {% for post in site.posts %}
+    <div class="post-card">
+      <div class="post-card-header">
+        <a href="{{ post.url | relative_url }}" class="post-card-title">{{ post.title }}</a>
+        <span class="post-card-date">{{ post.date | date: "%b %-d, %Y" }}</span>
+      </div>
+      {% if post.categories.size > 0 %}
+      <div class="post-card-tags">
+        {% for tag in post.categories %}
+        <span class="post-tag">#{{ tag }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+      <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncatewords: 30 }}</p>
     </div>
-    <div class="bio-photo">
-      <img src="/assets/img/nvidia-gpus-personal-project2.jpg" alt="NVIDIA GPU Personal Project 2"/>
-    </div>
+    {% endfor %}
   </div>
-
-  <p style="text-align: center; color: #888; font-style: italic; margin-top: 30px;">More Coming Soon!</p>
-
 </div>
-
-<div class="timeline-section">
-  <h2>Beyond Engineering</h2>
-  <p>Beyond engineering, I have a deep interest in the political and legal history of nations and how their founding ideas shape their historical trajectory to the present day. I am also deeply drawn to existentialist philosophy and its potential to answer questions about what makes individual and communal life most meaningful, particularly in a time characterized by constant change, isolation, and up-rootedness. Together, these explorations inform how I engage with the world as a husband, father of two boys, and Lebanese-American 🇱🇧 🇺🇸.</p>
-</div>
-
-

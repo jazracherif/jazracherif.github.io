@@ -1,11 +1,12 @@
 ---
 layout: post
-title:  "GTC 2025 Part 2: Deep Dive into CUDA"
+title:  "NVIDIA GTC 2025 Part 2: Deep Dive into CUDA"
 date:   2025-03-28 10:00:00 -0700
-categories: conference nvidia gpu cuda
+categories: nvidia gtc cuda gpu rapids
 ---
 
 *This is Part 2 of a 3-part series covering GTC 2025:*
+
 - [Part 1: Keynote and Main Announcements]({% post_url 2025-03-27-2025-nvidia-gtc-conference-part1-keynote %})
 - **Part 2: Deep Dive into CUDA** (this post)
 - [Part 3: Exhibit Hall - Hardware and Robotics]({% post_url 2025-03-29-2025-nvidia-gtc-conference-part3-exhibit-hall %})

@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "GTC 2026 is coming up!"
+title: "NVIDIA GTC 2026 is coming up!"
 date: 2026-03-12 10:00:00 -0700
-categories: conference nvidia gpu rapids
+categories: nvidia gtc gpu analytics rapids
 ---
 
 **\#GTC2026** kicks off next week! 🚀
@@ -11,12 +11,11 @@ One area I'm particularly excited to delve into is the latest from NVIDIA on **#
 
 I'll be delving more deeply into the technical aspects of accelerated data analytics in future posts, and in the meantime there will be several fantastic GTC talks and opportunities to meet the experts on these very topics. I'm looking forward to hearing from the NVIDIA team about how these challenges are being tackled in these upcoming sessions:
 
-- [Shatter the Memory Wall: Composable Building Blocks for Massive Scale Analytics](https://lnkd.in/gAgkqBd4)
-- [Scaling Deep Tabular: 360K Inferences per Second per GPU](https://lnkd.in/gYgewvYk)
-- [Build a GPU-Accelerated Database Engine With CUDA](https://lnkd.in/gpuYk9xE)
-- [Scaling DuckDB Beyond Its Limits: GPU-Accelerated Analytics With Sirius](https://lnkd.in/gGBRDhdC)
-- [Next-Gen Data Systems: GPU Acceleration for SQL and Vector Databases](https://lnkd.in/gQGFXgH9)
+- [Shatter the Memory Wall: Composable Building Blocks for Massive Scale Analytics](https://www.nvidia.com/gtc/session-catalog/sessions/gtc26-s81873/)
+- [Scaling Deep Tabular: 360K Inferences per Second per GPU](https://www.nvidia.com/gtc/session-catalog/sessions/gtc26-s82431/)
+- [Build a GPU-Accelerated Database Engine With CUDA](https://www.nvidia.com/gtc/session-catalog/sessions/gtc26-s82203/)
+- [Scaling DuckDB Beyond Its Limits: GPU-Accelerated Analytics With Sirius](https://www.nvidia.com/gtc/session-catalog/sessions/gtc26-s81870/)
+- [Next-Gen Data Systems: GPU Acceleration for SQL and Vector Databases](https://www.nvidia.com/gtc/session-catalog/sessions/gtc26-cwes81481/)
 
 See you there!
 
-`#NVIDIA` `#DataScience` `#GPU` `#RAPIDS` `#Analytics` `#AIAgents` `#GTC2026`
