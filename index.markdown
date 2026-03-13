@@ -17,8 +17,8 @@ hide_title: true
   <div class="hero-content">
     <h1 class="hero-name">Cherif Jazra</h1>
     <p class="hero-tagline">Software Engineer &middot; Palo Alto, California</p>
-    <p class="hero-bio">I have two decades of experience working on complex engineering problems, from real-time embedded wireless systems to large-scale cloud data platforms for Data processing and machine learning. I'm currently focused on GPU-accelerated computing for AI Agent driven data exploration.</p>
-    <p class="hero-companies">I've worked at: <span>Palm</span> &middot; <span>Apple</span> &middot; <span>Postmates</span> &middot; <span>C3 AI</span></p>
+    <p class="hero-bio">I have two decades of experience working on complex engineering problems, from real-time embedded <strong>wireless</strong> systems to large-scale cloud data platforms for <strong>Data processing and machine learning</strong>. I'm currently focused on <strong>GPU-accelerated computing</strong> for AI Agent driven data exploration.</p>
+    <p class="hero-companies">I've previously worked at: <span>Palm</span> &middot; <span>Apple</span> &middot; <span>Postmates</span> &middot; <span>C3 AI</span></p>
     <div class="hero-social">
       <a href="https://github.com/{{ site.github_username }}" target="_blank" rel="noopener noreferrer">
         <svg class="svg-icon"><use xlink:href="{{ '/assets/minima-social-icons.svg#github' | relative_url }}"></use></svg>

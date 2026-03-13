@@ -18,7 +18,7 @@
    ========================================================================== */
 
 :root {
-  --card-bg: #f6f9fc;
+  --card-bg: #edf2f8;
 }
 
 
@@ -48,7 +48,7 @@ code, pre {
    ========================================================================== */
 
 body {
-  background-color: #e8eef5;
+  background-color: #ffffff;
 }
 
 .site-header {
@@ -396,7 +396,7 @@ body {
 .post-card-title {
   font-size: 1em;
   font-weight: 600;
-  color: #222;
+  color: #1a5db5;
   text-decoration: none;
 }
 
@@ -444,7 +444,36 @@ body {
 }
 
 /* ==========================================================================
-   9. Post Content Tables
+   9. TL;DR Box
+   ========================================================================== */
+
+.tldr {
+  padding: 0.8em 1.4em;
+  margin: 1.5em 0;
+  font-size: 0.9em;
+  color: #444;
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.tldr-label {
+  margin: 0 0 0.6em 0;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  color: #888;
+}
+
+.tldr ol {
+  margin: 0;
+  padding-left: 1.4em;
+  line-height: 1.7em;
+}
+
+/* ==========================================================================
+   10. Post Content Tables
    ========================================================================== */
 
 .post-content table {
