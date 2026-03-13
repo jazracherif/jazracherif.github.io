@@ -5,7 +5,7 @@ date:   2026-03-12 11:00:00 -0700
 categories: database gpu nvidia rapids libcudf
 ---
 
-The need for GPU-accelerated databases is growing!
+The need for GPU-accelerated data systems for Analytics is growing!
 
 <div class="tldr">
 <p class="tldr-label">TL;DR</p>
@@ -84,7 +84,7 @@ On the industry side, 2025 saw GPU acceleration reach mainstream data tools:
 
 - GPU execution landed in CPU dataframe engines like **Velox**[^velox-gpu] and **Polars**[^polars-gpu].
 - The **RAPIDS Accelerator for Apache Spark**[^spark-rapids] enabled faster migration to GPU-accelerated distributed data engineering and analytics workloads.
-- Theseus from Voltron published their design paper[^theseus] on petabyte-scale GPU query processing.
+- Voltron published the design paper for Theseus[^theseus], their petabyte-scale GPU accelerated query engine.
 
 Despite genuine progress, building correct and performant GPU implementations of the full relational algebra remains enormously difficult. Managing GPU memory limits, PCIe transfer bottlenecks, operator fusion, and full SQL coverage is a hard engineering problem with no easy shortcut.
 
@@ -98,7 +98,7 @@ In future posts, I'll thus be diving deeper into the technical internals of libc
 
 - ❓ How does libcudf translate relational operators into parallel GPU kernels?
 - ❓ What is the tooling like to evaluate the library's performance?
-- ❓ How is the libcudf used as a building blog for larger distributed systems?
+- ❓ How is the libcudf used as a building block for larger distributed systems?
 
 We are at an inflection point. The hardware gap between CPUs and GPUs is no longer a niche concern for ML engineers — it is becoming structurally relevant for anyone building or operating data systems at scale. The research momentum, the industry adoption, and NVIDIA's deliberate infrastructure investment all point in the same direction: GPU-accelerated analytics is moving from experimental to essential. The open question is not whether it will happen, but how fast the ecosystem matures and how much of the existing CPU-centric stack it displaces versus complements.
 
