@@ -442,3 +442,45 @@ body {
     gap: 0.2rem;
   }
 }
+
+/* ==========================================================================
+   9. Post Content Tables
+   ========================================================================== */
+
+.post-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88em;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin: 1.5rem 0;
+}
+
+.post-content table th {
+  background: #3d4a7a;
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.82em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.post-content table td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid #dde6f0;
+  color: #333;
+  vertical-align: top;
+}
+
+.post-content table tr:last-child td {
+  border-bottom: none;
+}
+
+.post-content table tr:nth-child(even) {
+  background: #f6f9fc;
+}

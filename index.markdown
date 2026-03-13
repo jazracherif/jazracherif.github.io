@@ -37,14 +37,14 @@ hide_title: true
 </div>
 
 <div class="timeline-section">
-  <p>The AI revolution is fundamentally changing the work of data scientists and engineers. Powerful AI software agents will soon be automating a much larger part of the traditional engineering workflow. As more capable GPU accelerators come to market and the software stack for accelerated query engines matures, we are entering a new era of GPU-accelerated data exploration, one increasingly driven by AI data agents in the enterprise.
+  <p>The AI revolution is fundamentally changing the work of data scientists and engineers. Powerful AI software agents will soon automate a much larger part of the traditional engineering workflow. As more capable GPU accelerators come to market and the software stack for accelerated query engines matures, we are entering a new era of GPU-accelerated data exploration, one increasingly driven by AI data agents in the enterprise.
   </p>
   <ul>
     <li><strong>Accelerator hardware breakthroughs</strong> and deeper CPU and GPU integration in data centers will help overcome memory and communication bottlenecks, enabling massively parallelized query engines that are orders of magnitude faster.</li>
-    <li><strong>Maturing software stack</strong> and frameworks like RAPIDS AI will provide the building blocks for distributed, multi-node systems that take full advantage of GPU hardware capability and at a lower total cost of ownership.</li>
-    <li><strong>AI-accelerated insights</strong> driven by AI agents orchestrating data pipelines end-to-end will make high-quality insights accessible to a much broader audience.</li>
+    <li><strong>A maturing software stack</strong> and frameworks like RAPIDS AI will provide the building blocks for distributed, multi-node systems that take full advantage of GPU hardware capability and at a lower total cost of ownership.</li>
+    <li><strong>AI-accelerated insights:</strong> AI agents orchestrating data pipelines end-to-end will deliver high-quality insights to a much broader audience.</li>
   </ul>
-  <p> In my writing I will cover industry and research work being done on GPU accelerated data system, and will offer deep technical dive into the software and hardware stack needed to help bring to life this vision.</p>
+  <p>In my writings, I will cover industry and research work being done on GPU-accelerated data systems, and will offer a deep technical dive into the software and hardware stack needed to help bring to life this vision.</p>
 </div>
 
 <div class="timeline-section">

@@ -35,7 +35,7 @@ google_analytics: G-YDK5GCC83C
 theme: minima
 header_pages:
   - index.markdown
-  - blog.markdown
+  - writings.markdown
   - about.markdown
   - worldly-matters.markdown
 
