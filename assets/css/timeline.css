@@ -1,10 +1,31 @@
+/**
+ * timeline.css — Global site styles for jazracherif.github.io
+ *
+ * Sections:
+ *   1. Variables
+ *   2. Typography
+ *   3. Header & Navigation
+ *   4. Footer
+ *   5. Hero (home page intro)
+ *   6. Bio Photos
+ *   7. Timeline (experience & education cards)
+ *   8. Post Cards (home & writings page listing)
+ */
+
+
+/* ==========================================================================
+   1. Variables
+   ========================================================================== */
+
 :root {
   --card-bg: #f6f9fc;
 }
 
-/**
- * Global Typography
- */
+
+/* ==========================================================================
+   2. Typography
+   ========================================================================== */
+
 body {
   font-family: 'Lora', Georgia, serif;
   font-size: 18px;
@@ -15,6 +36,19 @@ h1, h2, h3, h4, h5, h6,
 .site-title, .site-nav,
 .page-link, nav {
   font-family: 'Inter', system-ui, sans-serif;
+}
+
+code, pre {
+  font-family: 'IBM Plex Mono', Menlo, monospace;
+}
+
+
+/* ==========================================================================
+   3. Header & Navigation
+   ========================================================================== */
+
+body {
+  background-color: #e8eef5;
 }
 
 .site-header {
@@ -35,10 +69,6 @@ h1, h2, h3, h4, h5, h6,
   color: #b0c8e0;
 }
 
-body {
-  background-color: #e8eef5;
-}
-
 .site-header .wrapper {
   display: flex;
   justify-content: space-between;
@@ -50,6 +80,24 @@ body {
 .site-nav {
   float: none;
   margin-left: auto;
+}
+
+@media (max-width: 600px) {
+  .site-nav {
+    background-color: #3d4a7a;
+    border: 1px solid #4d5a8a;
+    border-radius: 5px;
+  }
+
+  .site-nav .trigger {
+    background-color: #3d4a7a;
+    border: none;
+    border-radius: 0;
+  }
+
+  .site-nav .menu-icon > svg path {
+    fill: #ffffff;
+  }
 }
 
 .site-nav .trigger {
@@ -75,6 +123,11 @@ body {
   font-weight: 600;
 }
 
+
+/* ==========================================================================
+   4. Footer
+   ========================================================================== */
+
 .site-footer {
   background-color: #ffffff;
 }
@@ -88,30 +141,12 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
 }
 
-code, pre {
-  font-family: 'IBM Plex Mono', Menlo, monospace;
-}
 
-/**
- * Bio Introduction and Timeline Styling
- * 
- * Design: Clean, centered bio section followed by chronological timeline cards
- * for education and experience.
- * 
- * Bio Section:
- * - Centered introduction with photo and descriptive text
- * - Photo cropped at 75% horizontal position for optimal framing
- * - Responsive flexbox layout for photo gallery
- * 
- * Timeline Section:
- * - Card-based layout with company/university logos on the left
- * - Hover effects for interactivity (shadow enhancement)
- * - Light grey background (#f9f9f9) for card distinction
- * - Consistent spacing and typography throughout
- * - Logos displayed at 120x120px with contained object-fit
- */
+/* ==========================================================================
+   5. Hero
+   Home page intro block: circular photo + name, tagline, bio, social links.
+   ========================================================================== */
 
-/* Hero section */
 .hero {
   display: flex;
   align-items: center;
@@ -201,47 +236,10 @@ code, pre {
   }
 }
 
-/* About page illustration */
-.about-beyond {
-  display: flex;
-  gap: 2rem;
-  align-items: flex-start;
-}
-
-.about-illustration {
-  width: 220px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-@media (max-width: 600px) {
-  .about-beyond {
-    flex-direction: column;
-  }
-  .about-illustration {
-    width: 100%;
-  }
-}
-
-.bio-intro {
-  text-align: center;
-  margin: 40px 0 60px 0;
-}
-
-.bio-intro h2 {
-  font-size: 2em;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.bio-intro p {
-  font-size: 1.2em;
-  line-height: 1.8;
-  max-width: 700px;
-  margin: 20px auto;
-  color: #555;
-}
+/* ==========================================================================
+   6. Bio Photos
+   Flex gallery of square photos used on the about page Personal Projects section.
+   ========================================================================== */
 
 .bio-photos {
   display: flex;
@@ -270,6 +268,12 @@ code, pre {
   color: #666;
   max-width: 200px;
 }
+
+/* ==========================================================================
+   7. Timeline
+   Experience and education cards on the about page.
+   Each card has a logo on the left and content (title, period, description) on the right.
+   ========================================================================== */
 
 .timeline-section {
   max-width: 800px;
@@ -337,52 +341,6 @@ code, pre {
   letter-spacing: 0.02em;
 }
 
-.cta-text {
-  margin: 20px 0 10px 0;
-  text-align: center;
-  font-size: 1em;
-  color: #4a90d9;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-.focus-cards {
-  display: flex;
-  gap: 16px;
-  margin: 24px 0;
-  flex-wrap: wrap;
-}
-
-.focus-card {
-  flex: 1;
-  min-width: 180px;
-  padding: 18px 20px;
-  background: var(--card-bg);
-  border-radius: 10px;
-  border-left: 3px solid #e8e8e8;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  transition: box-shadow 0.3s ease;
-}
-
-.focus-card:hover {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.focus-card-title {
-  font-weight: 600;
-  color: #222;
-  font-size: 0.95em;
-  margin-bottom: 8px;
-  letter-spacing: 0.01em;
-}
-
-.focus-card p {
-  margin: 0;
-  font-size: 0.88em;
-  line-height: 1.6;
-  color: #666;
-}
-
 .timeline-content p {
   margin: 10px 0 0 0;
   line-height: 1.7;
@@ -392,7 +350,13 @@ code, pre {
   padding-top: 10px;
 }
 
-/* Section label (wesmckinney-style) */
+/* ==========================================================================
+   8. Post Cards
+   Blog post listing used on the home page (Recent Writings) and Writings page.
+   Each card shows title, date, category tags, and an excerpt.
+   ========================================================================== */
+
+/* Section heading label above the post list */
 .section-label {
   font-size: 0.82rem;
   font-weight: 700;
@@ -404,7 +368,6 @@ code, pre {
   margin-bottom: 1.2rem;
 }
 
-/* Blog post card list */
 .post-list {
   display: flex;
   flex-direction: column;

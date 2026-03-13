@@ -8,7 +8,6 @@ hide_title: true
 
 ---
 
-<link rel="stylesheet" href="{{ "/assets/css/featured-post.css" | relative_url }}">
 <link rel="stylesheet" href="{{ "/assets/css/timeline.css" | relative_url }}">
 
 <div class="hero">
