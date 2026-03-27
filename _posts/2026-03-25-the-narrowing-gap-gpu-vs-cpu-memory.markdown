@@ -76,7 +76,7 @@ Summary:
 * The NVLink-C2C architecture further extends this by exposing unified memory that spans both HBM and LPDDR5X — the VR200 makes up to 2.1 TB (576 GB HBM4 + 1.5 TB LPDDR5X) accessible to the GPU. 
 * That said, HBM remains orders of magnitude more expensive per gigabyte, and for workloads that spill beyond the fast HBM tier, performance falls back on the lower LPDDR5X bandwidth.
 
-### GPU vs CPU at Compute Parity
+### NVIDIA GPU vs AMD CPU at Compute Parity
 
 Raw compute capability is stark — and growing with each GPU generation — but compute alone does not determine analytics outcomes. For each superchip, the table below shows the best contemporary AMD CPU, how many sockets are needed to match the GPU's FP32 throughput, and how that compute-equivalent cluster compares on the metrics that matter most for analytics workloads. We compare each generation of GPUs with the top available AMD CPU at the time, and we calculate how many CPU sockets we would need to match FLOPS for the GPU superchip. We then compare trends across memory bandwidth, memory capacity, cost, and power efficiency between the GPU and CPU systems.
 
