@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "The Narrowing Gap for Analytics Workloads: GPU vs CPU Performance Across Three Generations"
+title: "The Narrowing Gap for Analytics Workloads: GPU vs CPU Performance at Compute Parity and Across Three Generations"
 date: 2026-03-25 00:00:00 -0700
 categories: nvidia gpu hardware amd memory
 tags: []

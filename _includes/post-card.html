@@ -1,0 +1,44 @@
+{% comment %}
+  _includes/post-card.html
+  
+  Renders a single post card for use in post listing pages (index, writings).
+  Automatically detects draft posts (files in _drafts/) and applies greyed-out
+  styling with a DRAFT badge — visible only during local --drafts preview builds.
+
+  Usage:
+    {% include post-card.html post=post %}
+
+  Parameters:
+    post  (required) — a Jekyll post object from site.posts
+{% endcomment %}
+{% if include.post.path contains "_drafts" %}
+<div class="post-card draft-post">
+  <div class="post-card-header">
+    <a href="{{ include.post.url | relative_url }}" class="post-card-title">{{ include.post.title }}</a>
+    <span class="post-card-date">{{ include.post.date | date: "%b %-d, %Y" }}</span> <span class="draft-label">DRAFT</span>
+  </div>
+  {% if include.post.categories.size > 0 %}
+  <div class="post-card-tags">
+    {% for tag in include.post.categories %}
+    <span class="post-tag">#{{ tag }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <p class="post-card-excerpt">{{ include.post.excerpt | strip_html | truncatewords: 30 }}</p>
+</div>
+{% else %}
+<div class="post-card">
+  <div class="post-card-header">
+    <a href="{{ include.post.url | relative_url }}" class="post-card-title">{{ include.post.title }}</a>
+    <span class="post-card-date">{{ include.post.date | date: "%b %-d, %Y" }}</span>
+  </div>
+  {% if include.post.categories.size > 0 %}
+  <div class="post-card-tags">
+    {% for tag in include.post.categories %}
+    <span class="post-tag">#{{ tag }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <p class="post-card-excerpt">{{ include.post.excerpt | strip_html | truncatewords: 30 }}</p>
+</div>
+{% endif %}

@@ -22,6 +22,22 @@
  * - Prevents page scrolling when active
  */
 
+/* Draft post greying (visible only in local --drafts preview) */
+.draft-post {
+  opacity: 0.45;
+}
+.draft-label {
+  font-size: 0.65em;
+  font-weight: 700;
+  color: #fff;
+  background: #aaa;
+  border-radius: 3px;
+  padding: 1px 5px;
+  margin-left: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.04em;
+}
+
 .post-content img {
   max-width: 100%;
   max-height: 600px;

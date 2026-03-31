@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Optimizing the Dispatch: 4 Ways to Slash CUDA Kernel Overhead"
-date:   2026-02-03 12:00:00 -0800
+date:   2026-03-31 12:00:00 -0800
 categories: cuda performance optimization
 ---
 

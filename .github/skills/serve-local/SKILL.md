@@ -16,6 +16,10 @@ description: "Use when: rebuilding the website, running Jekyll locally, serving 
    ```bash
    bundle exec jekyll serve --livereload
    ```
+   To also show draft posts from `_drafts/`, add `--drafts`:
+   ```bash
+   bundle exec jekyll serve --livereload --drafts
+   ```
    Use `isBackground: true` so the terminal is not blocked.
 
 3. **Wait briefly and verify** the server is up:

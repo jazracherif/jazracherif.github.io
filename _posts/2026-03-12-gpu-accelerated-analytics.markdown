@@ -56,7 +56,7 @@ GPUs tell a different story. Driven by the insatiable demand for AI training and
 
 But for analytics workloads, raw hardware scaling alone does not determine the winner. At compute parity, the newer comparison shows a mixed outcome: GPUs have crossed into a clear bandwidth lead and the CPU capacity ratio is narrowing, while GPU cost and Perf/W advantages are also narrowing. In other words, the effective analytics gap is becoming more balanced, not one-dimensionally wider.
 
-For a more detailed generation-by-generation comparison, see: [The Narrowing Gap for Analytics Workloads: GPU vs CPU Performance Across Three Generations]({% post_url 2026-03-25-the-narrowing-gap-gpu-vs-cpu-memory %}).
+For a more detailed generation-by-generation comparison, see: [The Narrowing Gap for Analytics Workloads: GPU vs CPU Performance at Compute Parity Across Three Generations]({% post_url 2026-03-25-the-narrowing-gap-gpu-vs-cpu-memory %}).
 
 ### GPU-Accelerated Databases Are Rising in Research and Industry
 

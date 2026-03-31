@@ -14,7 +14,7 @@ Topics covered: accelerated computing, NVIDIA/GPU technology, worldly matters, a
 .
 ├── _config.yml              # Site-wide Jekyll configuration
 ├── _posts/                  # Published blog posts (live on the site)
-├── _posts_drafts/           # WIP drafts (not built by Jekyll)
+├── _drafts/                 # WIP drafts (shown locally with --drafts flag, not published)
 ├── _posts_archive/          # Archived posts (not built by Jekyll)
 ├── _layouts/                # HTML page layout templates
 ├── _includes/               # Reusable HTML partials (header, footer, etc.)
@@ -45,12 +45,22 @@ Post filenames follow the format: `YYYY-MM-DD-slug-title.markdown`
 
 2. Serve the site locally with live reload:
    ```bash
-   bundle exec jekyll serve
+   bundle exec jekyll serve --livereload
    ```
 
 3. Open [http://localhost:4000](http://localhost:4000) in your browser.
 
 > **Note:** Changes to `_config.yml` require restarting the server. All other files hot-reload automatically.
+
+### Previewing Draft Posts
+
+Draft posts live in `_drafts/` and use Jekyll's built-in drafts feature. To preview them locally, add the `--drafts` flag:
+
+```bash
+bundle exec jekyll serve --livereload --drafts
+```
+
+Drafts will appear in the local build with today's date but are never included in the production build pushed to GitHub Pages.
 
 ---
 
@@ -74,7 +84,7 @@ Use the Copilot `create-new-post` skill to scaffold a draft, then `deploy-post` 
 
 Post lifecycle:
 ```
-_posts_drafts/WIP_YYYY-MM-DD-title.markdown   ← draft
+_drafts/WIP_YYYY-MM-DD-title.markdown         ← draft (visible locally with --drafts)
         ↓  (deploy-post skill)
 _posts/YYYY-MM-DD-title.markdown              ← live
 ```
@@ -87,7 +97,7 @@ Two VS Code Copilot skills are available under `.github/skills/` to streamline b
 
 ### `create-new-post`
 Creates a new draft blog post from the standard template.
-- Places the file in `_posts_drafts/` with a `WIP_` prefix
+- Places the file in `_drafts/` with a `WIP_` prefix
 - Filename format: `WIP_YYYY-MM-DD-slugified-title.markdown`
 - Trigger: *"create a new post about X"*, *"add a new draft post"*
 

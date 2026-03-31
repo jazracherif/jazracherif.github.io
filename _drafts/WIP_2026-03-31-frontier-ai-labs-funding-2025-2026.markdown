@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Frontier AI Labs Funding Rounds 2025-2026: Billion-Dollar Bets on the Future"
-date:   2026-01-29 12:00:00 -0800
+date:   2026-03-31 12:00:00 -0800
 categories: ai funding startups
 ---
 
