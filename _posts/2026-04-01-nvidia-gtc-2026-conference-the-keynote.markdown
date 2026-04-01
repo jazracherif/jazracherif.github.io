@@ -1,11 +1,13 @@
 ---
 layout: post
 title: "NVIDIA GTC 2026 Conference: The Keynote"
-date: 2026-03-31 00:00:00 -0700
+date: 2026-04-01 00:00:00 -0700
 categories: nvidia gtc keynote gpu hardware
 tags: [gtc2026, vera-rubin, inference, cuda, groq, openclaw, physical-ai, robotics]
 extra_css: ["/assets/css/keynote-table.css"]
 ---
+
+*Prefer a section-by-section breakdown? This keynote is also available as a [3-part series starting with Part 1](/nvidia/gtc/keynote/gpu/hardware/2026/04/01/gtc-2026-conference-keynote-part1.html).*
 
 I was back this year for the 2026 edition of NVIDIA's GTC conference held at the San Jose Convention Center and surroundings from March 16-19. 
 
@@ -68,15 +70,15 @@ One of the major reveals at this year's conference and worth re-emphasizing is t
 
 Here's a short breakdown of the main section Jensen covered in the Keynote. 
 
-| Section | Duration |
+| Duration | Section |
 |---|---|
-| [Intro, Cuda flywheel, Graphics improvements](#intro-cuda-flywheel-graphics-improvements-16min) <br> Celebrating Cuda's 20y anniversary and showing DLSS5 graphics improvements | 16 min |
-| [Accelerated Analytics](#accelerated-analytics-22min) <br> Emphasizing NVIDIA's role in accelerating enterprise analytics and many of the CSP's AI offerings in the agentic era | 22 min |
-| [Cuda-X review and AI native companies](#cuda-x-review-and-ai-native-companies-7min) <br> Reviewing the library ecosystem that forms CUDA-X | 7 min |
-| [AI Inference Inflection + Datacenter efficiency overview](#ai-inference-inflection--overview-of-datacenter-efficiency-tokenswatt-vs-interactivity-tokenss-per-user-across-different-tiers-22min) <br> Discussing the AI inference inflection point and how CEO's will be evaluating their agentic companies  | 22 min |
-| [Full Vera Rubin hardware stack + DSX platform](#full-vera-rubin-hardware-stack--gpu-nvlink-rubin-ultra-and-spectrum-x-groq-lpx--dsx-platform-for-ai-factory-optimization-38min) <br> Showing Vera Rubin + Groq hardware and explaining how they improve the throughput vs. interactivity performance curves  | 38 min |
-| [OpenClaw, NemoClaw, Open Model Coalition](#openclaw-nemoclaw-open-model-coalition-19min) <br> Praising the explosive growth of OpenClaw as a revolutionary moment, and announcing NVIDIA's enterprise reference NemoClaw and the open model coalition | 19 min |
-| [Robotics, Physical AI, & recap](#robotics-physical-ai--recap-14min) <br> Describing the evolution of physical AI and the robotic landscape and recaping with a specially generated music video| 14 min |
+| 16 min | [Intro, Cuda flywheel, Graphics improvements](#intro-cuda-flywheel-graphics-improvements-16min) — Celebrating Cuda's 20y anniversary and showing DLSS5 graphics improvements |
+| 22 min | [Accelerated Analytics](#accelerated-analytics-22min) — Emphasizing NVIDIA's role in accelerating enterprise analytics and many of the CSP's AI offerings in the agentic era |
+| 7 min | [Cuda-X review and AI native companies](#cuda-x-review-and-ai-native-companies-7min) — Reviewing the library ecosystem that forms CUDA-X |
+| 22 min | [AI Inference Inflection + Datacenter efficiency overview](#ai-inference-inflection--overview-of-datacenter-efficiency-tokenswatt-vs-interactivity-tokenss-per-user-across-different-tiers-22min) — Discussing the AI inference inflection point and how CEO's will be evaluating their agentic companies |
+| 38 min | [Full Vera Rubin hardware stack + DSX platform](#full-vera-rubin-hardware-stack--gpu-nvlink-rubin-ultra-and-spectrum-x-groq-lpx--dsx-platform-for-ai-factory-optimization-38min) — Showing Vera Rubin + Groq hardware and explaining how they improve the throughput vs. interactivity performance curves |
+| 19 min | [OpenClaw, NemoClaw, Open Model Coalition](#openclaw-nemoclaw-open-model-coalition-19min) — Praising the explosive growth of OpenClaw as a revolutionary moment, and announcing NVIDIA's enterprise reference NemoClaw and the open model coalition |
+| 14 min | [Robotics, Physical AI, & recap](#robotics-physical-ai--recap-14min) — Describing the evolution of physical AI and the robotic landscape and recaping with a specially generated music video |
 
 
 Find the breakdown below, linking directly into each section on the YouTube video, along with summary notes and section durations.

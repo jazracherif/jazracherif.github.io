@@ -32,6 +32,11 @@
   overflow-wrap: break-word;
   word-break: break-word;
 }
+/* Restore normal table layout — word-break: break-word removes the minimum
+   content-width floor for table cells, causing narrow columns to be squeezed */
+.post-content table {
+  word-break: normal;
+}
 .draft-label {
   font-size: 0.65em;
   font-weight: 700;
