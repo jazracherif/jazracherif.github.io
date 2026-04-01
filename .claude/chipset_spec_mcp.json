@@ -1,0 +1,11 @@
+{
+  "servers": {
+    "chipset-specs": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://chipset-specs.vercel.app/api/mcp"
+      ]
+    }
+  }
+}

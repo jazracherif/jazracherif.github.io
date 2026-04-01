@@ -3,6 +3,11 @@ layout: default
 comments: true
 ---
 <link rel="stylesheet" href="{{ "/assets/css/post-images.css" | relative_url }}">
+{%- if page.extra_css -%}
+  {%- for css in page.extra_css -%}
+  <link rel="stylesheet" href="{{ css | relative_url }}">
+  {%- endfor -%}
+{%- endif -%}
 <link rel="stylesheet" href="{{ "/assets/css/timeline.css" | relative_url }}">
 <style>
   body { background-color: #fafaf8; }
