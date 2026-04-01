@@ -26,6 +26,12 @@
 .draft-post {
   opacity: 0.45;
 }
+
+/* Prevent long URLs/content from causing horizontal scroll on mobile */
+.post-content {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
 .draft-label {
   font-size: 0.65em;
   font-weight: 700;
