@@ -1,17 +1,17 @@
 ---
 layout: post
-title:  "The Rise of GPU-Accelerated Data Analytics"
+title:  "The Case for GPU-Accelerated Data Analytics"
 date:   2026-03-12 11:00:00 -0700
 categories: database gpu nvidia rapids libcudf
 ---
 
-The need for GPU-accelerated data systems for Analytics is growing!
+For analytics workloads that fit in fast memory, the hardware case for GPU is strengthening — but the story is more nuanced than raw compute numbers suggest.
 
 <div class="tldr">
 <p class="tldr-label">TL;DR</p>
 <ol>
   <li><strong>AI agents are changing the analytics workload</strong> — agentic speculation is exploding demand for structured analytic compute.</li>
-  <li><strong>CPU analytics has had a great run, but GPU is primed to take over new demand</strong> — CPU-centered databases powered enterprise analytics for decades, but surging AI hardware investment is propelling GPU memory bandwidth and parallelism further ahead.</li>
+  <li><strong>CPU analytics has had a great run, but for in-memory workloads the gap is shifting to GPU</strong> — CPU-centered databases powered enterprise analytics for decades, but for workloads that fit in fast memory, GPU bandwidth has crossed into a clear and durable lead. Compute and cost advantages, once decisive, are now compressing as GPU prices rise faster than per-chip gains.</li>
   <li><strong>GPU-accelerated databases are rising in research and industry</strong> — Conferences have seen a wave of GPU database papers since 2020, and GPU acceleration is reaching production tools. Yet building correct, full-featured GPU query engines remains a formidable engineering challenge.</li>
   <li><strong>NVIDIA has built a moat with RAPIDS AI and libcudf</strong> — virtually every GPU-accelerated analytic system today is built on libcudf, making it the critical layer to understand in this space.</li>
 </ol>
@@ -48,15 +48,23 @@ The milestones speak for themselves. [Snowflake](https://dl.acm.org/doi/10.1145/
 
 The composable data systems movement[^composable-manifesto] has further decoupled execution from storage, built on two key standards: [Apache Arrow](https://arrow.apache.org) as the universal in-memory columnar format enabling zero-copy data exchange between engines, and [Substrait](https://substrait.io) as a portable, cross-language query plan representation that lets a plan produced by one system be executed by another. On top of these, [Velox](https://velox-lib.io) (Meta) and [Apache DataFusion](https://datafusion.apache.org) provide reusable, modular physical execution engines that plug into larger systems rather than reinventing the wheel. This composability is now flowing upstream into the dominant distributed compute platforms — [Gluten](https://github.com/apache/incubator-gluten) brings Velox-backed native execution into Apache Spark, [Apache DataFusion Comet](https://github.com/apache/datafusion-comet) does the same using DataFusion as the native Rust backend, and [Presto](https://prestodb.io) has adopted Velox as its native C++ evaluation engine — extending the CPU performance frontier by replacing JVM-based execution with optimized native kernels.
 
-### CPU vs GPU Hardware Trajectories: Fast GPU Gains, Mixed Analytics Outcome
+### CPU vs GPU Hardware Trajectories: The In-Memory Gap Is Shifting in GPU's Favor
 
-Yet even as software pushes the CPU performance frontier further, the underlying hardware is hitting diminishing returns. AMD's EPYC Turin -- today's server CPU bandwidth leader -- peaks at ~576 GB/s per socket (+25% vs Genoa's ~461 GB/s) and ~15 TFLOPS FP32 (+~40% vs Genoa's ~11 TFLOPS), with max DRAM capacity flat at 6 TB across both generations. Intel's Xeon 6 (Granite Rapids) reaches ~409 GB/s (+33% vs Sapphire Rapids' ~307 GB/s) and ~14 TFLOPS FP32 (+~75% vs ~8 TFLOPS), with capacity likewise flat at 4 TB. Meaningful gains -- but incremental, and capacity has effectively plateaued.
+Yet even as software pushes the CPU performance frontier further, the underlying hardware is hitting diminishing returns. AMD's EPYC Turin, today's server CPU bandwidth leader, peaks at ~576 GB/s per socket (+25% vs Genoa's ~461 GB/s) and ~15 TFLOPS FP32 (+~40% vs Genoa's ~11 TFLOPS), with max DRAM capacity flat at 6 TB across both generations. Intel's Xeon 6 (Granite Rapids) reaches ~409 GB/s (+33% vs Sapphire Rapids' ~307 GB/s) and ~10 TFLOPS FP32 (~2× vs Sapphire Rapids' ~4.8 TFLOPS), with capacity likewise flat at 4 TB. Meaningful gains but incremental, and capacity has effectively plateaued.
 
-GPUs tell a different story. Driven by the insatiable demand for AI training and inference, NVIDIA's flagship data-center superchips have advanced at a fundamentally different pace across just three generations -- the GH200 (Grace Hopper, 2023), GB200 (Grace Blackwell, 2024), and VR200 (Vera Rubin, 2025): memory bandwidth grew 9x from 4.9 TB/s to 44 TB/s, FP32 compute grew from 67 to 260 TFLOPS, and total unified memory capacity grew 3.4x generation-over-generation: 624 GB -> 864 GB (+39%) -> 2.1 TB (+143%). That puts VR200 at about 76x the bandwidth of a single EPYC Turin socket.
+GPUs tell a different story. Driven by the insatiable demand for AI training and inference, NVIDIA's flagship data-center superchips have advanced at a fundamentally different pace across just three generationsm the GH200 (Grace Hopper, 2023), GB200 (Grace Blackwell, 2024), and VR200 (Vera Rubin, 2025): memory bandwidth grew 9x from 4.9 TB/s to 44 TB/s, FP32 compute grew from 67 to 260 TFLOPS, and total unified memory capacity grew 3.4x generation-over-generation: 624 GB -> 864 GB (+39%) -> 2.1 TB (+143%). That puts VR200 at about 76x the bandwidth of a single EPYC Turin socket.
 
-But for analytics workloads, raw hardware scaling alone does not determine the winner. At compute parity, the newer comparison shows a mixed outcome: GPUs have crossed into a clear bandwidth lead and the CPU capacity ratio is narrowing, while GPU cost and Perf/W advantages are also narrowing. In other words, the effective analytics gap is becoming more balanced, not one-dimensionally wider.
+But for **in-memory analytics**, workloads whose active dataset fits within the fast memory tier (HBM for GPUs, DRAM for CPUs), raw hardware scaling alone does not determine the winner. A three-generation study across three lenses (compute parity, $1M bare-metal budget, equal AWS hourly spend) reveals two distinct trends pulling in opposite directions:
 
-For a more detailed generation-by-generation comparison, see: [The Narrowing Gap for Analytics Workloads: GPU vs CPU Performance at Compute Parity Across Three Generations]({% post_url 2026-03-25-the-narrowing-gap-gpu-vs-cpu-memory %}).
+- **GPU memory bandwidth is the most durable advantage and is not eroding.** It crossed above parity against a compute-equivalent CPU cluster between the GH200 and GB200 generations, and holds steady at 3.5–5.4× at equal spend across all three generations. The inflection is generational and structural.
+- **GPU compute, cost, and Perf/W advantages are real but compressing.** At equal spend, the FP32 advantage peaked at the H100 generation (~9.5× over Genoa on AWS) and has since fallen to ~5.2× for B200 — not because GPU compute plateaued, but because GPU prices are rising faster than per-chip compute gains. The Perf/W lead is narrowing for the same reason.
+- **The capacity gap is large but driven by price, not physics.** CPU DRAM holds 51–91× more memory at compute parity, but that collapses to 8–11× at equal spend. The difference is that DDR costs a fraction of HBM per gigabyte — once you normalize by budget, you are buying far more DDR capacity than the raw chip-count comparison suggests. If HBM prices fall relative to DDR over time, a trend already underway, this ratio will compress further in the GPU's favor.
+
+> **Assumptions:** The directional conclusions above rest on specific cost and pricing inputs — rack-normalized GPU superchip prices ($39k–$188k per chip), AMD EPYC socket prices (~$8k–$14k), and AWS on-demand rates from April 2026. Cost figures are the most assumption-sensitive part of the analysis: GPU list prices vary by channel and contract, and cloud rates change frequently. The bandwidth and compute trends are hardware-spec-driven and more stable; the capacity and cost conclusions are pricing-driven and should be read as directional, not precise.
+
+For a more detailed generation-by-generation comparison, see: [GPU vs CPU for In-Memory Analytics: Bandwidth Holds as Compute and Cost Advantages Narrow Across Three Generations]({% post_url 2026-03-25-gpu-vs-cpu-in-memory-analytics-bandwidth-holds-as-compute-and-cost-narrow %}).
+
+> **Coming next:** The analysis above is scoped strictly to **in-memory workloads**. A follow-up post will delve into the big data case where datasets exceed GPU HBM capacity, and where the HBM bandwidth advantage disappears at the PCIe or NVMe bottleneck, and CPU DRAM's structural capacity advantage becomes decisive for analytics at scale.
 
 ### GPU-Accelerated Databases Are Rising in Research and Industry
 
@@ -87,7 +95,7 @@ In future posts, I'll thus be diving deeper into the technical internals of libc
 - ❓ What is the tooling like to evaluate the library's performance?
 - ❓ How is the libcudf used as a building block for larger distributed systems?
 
-We are at an inflection point. The hardware gap between CPUs and GPUs is no longer a niche concern for ML engineers — it is becoming structurally relevant for anyone building or operating data systems at scale. The research momentum, the industry adoption, and NVIDIA's deliberate infrastructure investment all point in the same direction: GPU-accelerated analytics is moving from experimental to essential. The open question is not whether it will happen, but how fast the ecosystem matures and how much of the existing CPU-centric stack it displaces versus complements.
+We are at an inflection point. The hardware gap between CPUs and GPUs is no longer a niche concern for ML engineers — it is becoming structurally relevant for anyone building or operating data systems at scale. For **in-memory analytics**, the shift is already underway: GPU bandwidth has crossed into a durable lead and the remaining gaps in cost and capacity are narrowing, not widening. The harder question — how this plays out when datasets exceed HBM capacity and the bottleneck shifts to PCIe or storage — is the subject of a future post. The research momentum, the industry adoption, and NVIDIA's deliberate infrastructure investment all point in the same direction: GPU-accelerated analytics is moving from experimental to essential. The open question is not whether it will happen, but how fast the ecosystem matures and how much of the existing CPU-centric stack it displaces versus complements.
 
 Excited about the momentum of GPU-accelerated analytics? Have questions about the software or hardware stack? Let me know below! 👇
 

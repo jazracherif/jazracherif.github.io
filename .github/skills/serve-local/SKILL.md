@@ -12,11 +12,7 @@ description: "Use when: rebuilding the website, running Jekyll locally, serving 
    pkill -f "jekyll serve" 2>/dev/null || true
    ```
 
-2. **Start the server in the background** with live reload:
-   ```bash
-   bundle exec jekyll serve --livereload
-   ```
-   To also show draft posts from `_drafts/`, add `--drafts`:
+2. **Start the server in the background** with live reload and drafts always enabled:
    ```bash
    bundle exec jekyll serve --livereload --drafts
    ```
@@ -33,6 +29,7 @@ description: "Use when: rebuilding the website, running Jekyll locally, serving 
 ## Rules
 
 - Always run from the workspace root (`/Users/cherifjazra/code/jazracherif.github.io`).
+- Always include `--drafts` so posts in `_drafts/` are visible locally.
 - Use `bundle exec jekyll` — never bare `jekyll` — to respect the project's Gemfile.
 - If the build step fails (non-zero exit), surface the error output to the user before stopping.
 - Do not open the browser automatically unless the user asks.
