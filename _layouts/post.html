@@ -40,6 +40,10 @@ comments: true
     {{ content }}
   </div>
 
+  <div style="margin-top: 2rem; padding: 0.75rem 1rem; background: #f5f5f2; border-left: 3px solid #ccc; font-size: 0.85em; color: #666;">
+    Spotted a factual error? I'd appreciate a heads-up — reach me at <a href="mailto:{{ site.email }}">{{ site.email }}</a> or on <a href="https://www.linkedin.com/in/cherifjazra/" target="_blank" rel="noopener noreferrer">LinkedIn</a>.
+  </div>
+
   {%- if site.disqus.shortname -%}
     <div style="margin-top: 80px; padding-top: 60px; border-top: 1px solid #e8e8e8;">
       {%- include disqus_comments.html -%}
