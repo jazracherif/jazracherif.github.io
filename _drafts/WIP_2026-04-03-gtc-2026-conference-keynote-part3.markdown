@@ -7,11 +7,23 @@ tags: [gtc2026, vera-rubin, groq, openclaw, robotics, physical-ai, dsx]
 extra_css: ["/assets/css/keynote-table.css"]
 ---
 
-*This is Part 3 of a 3-part breakdown of the GTC 2026 keynote. Start with [Part 1: Overview & Context](/nvidia/gtc/keynote/gpu/hardware/2026/04/01/gtc-2026-conference-keynote-part1.html) or go back to [Part 2: Intro, Analytics, CUDA-X & Inference](/nvidia/gtc/keynote/gpu/hardware/2026/04/01/gtc-2026-conference-keynote-part2.html). The original single-page version is [also available](/nvidia/gtc/keynote/gpu/hardware/2026/03/31/gtc-2026-conference-summary.html).*
+*This is Part 3 of a 3-part breakdown of the GTC 2026 keynote. Start with [Part 1: Overview & Context](/nvidia/gtc/keynote/gpu/hardware/2026/04/01/gtc-2026-conference-keynote-part1.html) or go back to [Part 2: Intro, Analytics, CUDA-X & Inference](/nvidia/gtc/keynote/gpu/hardware/2026/04/03/gtc-2026-conference-keynote-part2.html). The original single-page version is <span style="color:#bbb">also available</span> (coming soon).*
 
 ---
 
 **Previously in Parts 1 & 2:** After setting the scene at GTC, Jensen spent the first half of the keynote celebrating CUDA's 20-year flywheel, making the case for NVIDIA's role in accelerating enterprise analytics (with partnerships from IBM, Dell, and Google Cloud), reviewing the CUDA-X library ecosystem, and laying out the economics of the AI inference boom, framing the $1T infrastructure wave ahead and how GB300 NVL72 became the inference king on tokens-per-watt.
+
+---
+
+### Summary of Part 3 sections
+
+The second half of the keynote covered the following sections:
+
+| Duration | Section |
+|---|---|
+| 38 min | [Full Vera Rubin hardware stack + DSX platform](#full-vera-rubin-hardware-stack--gpu-nvlink-rubin-ultra-and-spectrum-x-groq-lpx--dsx-platform-for-ai-factory-optimization-38min) — Showing Vera Rubin + Groq hardware and explaining how they improve the throughput vs. interactivity performance curves |
+| 19 min | [OpenClaw, NemoClaw, Open Model Coalition](#openclaw-nemoclaw-open-model-coalition-19min) — Praising the explosive growth of OpenClaw as a revolutionary moment, and announcing NVIDIA's enterprise reference NemoClaw and the open model coalition |
+| 14 min | [Robotics, Physical AI, & recap](#robotics-physical-ai--recap-14min) — Describing the evolution of physical AI and the robotic landscape and recaping with a specially generated music video |
 
 ---
 
@@ -84,7 +96,7 @@ Full keynote is available [here](https://www.nvidia.com/gtc/keynote/) and the sl
 
 ---
 
-*← [Part 2: Intro, Analytics, CUDA-X & Inference](/nvidia/gtc/keynote/gpu/hardware/2026/04/01/gtc-2026-conference-keynote-part2.html)*
+*← [Part 2: Intro, Analytics, CUDA-X & Inference](/nvidia/gtc/keynote/gpu/hardware/2026/04/03/gtc-2026-conference-keynote-part2.html)*
 
 <script>
   document.querySelectorAll('.post-content a').forEach(function(a) {
