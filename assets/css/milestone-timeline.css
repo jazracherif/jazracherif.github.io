@@ -1,0 +1,80 @@
+/**
+ * milestone-timeline.css
+ *
+ * Vertical milestone timeline component.
+ *
+ * Structure:
+ *   <div class="milestone-timeline">
+ *     <div class="mt-year">2016</div>
+ *     <div class="mt-connector"><div class="mt-dot"></div><div class="mt-line"></div></div>
+ *     <div class="mt-content"><strong>Label</strong> — description</div>
+ *     ...
+ *     <div class="mt-year">2026</div>
+ *     <div class="mt-connector"><div class="mt-dot mt-dot--last"></div></div>
+ *     <div class="mt-content mt-content--last"><strong>Label</strong> — description</div>
+ *   </div>
+ *
+ * Usage:
+ *   Add `extra_css: ["/assets/css/milestone-timeline.css"]` to post front matter.
+ */
+
+.milestone-timeline {
+  display: grid;
+  grid-template-columns: 58px 20px 1fr;
+  align-items: start;
+  margin: 0.85rem 0 0.5rem;
+  font-size: 0.85em;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Year label */
+.mt-year {
+  text-align: right;
+  font-weight: 700;
+  color: #3d4a7a;
+  padding-right: 0.5rem;
+  padding-top: 3px;
+}
+
+/* Connector column: dot on top, line below */
+.mt-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mt-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3d4a7a;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.mt-dot--last {
+  width: 12px;
+  height: 12px;
+  background: #252e52;
+  border: 2px solid #7aa0cc;
+  margin-top: 3px;
+}
+
+.mt-line {
+  width: 2px;
+  flex: 1;
+  min-height: 16px;
+  background: #c8cce0;
+}
+
+/* Content column */
+.mt-content {
+  padding-bottom: 0.6rem;
+  color: #333;
+  line-height: 1.45;
+}
+
+.mt-content--last {
+  color: #111;
+  font-weight: 500;
+}

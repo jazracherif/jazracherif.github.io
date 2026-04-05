@@ -7,7 +7,7 @@ tags: [gtc2026, cuda, analytics, inference, rapids]
 extra_css: ["/assets/css/keynote-table.css"]
 ---
 
-*This is Part 2 of a 3-part breakdown of the GTC 2026 keynote. Start with [Part 1: Overview & Context](/nvidia/gtc/keynote/gpu/hardware/2026/04/01/gtc-2026-conference-keynote-part1.html) or jump to <span style="color:#bbb">Part 3: Vera Rubin Hardware, OpenClaw & Robotics</span>. The original single-page version is <span style="color:#bbb">also available</span> (coming soon).*
+*This is Part 2 of a 3-part breakdown of the GTC 2026 keynote. Start with [Part 1: Overview & Context](/nvidia/gtc/keynote/gpu/hardware/2026/04/01/gtc-2026-conference-keynote-part1.html) or jump to [Part 3: Vera Rubin Hardware, OpenClaw & Robotics](/nvidia/gtc/keynote/gpu/hardware/2026/04/05/gtc-2026-conference-keynote-part3.html). The single-page version is [also available](/nvidia/gtc/keynote/gpu/hardware/2026/04/05/nvidia-gtc-2026-conference-the-keynote.html).*
 
 ---
 
@@ -40,9 +40,7 @@ Here's a short breakdown of the first hour of the Keynote. For each of the secti
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=623s">GeForce</a> <em>· 3:27min</em></td></tr>
   <tr class="keynote-content"><td>CUDA made GPUs programmable first on the consumer product GeForce in 2006, which then enabled the deep learning community to test the viability of training neural networks and launched the new AI revolution.</td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=830s">DLSS 5</a> <em>· 2:29min</em></td></tr>
-  <tr class="keynote-content"><td>Jensen shows a video featuring the new DLSS5 capability, a Neural rendering technology that fuses 3d Graphics with AI to give more beautiful and detailed textures to videos. Video details triggered a backlash from game developers. 
-    <div style="text-align: center; margin-top: 0.75rem;"><iframe width="560" height="315" src="https://www.youtube.com/embed/dJACkKbN-Eo?si=L61PqlTkQwEMEJgb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
-    </td></tr>
+  <tr class="keynote-content"><td>Jensen shows a video featuring the new DLSS5 capability, a Neural rendering technology that fuses 3d Graphics with AI to give more beautiful and detailed textures to videos. Video details triggered a backlash from game developers. <img src="/assets/img/gtc-2026/dlss5.png" alt=""></td></tr>
 </table>
 
 #### Accelerated Analytics (*22min*)
@@ -88,7 +86,7 @@ The first hour of the keynote established the foundations: CUDA's flywheel, NVID
 
 ---
 
-*← [Part 1: Overview & Context](/nvidia/gtc/keynote/gpu/hardware/2026/04/01/gtc-2026-conference-keynote-part1.html) · <span style="color:#bbb">Part 3: Vera Rubin Hardware, OpenClaw & Robotics → (coming soon)</span>*
+*← [Part 1: Overview & Context](/nvidia/gtc/keynote/gpu/hardware/2026/04/01/gtc-2026-conference-keynote-part1.html) · [Part 3: Vera Rubin Hardware, OpenClaw & Robotics →](/nvidia/gtc/keynote/gpu/hardware/2026/04/05/gtc-2026-conference-keynote-part3.html)*
 
 <script>
   document.querySelectorAll('.post-content a').forEach(function(a) {

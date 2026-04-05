@@ -1,10 +1,10 @@
 ---
 layout: post
 title: "NVIDIA GTC 2026 Conference: The Keynote"
-date: 2026-04-01 00:00:00 -0700
+date: 2026-04-05 00:00:00 -0700
 categories: nvidia gtc keynote gpu hardware
 tags: [gtc2026, vera-rubin, inference, cuda, groq, openclaw, physical-ai, robotics]
-extra_css: ["/assets/css/keynote-table.css"]
+extra_css: ["/assets/css/keynote-table.css", "/assets/css/milestone-timeline.css"]
 ---
 
 *Prefer a section-by-section breakdown? This keynote is also available as a [3-part series starting with Part 1](/nvidia/gtc/keynote/gpu/hardware/2026/04/01/gtc-2026-conference-keynote-part1.html).*
@@ -45,7 +45,7 @@ One interesting aspect I wasn't expecting was Jensen spending 18 minutes almost 
   <img src="/assets/img/gtc-2026/IMG_6219.JPG" alt="">
 </div>
 
-Jensen reveled in being crowned "inference king" by Semianalysis for GB NVL72 system! Also check their review[^semialanalysis-gtc-review] of the GTC conference.
+Jensen reveled in being crowned "inference king" by Semianalysis for GB NVL72 system! Also check their review<sup><a href="#fn:semialanalysis-gtc-review">1</a></sup> of the GTC conference.
 <img src="/assets/img/gtc-2026/IMG_6222.JPG" alt="">
 
 ### CUDA is 20 years old
@@ -56,7 +56,7 @@ CUDA is now 20 years old, and Jensen celebrated that by spending a few extra min
 
 ### The Vera Rubin POD is expanding: Seven Chips, Five Rack-scale Systems
 
-One of the major reveals at this year's conference and worth re-emphasizing is the addition of the Groq LPU to speed up AI inference and the addition of co-packaged optics for the scale network. The NVIDIA AI factory is built around five rack types, and a full Vera Rubin POD "features 40 racks, 1.2 quadrillion transistors, nearly 20,000 NVIDIA dies, 1,152 NVIDIA Rubin GPUs, 60 exaflops, and 10 PB/s total scale-up bandwidth"[^NVIDIA-5-racks]
+One of the major reveals at this year's conference and worth re-emphasizing is the addition of the Groq LPU to speed up AI inference and the addition of co-packaged optics for the scale network. The NVIDIA AI factory is built around five rack types, and a full Vera Rubin POD "features 40 racks, 1.2 quadrillion transistors, nearly 20,000 NVIDIA dies, 1,152 NVIDIA Rubin GPUs, 60 exaflops, and 10 PB/s total scale-up bandwidth"<sup><a href="#fn:NVIDIA-5-racks">2</a></sup>
 
 ![Vera Rubin Pod racks](/assets/img/gtc-2026/five-rack-scale-system-nvidia-vera-rubin-1.jpeg)
 
@@ -139,13 +139,45 @@ Find the breakdown below, linking directly into each section on the YouTube vide
 
 <table class="keynote-table">
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=4076s">A Decade of AI Infrastructure Innovation: From DGX-1 to Vera Rubin</a> <em>· 3:30min</em></td></tr>
-  <tr class="keynote-content"><td>In this video, Jensen narrates NVIDIA's history of data center infrastructure starting in 2016 with the DGX1, the first Supercomputer designed for deep learning with 8 Pascal GPUS -> then Volta brings nvlink2 switch -> followed by the mellanox acquisition that makes the Data center a single unit of computing -> then in 2020 DGX A100 superpod combined scaleup (with nvlink3) with scale out (with ConnectX-6 and InfiniBand) -> Hopper brought fp8 transformer engine for Gen AI + nvlink4 and ConnectX-7 -> Blackwell expanded this to NVl72 130TB/s of bw and deeper integration -> and finally Vera Rubin made for agentic AI bringing 35x more throughput per MW and a diversity of rack performance that reaches 40Mx more compute at the end of this 10 year period. <img src="/assets/img/gtc-2026/vera-rubin-video.png" alt=""></td></tr>
+  <tr class="keynote-content"><td>
+    Jensen narrates NVIDIA's decade of data center infrastructure innovation:
+    <div class="milestone-timeline">
+      <div class="mt-year">2016</div>
+      <div class="mt-connector"><div class="mt-dot"></div><div class="mt-line"></div></div>
+      <div class="mt-content"><strong>DGX-1</strong> — packages 8 Pascal GPUs, first supercomputer built for deep learning, one delivered to OpenAI that year</div>
+
+      <div class="mt-year">2017</div>
+      <div class="mt-connector"><div class="mt-dot"></div><div class="mt-line"></div></div>
+      <div class="mt-content"><strong>Volta</strong> — introduces NVLink 2 switch, GPU-to-GPU interconnect inside nodes</div>
+
+      <div class="mt-year">2019</div>
+      <div class="mt-connector"><div class="mt-dot"></div><div class="mt-line"></div></div>
+      <div class="mt-content"><strong>Mellanox acquisition</strong> — allows the data center to become a single unit of computing</div>
+
+      <div class="mt-year">2020</div>
+      <div class="mt-connector"><div class="mt-dot"></div><div class="mt-line"></div></div>
+      <div class="mt-content"><strong>Ampere / DGX A100 SuperPOD</strong> — brings scale-up via NVLink 3, scale-out via ConnectX-6 InfiniBand</div>
+
+      <div class="mt-year">2022</div>
+      <div class="mt-connector"><div class="mt-dot"></div><div class="mt-line"></div></div>
+      <div class="mt-content"><strong>Hopper</strong> — supports FP8 Transformer Engine for Gen AI, NVLink 4, ConnectX-7</div>
+
+      <div class="mt-year">2024</div>
+      <div class="mt-connector"><div class="mt-dot"></div><div class="mt-line"></div></div>
+      <div class="mt-content"><strong>Blackwell / NVL72</strong> — achieves 130 TB/s bandwidth and a deeper rack-level co-design for top performance</div>
+
+      <div class="mt-year">2026</div>
+      <div class="mt-connector"><div class="mt-dot mt-dot--last"></div></div>
+      <div class="mt-content mt-content--last"><strong>Vera Rubin</strong> — built for agentic AI · 35× throughput/MW · 40M× cumulative compute over the decade</div>
+    </div>
+    <img src="/assets/img/gtc-2026/vera-rubin-video.png" alt="">
+  </td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=4286s">NVIDIA Vera Rubin</a> <em>· 2:27min</em></td></tr>
   <tr class="keynote-content"><td>Jensen introduces the Vera Rubin hardware on stage <img src="/assets/img/gtc-2026/IMG_6226.JPG" alt=""></td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=4433s">NVIDIA Vera Rubin, NVLink and Groq</a> <em>· 1:36min</em></td></tr>
   <tr class="keynote-content"><td>He makes some interesting observations: with the recent tray designs, installation time falls down from 2 days to 2 hours. Also cooling is done with hot water at 45 degrees.</td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=4529s">Spectrum-X Switch, Co-Packaged Optics, Vera and BlueField-4</a> <em>· 2:09min</em></td></tr>
-  <tr class="keynote-content"><td>discusses the 8 grok 3rd gen tray which is in production and shows the Spectrum Co-packaged optics switch. Vera is 2x performance per watt. ConnectX9 and storage platform are powered by Vera CPU.</td></tr>
+  <tr class="keynote-content"><td>discusses the 8 grok 3rd gen tray which is in production and shows the Spectrum Co-packaged optics switch. Vera brings 2x performance per watt. ConnectX9 and storage platform are powered by Vera CPU.</td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=4658s">Rubin Ultra</a> <em>· 2:03min</em></td></tr>
   <tr class="keynote-content"><td>Jensen also shows VR Ultra and the new Kyber rack that can connect 144 gpus that now slide vertically into the rack. He also shows the new NVLink tray design that sits behind, also vertically.</td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=4781s">Inference Performance and Efficiency Drive Company Results</a> <em>· 9:35min</em></td></tr>
@@ -157,11 +189,11 @@ Find the breakdown below, linking directly into each section on the YouTube vide
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=5610s">Announcing NVIDIA Launch Partners</a> <em>· 1:56min</em></td></tr>
   <tr class="keynote-content"><td>shows all the AI labs, cloud, and OEM/ODM that will launch Vera Rubin. Expects production in the 1000s per week. also shows launch partners for Vera CPU and BlueField storage systems</td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=5726s">NVIDIA Vera Rubin: 7 Chips – 5 Rack Systems</a> <em>· 1:02min</em></td></tr>
-  <tr class="keynote-content"><td>Jensen shows how much progress was made by comparing x86 hopper generation to Vera Rubin GW factory. VR can generate 350x more tokens per seconds than Hopper thanks to 35x more scale up BW per Rack (at 288TB/s) and with half as many GPUs. <img src="/assets/img/gtc-2026/vera-rubin-pod.png" alt=""></td></tr>
+  <tr class="keynote-content"><td>Jensen shows how much progress was made by comparing x86 hopper generation to Vera Rubin GiGaWatt factory. VR can generate 350x more tokens per seconds than Hopper thanks to 35x more scale up BW per Rack (at 288TB/s) and with half as many GPUs. <img src="/assets/img/gtc-2026/vera-rubin-pod.png" alt=""></td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=5788s">NVIDIA Extreme Co-Design Delivering X-Factors Every Year</a> <em>· 3:37min</em></td></tr>
-  <tr class="keynote-content"><td>shows the roadmap to 2028 with Feynman. Oberon will enable scale up in both copper and optical to support NVL576 racks (Kyber) and then NVL1152 for Feynman with Kyber.</td></tr>
+  <tr class="keynote-content"><td>shows the roadmap to 2028 with <strong>Feynman</strong>. <strong>Oberon</strong> will enable scale up in both copper and optical to support NVL576 racks (Kyber) and then NVL1152 for Feynman with Kyber.</td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=6005s">NVIDIA DSX AI Factory Platform</a> <em>· 2:10min</em></td></tr>
-  <tr class="keynote-content"><td>Jensen describes the importance of the NVIDIA Omniverse solution to help design GW factory digital twins and reach max performance at lowest possible energy usage. He talks about tools for simulation such as DSX Sim, DSX exchange, DSX flex power management and DSX Max Q for dynamic power adjustment in the data center.</td></tr>
+  <tr class="keynote-content"><td>Jensen describes the importance of the NVIDIA <strong>Omniverse</strong> solution to help design GW factory digital twins and reach max performance at lowest possible energy usage. He talks about tools for simulation such as DSX Sim, DSX exchange, DSX flex power management and DSX Max Q for dynamic power adjustment in the data center.</td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=6135s">How AI Factories Maximize Tokens, Power, and Profit With NVIDIA DSX</a> <em>· 3:25min</em></td></tr>
   <tr class="keynote-content"><td><img src="/assets/img/gtc-2026/dsx-platform.png" alt=""> The video summarizes all the components of the DSX AI factory platform</td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=6340s">Space-1 Vera Rubin Module</a> <em>· 0:43min</em></td></tr>
@@ -172,30 +204,30 @@ Find the breakdown below, linking directly into each section on the YouTube vide
 
 <table class="keynote-table">
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=6383s">NemoClaw for OpenClaw</a> <em>· 1:24min</em></td></tr>
-  <tr class="keynote-content"><td>Jensen is very excited about OpenClaw, the most popular open source in history, <img src="/assets/img/gtc-2026/open-claw-adoption.png" alt=""></td></tr>
+  <tr class="keynote-content"><td>Jensen is very excited about OpenClaw, the most popular open source in history, with the fastest project to get the most stars in github <img src="/assets/img/gtc-2026/open-claw-adoption.png" alt=""></td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=6467s">OpenClaw: The ChatGPT Moment for Long-Running, Autonomous Agents</a> <em>· 9:14min</em></td></tr>
-  <tr class="keynote-content"><td>He shows how openclaw grew as a project to 340k stars on GitHub since end of january 2026. it is the operating system of agents and every enterprise will soon need an OpenClaw strategy.</td></tr>
+  <tr class="keynote-content"><td>He shows how openclaw grew as a project to 340k stars on GitHub since the end of january 2026. It is the operating system of agents and every enterprise will soon need an OpenClaw strategy.</td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=7021s">NVIDIA Nemotron and Open Models</a> <em>· 0:28min</em></td></tr>
-  <tr class="keynote-content"><td>Jensen announces new models in Nvidia's 6 families: bioNemo for biomedical AI, earth-2 for Ai physics, Nemotron for Agentic AI, Cosmos for Physical AI, GROOT for Robotics, and Alpamayo for Autonomous Vehicles. <img src="/assets/img/gtc-2026/nemoclaw.png" alt=""></td></tr>
+  <tr class="keynote-content"><td>Jensen announces new models in Nvidia's open foundation model families: <strong>bioNemo</strong> for biomedical AI, <strong>earth-2</strong> for Ai physics, <strong>Nemotron</strong> for Agentic AI, <strong>Cosmos</strong> for Physical AI, <strong>GROOT</strong> for Robotics, and <strong>Alpamayo</strong> for Autonomous Vehicles. <img src="/assets/img/gtc-2026/nemoclaw.png" alt=""></td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=7049s">How NVIDIA Open Models Power Every Industry's AI</a> <em>· 4:17min</em></td></tr>
-  <tr class="keynote-content"><td>The video shows models from each of the Nvidia families. They are world class, doing well on benchmarks. Shows nemotron 3 super 12b as #4 on best open model for openClaw. Nemotron 3 ultra.</td></tr>
+  <tr class="keynote-content"><td>The video shows models from each of the Nvidia families. They are world class, doing well on benchmarks. Shows nemotron-3-super-120b as #4 on best open model for openClaw. Nemotron 3 ultra.</td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=7306s">Announcing Global AI Leaders Join NVIDIA Nemotron Coalition</a> <em>· 2:57min</em></td></tr>
-  <tr class="keynote-content"><td>Jensen announces the NVIDIA Nemotron Coalition<sup><a href="#fn:nemotron-coalition">1</a></sup> for the co-development of open AI frontier models with partners Black Forest Labs, Cursor, LangChain, Mistral AI, Perplexity, Reflection AI, Sarvam and Thinking Machines Lab <img src="/assets/img/gtc-2026/open-models-coalition.png" alt=""></td></tr>
+  <tr class="keynote-content"><td>Jensen announces the <strong>NVIDIA Nemotron Coalition</strong><sup><a href="#fn:nemotron-coalition">3</a></sup> aimed at accelerating the co-development of open AI frontier models with partners <strong>Black Forest Labs</strong>, <strong>Cursor</strong>, <strong>LangChain</strong>, <strong>Mistral AI</strong>, <strong>Perplexity</strong>, <strong>Reflection AI</strong>, <strong>Sarvam</strong> and <strong>Thinking Machines Lab</strong> <img src="/assets/img/gtc-2026/open-models-coalition.png" alt=""></td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=7483s">Announcing NVIDIA NemoClaw Reference OpenClaw</a> <em>· 0:39min</em></td></tr>
-  <tr class="keynote-content"><td>Jensen says the openClaw event cannot be understated and is as big as linux and html. In response, Nvidia is releasing NemoClaw, a reference enterprise ready solution to secure openClaw deployments inside enterprises.</td></tr>
+  <tr class="keynote-content"><td>Jensen says the openClaw event cannot be understated and is as big as linux and html. In response, Nvidia is releasing <strong>NemoClaw</strong>, a reference enterprise-ready solution to secure openClaw deployments inside enterprises.</td></tr>
 </table>
 
 #### Robotics, Physical AI, & recap (*14min*)
 
 <table class="keynote-table">
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=7522s">Physical AI and Robotics</a> <em>· 3:11min</em></td></tr>
-  <tr class="keynote-content"><td>Jensen talks robots, mentions there are 110 robots at GTC, announces 4 new auto partners: BYD, Hyundai, Nissan, and Geely are joining Mercedes, Toyota, and GM to build robotaxi. Jensen also announces a partnership with uber.</td></tr>
+  <tr class="keynote-content"><td>Jensen talks robots, mentions there are 110 robots at GTC, announces 4 new auto partners: BYD, Hyundai, Nissan, and Geely are joining Mercedes, Toyota, and GM to build robotaxi technologies. Jensen also announces a partnership with Uber to launch a large fleet of autonomous vehicles for 2027 on the NVIDIA DRIVE AV stack<sup><a href="#fn:uber-drive">4</a></sup></td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=7713s">The Age of Physical AI and Robotics</a> <em>· 4:27min</em></td></tr>
   <tr class="keynote-content"><td>This video shows how autonomous cars have been improving thanks to NVIDIA's and partner ecosystem. <img src="/assets/img/gtc-2026/physical-ai.png" alt=""></td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=7980s">Olaf Takes the Stage With Jensen Huang</a> <em>· 1:55min</em></td></tr>
   <tr class="keynote-content"><td>Jensen welcomes the only guest at the keynote. Last year it was a Star Wars inspired robot "blue", this year it is Olaf from Frozen</td></tr>
   <tr class="keynote-title"><td><a href="https://www.youtube.com/watch?v=jw_o0xr8MWU&t=8095s">Official Keynote Closing Video</a> <em>· 4:02min</em></td></tr>
-  <tr class="keynote-content"><td>The Keynote ends with a video generated recap with a jensen emoticon playing harmonica in the forest surrounded by a band of robots playing instruments.</td></tr>
+  <tr class="keynote-content"><td>The Keynote ends with a generated video recapping the keynote with a jensen emoticon playing harmonica in the forest, surrounded by a band of robots playing instruments, a bit silly for my taste but again showcasing the power of the tools</td></tr>
 </table>
 
 Full keynote is available [here](https://www.nvidia.com/gtc/keynote/) and the slides [here](https://s201.q4cdn.com/141608511/files/doc_events/2026/Mar/16/GTC-2026-Keynote.pdf).
@@ -216,6 +248,9 @@ Full keynote is available [here](https://www.nvidia.com/gtc/keynote/) and the sl
 
 ### References
 
-[^NVIDIA-5-racks]: NVIDIA - Vera Rubin POD: Seven Chips, Five Rack-Scale Systems, One AI Supercomputer - <https://developer.nvidia.com/blog/nvidia-vera-rubin-pod-seven-chips-five-rack-scale-systems-one-ai-supercomputer/>
-[^semialanalysis-gtc-review]: Semianalysis - Nvidia – The Inference Kingdom Expands — <https://newsletter.semianalysis.com/p/nvidia-the-inference-kingdom-expands>
-[^nemotron-coalition]: NVIDIA Launches Nemotron Coalition of Leading Global AI Labs to Advance Open Frontier Models - <https://nvidianews.nvidia.com/news/nvidia-launches-nemotron-coalition-of-leading-global-ai-labs-to-advance-open-frontier-models>
+<ol class="references">
+  <li id="fn:semialanalysis-gtc-review">Semianalysis — Nvidia: The Inference Kingdom Expands — <a href="https://newsletter.semianalysis.com/p/nvidia-the-inference-kingdom-expands" target="_blank" rel="noopener noreferrer">newsletter.semianalysis.com</a></li>
+  <li id="fn:NVIDIA-5-racks">NVIDIA — Vera Rubin POD: Seven Chips, Five Rack-Scale Systems, One AI Supercomputer — <a href="https://developer.nvidia.com/blog/nvidia-vera-rubin-pod-seven-chips-five-rack-scale-systems-one-ai-supercomputer/" target="_blank" rel="noopener noreferrer">developer.nvidia.com</a></li>
+  <li id="fn:nemotron-coalition">NVIDIA Launches Nemotron Coalition of Leading Global AI Labs to Advance Open Frontier Models — <a href="https://nvidianews.nvidia.com/news/nvidia-launches-nemotron-coalition-of-leading-global-ai-labs-to-advance-open-frontier-models" target="_blank" rel="noopener noreferrer">nvidianews.nvidia.com</a></li>
+  <li id="fn:uber-drive">NVIDIA DRIVE Hyperion Achieves Level 4 Autonomy with Uber Partnership — <a href="https://nvidianews.nvidia.com/news/drive-hyperion-level-4" target="_blank" rel="noopener noreferrer">nvidianews.nvidia.com</a></li>
+</ol>

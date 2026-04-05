@@ -122,6 +122,12 @@ Publishes a draft post by removing the `WIP_` prefix and moving it to `_posts/`.
   - Add prev/next arrows to navigate between posts
   - Makes it easier to browse through the blog series
 
+- [ ] Make `milestone-timeline` CSS work from a plain `<ol>` in Markdown
+  - Currently authoring requires verbose `<div class="milestone-timeline">` blocks with one `<div class="mt-year">`, `<div class="mt-connector">…</div>`, `<div class="mt-content">` triplet per row (see Part 3 keynote post for an example)
+  - Goal: style a plain `<ol class="milestone-timeline"><li><strong>2016</strong> DGX-1 — …</li>…</ol>` — no nested divs
+  - CSS approach: use `::marker` or `counter()` for the year, a left border + `::before` pseudo-element for the dot+line, and `data-year` attribute on each `<li>` for the label
+  - Blocked by Jekyll's Markdown renderer (Kramdown) stripping custom attributes on `<li>` — may need a Liquid include or a small JS snippet to inject `data-year` from the bold text node instead
+
 ## Future Content
 
 - [ ] Add link to DGX spark Medium articles

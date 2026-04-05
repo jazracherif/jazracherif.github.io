@@ -6,7 +6,7 @@ categories: nvidia gtc keynote gpu hardware
 tags: [gtc2026, vera-rubin, cuda, conference]
 ---
 
-*This is Part 1 of a 3-part breakdown of the GTC 2026 keynote. Jump to [Part 2: Intro, Analytics, CUDA-X & Inference](/nvidia/gtc/keynote/gpu/hardware/2026/04/03/gtc-2026-conference-keynote-part2.html) or <span style="color:#bbb">Part 3: Vera Rubin Hardware, OpenClaw & Robotics</span>. The original single-page version is <span style="color:#bbb">also available</span> (coming soon).*
+*This is Part 1 of a 3-part breakdown of the GTC 2026 keynote. Jump to [Part 2: Intro, Analytics, CUDA-X & Inference](/nvidia/gtc/keynote/gpu/hardware/2026/04/03/gtc-2026-conference-keynote-part2.html) or [Part 3: Vera Rubin Hardware, OpenClaw & Robotics](/nvidia/gtc/keynote/gpu/hardware/2026/04/05/gtc-2026-conference-keynote-part3.html). The single-page version is [also available](/nvidia/gtc/keynote/gpu/hardware/2026/04/05/nvidia-gtc-2026-conference-the-keynote.html).*
 
 ---
 
