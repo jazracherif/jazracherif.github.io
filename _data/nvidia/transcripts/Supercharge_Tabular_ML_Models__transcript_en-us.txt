@@ -1,0 +1,6444 @@
+Session: https://www.nvidia.com/en-us/on-demand/session/gtc26-dlit81546/
+
+Transcript Powered by AI
+
+Supercharge Tabular ML Models With GPU-Accelerated Feature Engineering
+
+
+00:07
+Thank you all for attending.
+
+00:08
+Excited that you're here.
+
+00:10
+Who here wants to
+supercharge their models?
+
+00:14
+Yeah, right, right, right, okay.
+
+00:16
+Well, you've come to the right
+room, that's awesome.
+
+00:19
+That's awesome. So you can
+see on our goals today, that's
+
+00:24
+exactly our goal.
+
+00:25
+So basically, we're gonna, yeah,
+I'll give you that in a second.
+
+00:29
+Ha, I'm changing things up.
+
+00:33
+Yeah, I'll give you
+code in a second.
+
+00:34
+So I wanted to first tell
+you, motivate you before I
+
+00:37
+give you the code.
+
+00:37
+So the motivation is, we're
+supercharging and we're
+
+00:40
+basically gonna learn two
+important things today.
+
+00:42
+So for your tabular dataset models.
+
+00:47
+The two ways to really make
+them perform better is feature
+
+00:51
+engineering, and we're going
+to focus on that today, and
+
+00:53
+then also fast experimentation.
+
+00:56
+So we're going to teach you how
+to speed everything up with GPUs.
+
+00:58
+And today's session, as you all
+know, is going to be hands-on.
+
+01:01
+So we're going to show you actual
+techniques and get you coding.
+
+01:05
+And to achieve that, you all have
+access to a Jupyter notebook.
+
+01:09
+And here's the
+website and the code.
+
+01:12
+And I'll give you a second
+to take a picture.
+
+01:17
+And you can even navigate
+to that website there on
+
+01:19
+the bottom, learnNVIDIA.com
+forward slash DLI event.
+
+01:25
+If you need help or you forget
+these information, you can
+
+01:28
+raise your hand, a TA will
+come over and help you.
+
+01:31
+But if you go ahead to that
+URL right now, as will I.
+
+01:38
+You'll land on this page.
+
+01:41
+Oh, you won't land on this page.
+
+01:42
+Okay, never mind.
+
+01:44
+Anyway, go to that URL.
+
+01:47
+You'll see a copy.
+
+01:48
+You basically will have access
+to both our slides, and you'll
+
+01:51
+see, if you scroll down, you'll see
+a start button in the bottom right.
+
+01:54
+But go ahead and push that
+start button now.
+
+01:56
+It'll take a few minutes,
+but by the time we get to
+
+01:58
+the hands-on lab, it'll be
+all ready for us to use.
+
+02:02
+And any problems, once again,
+you can raise your hand.
+
+02:09
+Cool.
+
+02:10
+So, as I mentioned, today
+we're going to be doing the
+
+02:13
+two main goals, feature engineering
+and acceleration, and we're
+
+02:16
+going to be learning about
+some new NVIDIA tools.
+
+02:18
+Specifically, we'll be learning
+about QDF pandas, QML Excel.
+
+02:22
+These are both ways to utilize
+GPUs for data frames and
+
+02:27
+machine learning models.
+
+02:28
+We'll learn about that today.
+
+02:31
+And so the organization of
+today is the first 20 minutes.
+
+02:34
+We'll have a little background.
+
+02:36
+Rene and I are gonna show
+you some information here
+
+02:39
+on the slides, and then for
+the remaining 80 minutes, you see
+
+02:43
+we're gonna have two hands-on labs.
+
+02:45
+We're actually gonna
+try this stuff out.
+
+02:51
+Cool, so here's a picture
+of me sitting at my desk.
+
+02:55
+I don't always wear that helmet,
+but sometimes I do.
+
+03:00
+And this is the loop I do
+all day long, right?
+
+03:02
+So if your goal is to increase
+the performance of the model,
+
+03:06
+you just do this loop over
+and over as fast as you can.
+
+03:08
+So you have your model, you do
+a whole bunch of iterations,
+
+03:11
+which are your experiments,
+you check to see if it increased
+
+03:14
+your model's performance,
+you keep what works, you disregard
+
+03:17
+what doesn't, and you just over and
+over and over as fast as you can.
+
+03:20
+And speed is the
+secret here, because...
+
+03:27
+The more you can do in a
+small amount of time, the
+
+03:30
+more you can discover.
+
+03:37
+The techniques you learn today
+are actual proven techniques.
+
+03:40
+So I'm on this Kaggle Grand
+Masters of NVIDIA team,
+
+03:43
+and one of our responsibilities,
+me and my coworkers, we
+
+03:45
+compete in competitions.
+
+03:46
+I've competed in over 100
+data science competitions
+
+03:50
+in six years, and we have
+won many first places using
+
+03:54
+what you're gonna learn today.
+
+03:55
+And really, the key element is
+the speed of experimentation.
+
+03:59
+So recently, we won...
+
+04:04
+Well, our most recent ones are not
+up here, but in just 2025 and 2024
+
+04:07
+and 2023, we've taken first place
+in RecSys comps, KDD competitions,
+
+04:13
+Kaggle competitions, and in
+each competition, one of the first
+
+04:17
+things we do is we put our whole
+pipeline on GPUs, and you can see
+
+04:21
+with these bar plots, compared to
+CPU, we can generally experiment.
+
+04:25
+We can speed up
+
+04:28
+Our loop, 50 times, 92 times
+faster, which means other
+
+04:32
+teams that are doing experiments
+on CPUs, we can do 100 times
+
+04:38
+more experiments, and we just
+try things, try things, try
+
+04:40
+things, and we discover things,
+and that's allowed us to win
+
+04:45
+a lot of competition, and
+win a lot of competitions, and it's
+
+04:48
+gonna allow you guys to improve
+the performance of all your models.
+
+04:56
+So there's many types of features,
+and therefore many types of
+
+04:59
+feature engineering.
+
+05:01
+So first off, we're looking
+at tabular data today.
+
+05:04
+So that's like an
+Excel sheet, right?
+
+05:06
+The information's all in columns.
+
+05:08
+And a column can
+be different types.
+
+05:10
+And they're down the left side.
+
+05:14
+You know, categorical,
+numeric, time series,
+
+05:17
+all these different things.
+
+05:17
+But today we're going to
+focus on categorical features,
+
+05:21
+which are essentially a
+column of strings, right?
+
+05:24
+You open up your data set,
+and maybe you have occupation,
+
+05:27
+and you have XGBoost, NN.
+
+05:29
+XGBoost, NN. A teacher,
+engineer, that column is
+
+05:31
+a categorical column.
+
+05:32
+And we're really going to focus
+on techniques to essentially
+
+05:36
+transform that column into
+new representations that
+
+05:39
+will help your model.
+
+05:40
+And two really powerful techniques
+we're going to learn today
+
+05:42
+is something called targeting
+coding and counting coding.
+
+05:46
+And we'll learn a few
+other techniques.
+
+05:52
+And in addition to different
+types of features, of course
+
+05:56
+there's different types of models.
+
+05:58
+So we'll look at a few different
+types of models today.
+
+06:00
+Specifically, we're gonna look
+at some tree-based models.
+
+06:02
+We'll look at a gradient
+boosted decision tree,
+
+06:05
+specifically XGBoost.
+
+06:06
+We'll also look at
+support vector machines.
+
+06:09
+We'll look at support
+vector classification.
+
+06:13
+The different models prefer
+different feature types, and
+
+06:17
+they also benefit from different
+feature engineering, and we're
+
+06:21
+going to mostly focus on the
+first two on the left.
+
+06:24
+You know, another big category is
+your deep learning models, your
+
+06:27
+neural networks, stuff like that.
+
+06:30
+We'll focus on the two on
+the left, and along the way,
+
+06:32
+we'll kind of point out which
+features are best for these
+
+06:36
+models, and as we're learning about
+feature engineering, we'll kind of
+
+06:39
+learn, you know, What's techniques?
+
+06:43
+These are our best for each
+of the models and how they
+
+06:45
+benefit the models.
+
+06:46
+And not only today, I mean,
+today we're really going to
+
+06:49
+get our hands wet.
+
+06:51
+Not only will we be doing
+feature engineering today,
+
+06:53
+but we'll be training these models
+on real data, and we'll watch our
+
+06:58
+models improve their performance
+as we apply these techniques.
+
+07:01
+So it's really going to be
+a practical day, and we're
+
+07:04
+really going to see the benefit
+of what we're learning today.
+
+07:09
+And as for the problem we're
+going to be solving today,
+
+07:12
+so when we eventually start
+the hands-on lab, you're all going
+
+07:16
+to have access to real-life data.
+
+07:19
+Specifically, it's an
+Amazon review data set.
+
+07:22
+It was collected from June
+1999 to July 2014.
+
+07:27
+And the original data set,
+people would review things
+
+07:29
+from 1 to 5, but we're going
+to turn it into just a binary
+
+07:33
+classification problem.
+
+07:35
+So if a person gave a rating of 3
+or less, we're going to say they
+
+07:38
+disliked the product, and we're
+going to make a new target of 0.
+
+07:43
+And if they rated the product,
+reviewed it 4 or 5, we're
+
+07:47
+going to call that a label
+of 1, and they liked the product.
+
+07:50
+And then we're going to train
+models today that can basically
+
+07:53
+use this data set.
+
+07:55
+We'll use the oldest, we'll hold
+out as validation the month of
+
+08:00
+June and as test the month of July,
+so we'll never train with that.
+
+08:04
+We'll train on the other data,
+and then we can check the
+
+08:07
+performance of our model by
+seeing how well it predicts,
+
+08:11
+you know, whether someone liked
+or disliked on the held out data.
+
+08:14
+So that's what we'll be doing.
+
+08:17
+And to give you a sneak peek
+to get you excited...
+
+08:20
+These are some of the results
+we're going to see today,
+
+08:22
+but the blue and green bars
+are some basic techniques.
+
+08:29
+The y-axis is the AUC metric.
+
+08:33
+And you can see when we apply
+one of the techniques we're
+
+08:35
+gonna learn, targeting coding,
+that's the red bar, we're
+
+08:37
+gonna see as much as a 12%
+improvement, which is huge, right?
+
+08:42
+I mean, if you are building
+models for your company or
+
+08:44
+for other reasons, to get
+a boost that big is huge.
+
+08:49
+And you're gonna learn today
+exactly how to do that.
+
+08:54
+And Renee's going to talk
+about some of the tools that
+
+08:56
+we're going to use to do that.
+
+09:06
+Can you hear me?
+
+09:07
+Yes, perfect.
+
+09:09
+Thanks, everyone, for joining.
+
+09:11
+My name is Ronay.
+
+09:12
+And with Chris, we will today
+
+09:17
+teach you or like all together
+we will discuss how we can actually
+
+09:20
+do accelerated data science
+and do feature engineering, right?
+
+09:24
+So before we start the hands-on
+part, let's talk about why
+
+09:30
+we need accelerated computing
+in the first place, right?
+
+09:33
+One reason is we have been
+all hearing this like data
+
+09:38
+is growing exponentially, right?
+
+09:40
+In different verticals,
+in different areas, data
+
+09:44
+is growing exponentially.
+
+09:45
+Like today's modern applications,
+in modern use cases, there
+
+09:50
+are a lot of data.
+
+09:51
+For example, in the recommender
+systems domain, there
+
+09:53
+are a lot of user product
+interaction data, right?
+
+09:56
+In structured format, or if you
+want unstructured format, depends.
+
+10:00
+Like, when we talk about
+LLMs, you know that
+
+10:04
+Who in the in the room are
+like familiar with LLMs or
+
+10:09
+they are very much interested in
+this LLMs pre-trained models and I
+
+10:13
+mean this is an AI conference right
+it's hard to not to be involved
+
+10:16
+with LLMs or like pre-trained
+models so we are talking about
+
+10:20
+like oh this model was trained with
+like I don't know trillion tokens
+
+10:25
+or blah blah number of tokens right
+super large number of tokens right
+
+10:30
+But what is token?
+
+10:32
+It's actually data.
+
+10:33
+It's coming from some
+unstructured data.
+
+10:35
+So it's data again, but in
+genomics, in cybersecurity,
+
+10:39
+it's all about data, a lot of data.
+
+10:42
+Like we are not talking
+about gigabyte scale.
+
+10:44
+It's much, much beyond that.
+
+10:46
+And we cannot really process this
+data with classical computing
+
+10:51
+or traditional computing.
+
+10:53
+We need something powerful.
+
+10:54
+And that's why GPUs are shining
+there and they can do parallel
+
+10:58
+processing, right?
+
+10:59
+They can do a lot of...
+
+11:01
+They're all tasks in parallel.
+
+11:03
+That's what we need, for example,
+matrix multiplication.
+
+11:05
+That's why, for example, NVIDIA
+GPUs are great in training
+
+11:08
+deep learning models, because we
+do a lot of matrix multiplication.
+
+11:13
+Key takeaway from this slide
+is we use CPUs for certain
+
+11:17
+processes, but we need accelerated
+computing to be able to fast
+
+11:22
+process this a lot of data, unless
+you have a lot of time, if you are
+
+11:27
+willing to wait a long, long time.
+
+11:28
+And also, of course, you need
+enough memory, enough memory
+
+11:31
+bandwidth, you want to reduce
+the overhead, et cetera.
+
+11:34
+That's why GPUs are shining
+to handle large data sets.
+
+11:40
+Thank you for watching.
+
+11:41
+We got that, but what is
+NVIDIA's proposal here?
+
+11:46
+How many of you
+watched the keynote?
+
+11:49
+Perfect.
+
+11:51
+So can someone tell me, how
+did Jensen define NVIDIA?
+
+11:56
+Just one person.
+
+11:58
+Not just one
+person, what is NVIDIA?
+
+12:00
+Who is NVIDIA?
+
+12:01
+It is what company?
+
+12:04
+NVIDIA is a platform company,
+right, and it's not only about
+
+12:07
+hardware, it's about all these
+libraries, all these frameworks
+
+12:10
+that go together with the hardware,
+right, so that is telling us
+
+12:15
+that NVIDIA has libraries that make
+everyone's life easier, and this is
+
+12:21
+one stack of libraries, like, you
+can call this, like, a framework,
+
+12:24
+you can call this, like, suite of
+libraries, like, CUDAx libraries.
+
+12:28
+We have different libraries
+for data preprocessing, like
+
+12:33
+data loading, data handling,
+data transformation.
+
+12:37
+We have different libraries
+for model training.
+
+12:41
+And we have also libraries for
+deployment, right, inference.
+
+12:45
+So otherwise, we will just
+train the models, I mean.
+
+12:50
+Handle the, like, the process,
+the data, generate the features.
+
+12:53
+We will just train the models.
+
+12:54
+They will just sit there.
+
+12:55
+We will not deploy them. What
+is the point of, like, doing
+
+12:58
+this all the time?
+
+12:59
+At the end, we don't get
+anything deployed, right?
+
+13:02
+So that's why NVIDIA also
+has a lot of, like, has...
+
+13:06
+Purpose-built inference libraries.
+
+13:08
+So when people use today NVIDIA
+QDF, NVIDIA QDF is like a
+
+13:13
+pandas-like library, and it
+will help us to accelerate
+
+13:18
+data loading and data processing.
+
+13:21
+Then we will use NVIDIA QML.
+
+13:23
+It's like a Scikit-learn type
+of library, and it will help us
+
+13:26
+to actually accelerate model train.
+
+13:28
+Again, how many of you are
+using pandas in your day-to-day?
+
+13:33
+Yeah, it is kind of inevitable if
+you are dealing with structured
+
+13:36
+data, data frames.
+
+13:38
+What about Scikit-learn?
+
+13:40
+Okay, okay, cool, that's
+great, that's great.
+
+13:43
+So you are not gonna be
+surprised that NVIDIA QDF
+
+13:49
+is very similar in syntax-wise
+to pandas, and QML is very similar
+
+13:54
+syntax-wise to Scikit-learn.
+
+13:57
+So what does that mean?
+
+13:58
+We are actually eliminating one.
+
+14:01
+One more extra
+learning thing, right?
+
+14:03
+We don't want to learn
+any more new things.
+
+14:06
+If something is coming to
+us with something that we
+
+14:09
+are already familiar with, why not?
+
+14:11
+And it will
+accelerate our pipeline.
+
+14:13
+I would love that. And if I have
+GPUs and I can use it, perfect.
+
+14:18
+So, speaking of QDF, again,
+NVIDIA QDF, think it as like
+
+14:25
+a pandas library, okay?
+
+14:27
+And it is for like manipulating,
+processing data frames.
+
+14:33
+It's like a pandas-like data
+processing library for GPU, and
+
+14:37
+it can do like loading, filtering,
+aggregating, and it can handle
+
+14:41
+categorical features, numerical
+features, like time-based features.
+
+14:45
+And of course it's GPX rated, and
+it is built on top of like the
+
+14:50
+actually, it is using this columnar
+format like from the Apache RO.
+
+14:55
+That's also why it's efficient.
+
+14:58
+And you can see on the right
+side some benchmarks.
+
+15:01
+Right, comparing actually CPU
+versus GPU on some operations,
+
+15:08
+like some string-based user-defined
+functions, numeric-based
+
+15:11
+user-defined functions,
+merge operation, value counts,
+
+15:14
+group by operations, which
+is comparing like NVIDIA
+
+15:18
+A180 gigabyte GPU versus like
+AMD, EPYC CPU, and you can see like
+
+15:25
+how much time faster we can go.
+
+15:28
+Okay, so I'm asking these
+questions, Chris already explained.
+
+15:31
+Do you care about speed?
+
+15:33
+Like when you do, like,
+deal with like, let's say
+
+15:36
+you have 100 gigabyte of
+data you need to deal with.
+
+15:39
+Maybe you are in recommender
+systems, you are talking,
+
+15:41
+you are working with ads,
+ads recommendation or
+
+15:43
+something, I don't know,
+or product recommendation.
+
+15:46
+Do you care about speed or
+it doesn't matter?
+
+15:49
+Doesn't matter? Of
+course it matters.
+
+15:51
+Of course it matters, right?
+
+15:52
+Okay, perfect. You
+care about speed.
+
+15:55
+So this is proving that if there
+is a proposition coming that we
+
+15:59
+can speed up the process, why not?
+
+16:05
+Now today we will go over
+something that NVIDIA was
+
+16:09
+building up like last year,
+actually over more than a year ago.
+
+16:15
+It's called, so we call it like
+zero code change functionality.
+
+16:20
+What does it mean zero code change?
+
+16:22
+It's exactly like, imagine
+you have your pipeline built
+
+16:27
+up with all pandas.
+
+16:29
+But you will just run one
+line that it will all of a
+
+16:32
+sudden run everything on GPU.
+
+16:35
+Not on CPU, but GPU.
+
+16:37
+So that's the idea. We want
+the user to use, of course,
+
+16:41
+QDF, but we don't want to
+struggle them like new syntaxes.
+
+16:44
+QDF, classic QDF was not actually
+too different than pandas,
+
+16:49
+but still, we want to make
+everything, this transition,
+
+16:52
+as simple as possible.
+
+16:53
+Okay, that's the idea.
+
+16:55
+So what is happening here?
+
+16:56
+You can see also CPU on, GPU
+on, benchmark on the right side.
+
+17:01
+If with the join operation, groupby
+operation, how much we can reduce
+
+17:05
+the pandas on GPU by using actually
+pandas exploration with NVIDIA QDF.
+
+17:13
+On CPU you can see like if
+something maybe takes, I don't
+
+17:16
+know, four second on GPU,
+the other one takes maybe
+
+17:21
+50 times slower on CPU, right?
+
+17:24
+So again, I don't want to spend
+too much time on the slide
+
+17:27
+because we will already go over it.
+
+17:30
+One thing to keep in mind,
+QDF pandas is like pandas.
+
+17:33
+It is actually, it can process
+the files like CSV files,
+
+17:38
+JSON files, pickle files,
+parquet files, etc., etc.
+
+17:42
+All right, this is just like one
+simple command on the left side.
+
+17:45
+We will add this magic command.
+
+17:46
+You will see in your notebooks
+when we go to the hands-on part.
+
+17:49
+And this magic command, one line,
+or the Python, qdf.pandas, and
+
+17:54
+your script command will actually
+accelerate your pandas, run
+
+17:57
+your pandas script on GPU, okay?
+
+18:02
+And you can see an example
+on the right side.
+
+18:05
+Just check it out. You are familiar
+with this, especially pandas users.
+
+18:10
+Another thing, okay, as Chris
+mentioned, we are not gonna
+
+18:14
+stop just doing future engineering.
+
+18:16
+We want to show you, okay, we
+engineered these features, we
+
+18:19
+generated new features, can we take
+and train models with them, right?
+
+18:23
+Like famous models, one is like
+support vector classification,
+
+18:26
+the other one is the graduate
+boosting XGBoost, which is
+
+18:29
+very, very famous model.
+
+18:31
+So to do that, we can
+also use QML, right?
+
+18:36
+QML, again, CUDA machine learning
+library from NVIDIA, to be able
+
+18:40
+to do accelerated machine learning.
+
+18:42
+And QML also comes with QML
+acceleration library, like
+
+18:47
+this extension, QML Accel.
+
+18:51
+If you join this morning's class
+tutorial from Chris and Jiba, there
+
+18:57
+we use QML Excel a lot for like,
+for example, logistic regression,
+
+19:02
+support vector regression,
+use the QML acceleration a lot.
+
+19:07
+Again, you can see some benchmarks
+here, how QML can accelerate
+
+19:12
+very famous, very well-known
+algorithms on GPU, right?
+
+19:17
+For example, UMAP, HDBSCAN, like
+this clustering algorithms, right?
+
+19:22
+This visualization algorithms, and
+you can see we are getting like...
+
+19:28
+35 times, 100 times, and almost,
+oh my god, 900 times speed up.
+
+19:34
+And syntax is super simple.
+
+19:35
+You see QML off and on.
+
+19:37
+I just added one line of magic
+command, that's it.
+
+19:40
+It's the same command as you
+are using scikit-learn.
+
+19:44
+All right, so how we can actually
+use CUDAx Python libraries?
+
+19:50
+There are many, many ways.
+
+19:51
+You can use CUDAx Python libraries
+on your local machine.
+
+19:54
+You can use them on cloud.
+
+19:56
+And you can use them through
+different platforms.
+
+20:00
+And there are microservices
+also you can use.
+
+20:03
+Again, there are many tools
+that you can deploy.
+
+20:07
+For example, NVIDIA CUDAx
+libraries, It's like, uh...
+
+20:11
+Sorry, not deploy, so install
+them through docker, through
+
+20:14
+conda, through pip, etc.
+
+20:16
+So, these slides are available to
+you if you are on the course page.
+
+20:21
+They are already there.
+
+20:22
+Every link, anything I share,
+it's already there.
+
+20:25
+Now, we are going to go to
+hands-on lab, and in the hands-on
+
+20:30
+lab, we will have two sections.
+
+20:32
+Part one, future engineering.
+
+20:33
+Part two, training machine
+learning models, and everything
+
+20:36
+we want to be accelerated.
+
+20:38
+That's the idea.
+
+20:41
+So this is, you are already
+maybe familiar, who is not
+
+20:43
+familiar with, all right,
+maybe that's not, I don't wanna say
+
+20:47
+the negative, let me ask positive.
+
+20:48
+Who is familiar with
+Jupyter Notebooks?
+
+20:51
+Perfect, so Jupyter Notebooks,
+there's also in an introduction
+
+20:56
+notebook there, you don't
+have to go over it, but you will
+
+20:59
+see like, we have one GPU here for
+this training purpose, it's a T4
+
+21:03
+GPU, and then in certain notebooks,
+we will have the kernel shutdown.
+
+21:08
+Or can I restart commands?
+
+21:10
+Okay, don't be surprised.
+
+21:11
+This is just because we want
+to do like CPU on, GPU on
+
+21:16
+type of thing, right?
+
+21:17
+For example, pandas, QDF pandas
+on, QDF pandas off, so that
+
+21:21
+we can compare the speed.
+
+21:23
+So let's start the lab.
+
+21:25
+Did you start the lab yet?
+
+21:27
+Who is having any, who
+is having an issue?
+
+21:31
+Start the lab.
+
+21:34
+Did you start it up?
+
+21:36
+Perfect. Everyone is great today.
+
+21:39
+No one is having an issue.
+
+21:40
+Perfect audience.
+
+21:44
+Yeah, we just need to
+go to course page.
+
+21:47
+All right, let's launch it.
+
+21:48
+I'm going to do the first part.
+
+21:53
+Can I learn a little bit about,
+from the audience, verticals?
+
+21:58
+Like, does anyone want to
+talk about that they are
+
+22:01
+from what vertical?
+
+22:02
+I don't know, like, they are
+coming from banking, perfect.
+
+22:06
+Finance, banking, anyone else
+want to say something?
+
+22:10
+Semiconductor, wow, great.
+
+22:12
+Anyone else?
+
+22:14
+Pharmaceutical, who is
+perfect, very diverse?
+
+22:18
+Biotech, amazing.
+
+22:20
+Anything else?
+
+22:22
+Telecom, perfect,
+
+22:25
+IOT, awesome, great.
+
+22:27
+I think I'm seeing a very
+diverse crowd here, this is
+
+22:30
+great, this is great, okay.
+
+22:32
+So can I say that with this
+diverse crowd, actually
+
+22:38
+What this tells us, from different
+industries, we have people
+
+22:42
+here for this tutorial.
+
+22:45
+That means we all want to
+process data, and data processing
+
+22:49
+is very important, right?
+
+22:51
+Does it mean in every
+vertical we are training
+
+22:53
+machine learning models?
+
+22:55
+Can we say that?
+
+22:59
+Who is not interested in
+machine learning?
+
+23:02
+I know you wouldn't be here,
+but just building physics-based
+
+23:06
+hardcore optimization models.
+
+23:07
+You don't care about
+anyone here doing that?
+
+23:11
+No, perfect.
+
+23:12
+Otherwise, you wouldn't be here.
+
+23:13
+Thank you so much, Chris.
+
+23:15
+Okay, perfect.
+
+23:16
+So first tutorial, let's
+run things together.
+
+23:20
+I know we can do this
+in a different way.
+
+23:22
+Like I could have said.
+
+23:24
+Just go over the notebook,
+ask me a question if you want.
+
+23:26
+That's one style for sure.
+
+23:28
+But given, in the interest
+of time, I would like to run
+
+23:31
+the sales together with you
+and explain things together.
+
+23:33
+Is that okay? Everyone
+is happy with that?
+
+23:35
+Thank you so much. And if
+you have any question, please
+
+23:37
+put your red cup on top.
+
+23:39
+We have a lot of talented
+TAs here that can help you.
+
+23:42
+All right, the first
+technique is very simple
+
+23:45
+technique, but very useful.
+
+23:47
+It's called count encoding.
+
+23:49
+As the name tells, we
+will do count, right?
+
+23:52
+We will count the features.
+
+23:53
+But before I go to details,
+here in this tutorial, our
+
+23:59
+goal is to convert, to deal
+with categorical columns.
+
+24:07
+Can we say if I have a data set
+and I have a column, it's called
+
+24:12
+gender, and under this column
+I see like the female and male.
+
+24:16
+Can we say this is categorical?
+
+24:19
+Any other example can someone
+give me what might be categorical?
+
+24:24
+If I have a salary column
+and if this column is like
+
+24:27
+has all the numerical values,
+can we say this is categorical?
+
+24:30
+Not really, right? It's
+numerical, exactly.
+
+24:32
+But what about like, I don't
+know, like street name?
+
+24:37
+That's going to be
+categorical, right?
+
+24:39
+Or user ID in the, exactly, in the
+recommend, think about from the
+
+24:43
+recommender systems perspective.
+
+24:44
+User ID, product ID, product
+category, maybe electronics
+
+24:49
+and something, this is all
+categorical, right?
+
+24:51
+So what is the problem here?
+
+24:53
+Why do we want to care about, I
+mean, we care about categoricals,
+
+24:55
+but why we care that they
+are categoricals, but we
+
+24:58
+want to handle them?
+
+24:59
+Like we want to
+convert, transform them.
+
+25:01
+Because not every machine
+learning model can handle strings.
+
+25:06
+They want to know that they
+are mapped numerical versions.
+
+25:10
+They can understand from their
+mapped numerical versions.
+
+25:12
+That's why we need to handle
+the categoricals.
+
+25:15
+There are different techniques
+that you can handle categoricals.
+
+25:18
+This morning, Chris and Jeeva,
+they already showed you, if
+
+25:20
+you join, really cool techniques.
+
+25:23
+But today, we are going to
+look into two techniques
+
+25:26
+which are really important
+and very much used.
+
+25:31
+One is code encoding.
+
+25:32
+So, when we, for example, we
+have like a gender column,
+
+25:36
+let's say female, male.
+
+25:39
+We could just, for example,
+convert this to binary.
+
+25:42
+Can we say just convert this
+to map to zero one?
+
+25:44
+Is that okay? We
+can do that, right?
+
+25:46
+Just, exactly.
+
+25:47
+So this is one way of, for
+example, encoding them.
+
+25:50
+It's called label encoding.
+
+25:51
+We just label them, map them
+to a numerical value, right?
+
+25:55
+But what if we have like,
+
+25:59
+So let's say we have like
+five different categories
+
+26:03
+for a given feature, categorical.
+
+26:05
+Can we create separate binary
+columns for each of them?
+
+26:09
+And like represent them
+one, zero, one, zero.
+
+26:12
+Yeah, that's like one
+hot encoding, right?
+
+26:13
+That's one way, exactly.
+
+26:15
+And another thing is
+counter-encoding, so
+
+26:17
+I'm going to go a little bit fast.
+
+26:19
+First, this is the magic command
+which is going to do the magic
+
+26:22
+that I talked to you.
+
+26:23
+Everything looks like pandas, but
+actually things will run on GPU.
+
+26:28
+To be able to do that, I'm
+just going to kick this off,
+
+26:31
+like run this magic command.
+
+26:32
+Perfect. I'm telling, hey QDF
+pandas, we need you, okay?
+
+26:37
+I'm loading my data.
+
+26:38
+Let's look at the data simply.
+
+26:40
+My data has a lot of columns,
+you can see here, and let's
+
+26:44
+look at the types, all right?
+
+26:46
+Oops, sorry.
+
+26:47
+You can see that I have a mix
+of different types of columns.
+
+26:52
+I have numerical columns, I have
+string columns, integer columns,
+
+26:55
+even date time column, etc.
+
+26:57
+You can see that right from
+here, this data set.
+
+27:01
+Show you, can we hold the question?
+
+27:04
+I mean, if you have a question,
+TAs can help you, sorry.
+
+27:07
+Yeah, so you can see the
+data set here, right?
+
+27:09
+The data set here, look
+at this data set.
+
+27:12
+You can see that some columns
+are anonymized on purpose, right?
+
+27:16
+All right, let's check how
+many of them are categorical,
+
+27:19
+how many of them are numerical, and
+how many of, this is a basic EDA.
+
+27:23
+What is the percentage of
+nones we have in this column?
+
+27:27
+Some columns might have empty
+rows, right, empty values.
+
+27:31
+We call them nones.
+
+27:33
+So this is just
+like a screenshot of.
+
+27:35
+I don't know, statistics, like
+an exploratory data analysis.
+
+27:39
+We gotta know about our data.
+
+27:42
+So we can just fill these
+nulls, for now, with unknown,
+
+27:46
+like unknown string, for now.
+
+27:49
+Like the brand column, for example.
+
+27:51
+Looks like brand
+has a lot of nulls.
+
+27:53
+You can see brand is under
+the categoricals, and it
+
+27:56
+has a lot of nulls.
+
+27:58
+Count encoding is actually
+just encode given a column,
+
+28:02
+given a categorical column.
+
+28:05
+You can just like
+count the frequency.
+
+28:08
+of the category within that
+feature, this column, right?
+
+28:11
+How many times, for example,
+a user ID appears?
+
+28:15
+How many times a product
+appears in my data set?
+
+28:19
+So it's kind of frequency-based
+feature engineering
+
+28:21
+technique, right?
+
+28:22
+So, as you can see here, basically,
+if I say that I'm gonna apply count
+
+28:27
+encoding to product ID column,
+I can just basically count it as
+
+28:32
+Appearance, it's frequency
+on my data set, that's it.
+
+28:35
+That's simple.
+
+28:36
+And I can do that with either
+value counts operation or groupby.
+
+28:40
+You can see that product ID,
+this ID appears five times.
+
+28:44
+But this ID, product ID, appears
+more than 200 times, etc.
+
+28:48
+And some of them just appears once.
+
+28:53
+That's an important
+information, actually.
+
+28:56
+We learn something, some signals
+about the data, which we say
+
+29:00
+that some of the products,
+right, appears like they were
+
+29:04
+not purchased, or they were
+not liked, they were purchased
+
+29:08
+once, they were liked once,
+or something like that, okay?
+
+29:10
+User-product
+interaction is very low.
+
+29:12
+And then we can actually use
+this back at this new feature,
+
+29:18
+count encoding product ID column
+feature, back to our training data.
+
+29:23
+Let's do that. Oops, did
+I not forget, did I forget
+
+29:26
+to run something?
+
+29:27
+One second, let me run it again.
+
+29:29
+Sometimes I do that.
+
+29:32
+Let me run until I restart,
+up to one second.
+
+29:38
+I might have forgot something.
+
+29:46
+Perfect, all right, we just
+merged it to our train set, okay?
+
+29:52
+So you can see that, for example,
+if you are slicing the train
+
+29:56
+set, you can see that we have
+a count encoding product ID
+
+30:01
+column as a new feature.
+
+30:02
+That's a new feature, we actually
+generated a new feature.
+
+30:06
+And we expect the model can
+use this feature to get some
+
+30:09
+signals about the user and
+product interaction, okay?
+
+30:13
+So let's move on.
+
+30:14
+We can do the content coding
+actually on multiple columns.
+
+30:18
+It doesn't have to be
+one single column.
+
+30:20
+And for example, we can say, okay,
+the category two and brand, they
+
+30:25
+appear together how many times?
+
+30:27
+We can also do this type of
+
+30:30
+Analysis.
+
+30:31
+For example, I can see that
+in the category two e-book
+
+30:35
+readers, the brand Kobo, together,
+it appears eight times.
+
+30:40
+So that's another signal to me,
+and to model as well, right?
+
+30:44
+So model can actually
+use these signals.
+
+30:47
+Let's move on.
+
+30:49
+At the end of the day, we generate
+these features, we merge them
+
+30:51
+back to the trained data set, and
+then we will use this trained data
+
+30:54
+set, right, to train the model.
+
+30:57
+There's a little exercise
+here, I'm not gonna go over it.
+
+30:59
+Basically, instead of using
+product ID, how about you
+
+31:02
+use the user ID, and you can just
+do the exercise here, and there's
+
+31:06
+a solution here, don't worry.
+
+31:07
+The solution is just right there.
+
+31:09
+Now, let's just compare the speed.
+
+31:13
+I'm going to shut down my notebook.
+
+31:19
+Okay, you can actually do
+click on that or actually
+
+31:23
+I can do, can I restart?
+
+31:24
+I don't know why my cells
+disappeared, but let's see.
+
+31:30
+All right, what
+happened to my cells?
+
+31:36
+Sorry for that.
+
+31:41
+Okay, so practice here.
+
+31:46
+Now, I would like to show
+you the speed gain that if
+
+31:48
+I run this on GPU versus CPU.
+
+31:51
+To be able to run
+on GPU, somehow my.
+
+31:59
+Sorry for that.
+
+32:03
+Code.
+
+32:07
+Chris, the cells are going, I
+think, something, I'm pressing
+
+32:12
+on something in this notebook.
+
+32:14
+Like, not the notebook, but on Mac.
+
+32:18
+So, I'm here, it's
+this, this is perfect.
+
+32:24
+Okay, now we are
+loading the data, okay.
+
+32:27
+It converted to the
+raw somehow, anyway.
+
+32:30
+So, I'm loading the data.
+
+32:31
+I have 1.6 million train data,
+I have 43K validation data.
+
+32:37
+I'm going to first enlarge
+my data to be able to show
+
+32:40
+you how much CPU, GPU difference
+I'm gonna get on speed, okay?
+
+32:46
+So I don't want to run with
+1.6 million data.
+
+32:49
+I would like to enlarge the
+data to show you the benefit
+
+32:52
+of doing this operation on GPU.
+
+32:55
+So whatever we did above,
+it's just like basic group by,
+
+32:59
+or you can use the value counts.
+
+33:00
+We can put all into a function,
+just value count encoding function.
+
+33:04
+And in this function, I'm
+going to actually feed my
+
+33:07
+train and validation set.
+
+33:08
+Again, it was 1.6 million, my train
+set, but I made it 16 million.
+
+33:12
+I just enlarge it 10 times,
+repeating certain rows 10 times.
+
+33:15
+That's simple.
+
+33:16
+Now I'm going to count and
+code my user ID and I'm going
+
+33:19
+to count and code my user
+ID on train and validation set.
+
+33:26
+So one thing important to
+keep in mind here that we
+
+33:30
+are going to learn the statistics
+on the train set.
+
+33:32
+We are going to apply the
+statistics on the validation set.
+
+33:35
+That's a common thing, right,
+in the machine learning world.
+
+33:38
+You don't want any data
+leakage or whatnot.
+
+33:40
+So you can see that, one second,
+we have a new column.
+
+33:44
+Cloud Encoding User ID column.
+
+33:46
+All right, this was the GPU
+part, and it is like you can
+
+33:51
+see less than 500 milliseconds.
+
+33:54
+Now, if I shut down this again,
+I'm going to, okay, kernel is
+
+33:59
+starting, let's wait a little bit.
+
+34:02
+It takes a little bit of time
+to kernel start, or I can
+
+34:05
+start from here, kernel restart.
+
+34:08
+Here we go.
+
+34:12
+All right, I'm just going
+to run this, perfect.
+
+34:16
+This is going to happen now
+on CPU, not on GPU, because I
+
+34:20
+didn't add the magic command, okay?
+
+34:23
+The only difference is just
+the magic command.
+
+34:25
+I load my data, I enlarge my data,
+I just do the count encoding.
+
+34:30
+Again, we are timing this.
+
+34:33
+This is gonna run on
+
+34:38
+And it's almost six seconds.
+
+34:39
+For some of you, you might get
+different values a little bit.
+
+34:42
+It's okay, there's no
+deterministic thing here.
+
+34:45
+But yeah, so basically
+it's kind of 15 times,
+
+34:47
+14 times, 15 times faster.
+
+34:49
+So we can shut down this.
+
+34:51
+Chris is gonna run
+the next notebook.
+
+34:55
+But can just one person summarize
+me what we have done here?
+
+35:00
+Yeah, please go ahead.
+
+35:10
+We used count encoding to
+essentially add a new column
+
+35:13
+into our data set, which tells
+us how many times that particular
+
+35:16
+categorical feature appears.
+
+35:18
+Exactly. Basically, we convert
+the categorical column to
+
+35:21
+numerical feature, and we
+add it into our data set,
+
+35:23
+and we are going to use it later.
+
+35:25
+Thank you. Let's go ahead.
+
+35:29
+Hello, hello. Oh, awesome.
+
+35:30
+That was a great summary,
+actually, a good summary.
+
+35:34
+That's what we just learned.
+We just learned that.
+
+35:35
+Now we're going to
+learn a new technique.
+
+35:36
+So I'm going to close this down.
+
+35:39
+I'm going to totally clean
+out the memory and make sure
+
+35:41
+everything's clean.
+
+35:42
+And we're going to
+learn target encoding.
+
+35:51
+Awesome, so I'll say two little
+things for review.
+
+35:55
+So, right, so what
+did we just learn?
+
+35:58
+So what are we working on?
+
+35:59
+We're working on
+feature engineering.
+
+36:01
+So you have tabular data, we have
+a categorical column, maybe it's of
+
+36:04
+strings, and feature engineering is
+the process of making a new column.
+
+36:10
+Which is just a re-representation
+of the original column.
+
+36:13
+So the one technique we just
+used was we used counting
+
+36:15
+coding, which created a new
+column using frequencies.
+
+36:19
+And now we're going to learn
+about a technique called
+
+36:21
+targeting coding.
+
+36:23
+So the first thing we're going
+to do, once again, so targeting
+
+36:26
+coding requires even more
+computation than counting
+
+36:30
+coding, a lot of computation.
+
+36:31
+So you're going to see, we're
+going to see a very big speed
+
+36:34
+up, and it's important, especially
+on large data, we want to
+
+36:37
+utilize those GPUs, use QDF.
+
+36:40
+And let me show you what
+targeting coding is.
+
+36:43
+So we actually have one of the
+original users here, Jibba.
+
+36:46
+So Jibba's been doing Kaggle
+for 12 years, and he was number
+
+36:50
+one overall for many years
+
+36:54
+on the whole website.
+
+36:55
+And one of the things that
+he did early on to really
+
+36:58
+help give him an edge and win a lot
+of comps is use target encoding.
+
+37:01
+And I learned it on Kaggle.
+
+37:03
+I learned about this technique
+on Kaggle probably from Jibba.
+
+37:06
+And this is...
+
+37:08
+This is my favorite technique,
+and probably the most powerful
+
+37:11
+engineering technique you
+can apply to tabular data.
+
+37:15
+And the way it works is this.
+
+37:17
+So once again, it's a technique
+that we use when we have a
+
+37:20
+categorical feature.
+
+37:22
+So some models can't even accept as
+input a feature of strings, right?
+
+37:27
+So you have to do something.
+
+37:28
+And this, we're gonna learn
+about this something, which
+
+37:31
+is targeting coding.
+
+37:32
+And this is a new way to represent
+the column in such a way that
+
+37:36
+nearly every model benefits from.
+
+37:38
+It's a very powerful
+re-representation.
+
+37:41
+And using this technique will...
+
+37:44
+When we compete, it usually
+always gives us an edge.
+
+37:47
+And when you're working on
+your own projects, I recommend
+
+37:50
+you use this technique because
+it'll really be an extra column,
+
+37:53
+which will most likely, will nearly
+always increase the performance.
+
+37:57
+And this is how it works.
+
+38:00
+So we already recognized that
+the column brand is full of
+
+38:05
+a whole bunch of strings.
+
+38:08
+And so we want to make a new
+representation of this column.
+
+38:12
+So what I just did right here
+was for each brand,
+
+38:17
+I calculated what was the
+average label in the data set.
+
+38:21
+So as an example, on the bottom,
+there's a brand called Yuzu.
+
+38:26
+So looking at every single
+row that has brand Yuzu and
+
+38:30
+all the associated zeros and ones,
+I took an average of all those
+
+38:33
+targets and the average was 36%.
+
+38:35
+That's telling us that 36% of
+people like Yuzu when they see it.
+
+38:42
+And this is the essence
+of target encoding.
+
+38:44
+We compute this.
+
+38:45
+So for every one of those
+strings, we compute what is
+
+38:48
+the average target, and then we
+just merge this onto the dataset.
+
+38:55
+Right, so we just
+merged on, here it is.
+
+38:57
+We added the new column TE brand,
+
+39:01
+and this new column is all numbers,
+and you can see it, each row.
+
+39:05
+If you ask yourself what number
+did each row get, well for
+
+39:08
+each row there was a brand.
+
+39:10
+Look at the bottom row, the
+brand was Sabrent, and then
+
+39:15
+the new number that was added
+is 77%, because 77% was the
+
+39:20
+average that people liked Sabrent.
+
+39:22
+So right, we add all these
+numbers, it's a whole column of
+
+39:24
+number, it's very powerful because
+it gives you information about
+
+39:27
+if people like it or not, which
+is the exact problem we're doing,
+
+39:31
+predicting if they like it or not.
+
+39:32
+Super powerful column.
+
+39:34
+You'll see later, we're gonna
+give this to XGBoost, and that
+
+39:37
+was that original plot on the first
+slide, that red bar just shot up.
+
+39:41
+So models love this column, they
+understand this column, and they
+
+39:45
+know, and they can utilize this.
+
+39:48
+And we don't have to just
+do it to one column.
+
+39:52
+We can combine multiple columns
+and do it at once, right?
+
+39:54
+So I can look at the combination
+of the column brand and category.
+
+40:02
+And then for each of these pairs,
+I can then target and code.
+
+40:06
+So calculate the average mean
+target for each of these pairs.
+
+40:10
+So the bottom row, the brand
+is zBoost in the category
+
+40:14
+of signal boosters, and on
+average 63% like that combination
+
+40:20
+of brand and category.
+
+40:23
+And then we merge this
+onto the dataset.
+
+40:29
+And we get this new
+column, TEBRAND2.
+
+40:32
+And each row, it figured out
+what was the brand and category,
+
+40:36
+and then it tacked on the
+associated number.
+
+40:39
+And you can already probably
+sense the potential here.
+
+40:42
+You could target and goad
+combinations of columns.
+
+40:45
+Let's say you originally have
+10 categorical columns.
+
+40:49
+We can do every pair of those 10.
+
+40:51
+And that's 10 choose 2, which
+I think might be 45 pairs.
+
+40:56
+So we can go ahead and add those
+45 columns for all the pairs.
+
+41:00
+Or we can just brute force it.
+
+41:01
+Or we can use intuition and
+combine things that we think
+
+41:05
+are somewhat related.
+
+41:06
+But you see there's like,
+and that's just two pair.
+
+41:07
+We can combine three.
+
+41:08
+So there's a whole avenue.
+
+41:10
+There's a whole possibility
+of experimentation here.
+
+41:13
+But each time we add those
+columns, it takes time.
+
+41:16
+It's a lot of computation.
+
+41:17
+So if we can do it
+really, really fast.
+
+41:20
+We can add them quickly and then
+validate to see if they help.
+
+41:25
+So what I've showed you so
+far is the basic concept,
+
+41:29
+but there's ways we can improve it.
+
+41:31
+The first way we can improve it
+is something called smoothing.
+
+41:35
+And here's the idea
+behind smoothing.
+
+41:37
+What I'm displaying here is how
+frequently these brands appear.
+
+41:42
+This is related to count encoding.
+
+41:44
+So for instance, you see this third
+row down, 12voltadapters.com brand.
+
+41:50
+In the entire data set of
+1.6 million rows, there was
+
+41:53
+only five of these rows.
+
+41:55
+Very, very small
+number of observations.
+
+41:57
+And if we do a histogram of
+all the accounts,
+
+42:02
+We can actually see there's even
+brands that show up only one time.
+
+42:06
+Now let's think about this.
+
+42:08
+Let's say we want to apply
+targeting coding to a brand
+
+42:11
+that shows up one time.
+
+42:13
+So let's say the brand Chris's
+brand showed up one time,
+
+42:18
+and the one time it showed
+up, the person liked it.
+
+42:21
+If I compute the mean, that
+means 100% of the time people
+
+42:24
+like Chris's brand.
+
+42:25
+Does that mean moving on in
+the future, everybody's always
+
+42:28
+going to like Chris's brand?
+
+42:30
+Yes, it does,
+because it's my brand.
+
+42:32
+No, right.
+
+42:33
+You don't, with only one
+observation, that's not enough
+
+42:36
+information to confidently say
+what's gonna happen in the future.
+
+42:39
+And we need to
+account for this, right?
+
+42:40
+So when we target in code, what
+smoothing does is smoothing,
+
+42:46
+ACCOUNTS FOR THE
+NUMBER OF OBSERVATIONS.
+
+42:48
+SO IF SOMETHING APPEARS VERY
+INFREQUENTLY, WE DON'T TRUST
+
+42:52
+THE COMPUTED MEAN.
+
+42:53
+IF SOMETHING APPEARS
+OFTEN, WE DO TRUST IT.
+
+42:57
+AND THE WAY WE DO THAT IN A
+FORMULA IS WE TAKE A WEIGHTED
+
+42:59
+AVERAGE OF THE GLOBAL MEAN.
+
+43:02
+SO IF YOU KNEW NOTHING ABOUT
+SOMEBODY'S BRAND AND I ASKED YOU,
+
+43:05
+WHAT ARE THE ODDS SOMEONE LIKES IT?
+
+43:06
+YOU WOULD JUST DEFAULT TO,
+OH, IN THE ENTIRE DATA SET,
+
+43:09
+THE AVERAGE TARGET IN THE
+WHOLE DATA SET IS 80%.
+
+43:12
+So without any other information,
+you would just say, most likely
+
+43:16
+someone will like it 80%.
+
+43:17
+That's the global mean.
+
+43:19
+And we take a weighted average
+between the global mean and the
+
+43:22
+computed mean, and the weights are
+the number of times it shows up.
+
+43:27
+So the number of times it
+shows up times the computed
+
+43:30
+mean plus the smoothing
+coefficient times the global
+
+43:33
+mean divided by the sum of...
+
+43:36
+COUNTS plus SMOOTHING
+CONSTANT, and that's it.
+
+43:38
+So you see, and then it has
+the effect we want, which
+
+43:43
+is it'll automatically use
+the global mean when there's
+
+43:47
+few observations, and it'll
+use the computed mean naturally
+
+43:51
+when there's many observations.
+
+43:56
+All right, so here's a
+little to-do exercise.
+
+43:58
+And I'm going to challenge
+you guys, but, uh...
+
+44:06
+Well, normally I challenge
+you guys to write the code
+
+44:11
+or let's just talk through it.
+
+44:12
+So I'll ask for how we
+would approach this.
+
+44:15
+So let's say I were to ask you
+guys to add a new targeting
+
+44:19
+coding column and I wanted
+to do the combination of brand and
+
+44:23
+cat2 with a smoothing factor of 20.
+
+44:26
+So my question for you is,
+before we can add that new
+
+44:29
+column, the formula requires
+us to compute three things.
+
+44:32
+So raise your hand if you
+know one of the things we
+
+44:34
+need, one piece of information
+we need before we can create
+
+44:38
+the new column that has smoothing.
+
+44:46
+Yes, that's the first thing. So the
+first thing is we need to compute
+
+44:49
+the average mean for the brand.
+
+44:50
+That's number one. What's
+the second thing that
+
+44:52
+we're going to need?
+
+44:54
+The global mean. Absolutely.
+
+44:56
+That's the second
+thing, the global mean.
+
+44:57
+And what's the third piece
+of information we need?
+
+45:04
+Universal mean, that's the
+global mean, we need that.
+
+45:07
+So we got those two.
+
+45:08
+There's one more thing we're gonna
+need to make that formula work.
+
+45:12
+Counts, that's right,
+we need the counts.
+
+45:14
+So that's how you
+write code for this.
+
+45:17
+The way you write code is you first
+compute those three things and
+
+45:20
+they're all computed right here.
+
+45:23
+That's the global mean.
+
+45:25
+That's the aggregated group by mean
+per brand, aggregated by count.
+
+45:30
+Those are three things.
+
+45:31
+Once you have the three
+things, you just apply the
+
+45:34
+formula I showed you.
+
+45:35
+We're gonna put that value into
+this temporary variable, TE.
+
+45:41
+And then lastly, we
+just merge it on.
+
+45:43
+And notice how you make all
+your computations from the
+
+45:46
+trained data only.
+
+45:48
+And then you use that to
+merge to train, merge to
+
+45:52
+valid, merge to test.
+
+45:54
+You might have some things
+invalid in test that were
+
+45:59
+not present in train, therefore
+they're going to have NNs,
+
+46:06
+and then we just fill those missing
+values with the global mean.
+
+46:09
+So we talked through it, and
+that's how you do that.
+
+46:16
+Yeah, so the smoothing constant
+is the hyperparameter.
+
+46:19
+Oh yeah, it's right here.
+So the smoothing constant
+
+46:23
+W, that was what we were using
+for the weighted average.
+
+46:26
+And 20 is a good figure, because 20
+is roughly saying that when I see
+
+46:29
+20 or more, I'll trust what I see.
+
+46:31
+So it's almost derived from
+statistics, right?
+
+46:34
+20, between 20 and 40.
+
+46:36
+But it's also a hyperparameter.
+
+46:37
+There's situations where you
+put it really low and it boosts,
+
+46:39
+so you can play with it.
+
+46:40
+You just play with it.
+
+46:43
+Awesome, and let's see,
+we can actually measure
+
+46:46
+the effect of smoothing.
+
+46:47
+So what we can do is we can add
+targeting coding with smoothing.
+
+46:52
+And we can add targeting coding
+without smoothing.
+
+46:55
+And an interesting thing
+about targeting coding is
+
+46:59
+you can interpret targeting
+coding as a prediction.
+
+47:03
+Because targeting coding
+is a probability.
+
+47:07
+So we can pretend or imagine that
+that new column is a prediction.
+
+47:12
+For each row, let's say we
+put a value of 0.4, we can
+
+47:17
+imagine that we're saying, we're
+predicting there's a 40% chance
+
+47:20
+that this row will get liked.
+
+47:21
+So you can treat targeting
+coding as a prediction and
+
+47:24
+therefore we can actually compute
+error directly on the targeting
+
+47:27
+coding and then compute the
+effectiveness of targeting coding.
+
+47:30
+So if we do target encoding
+without smoothing,
+
+47:33
+And then we just define a
+1 as mean greater than 0.5
+
+47:37
+and a 0 as less than 0.5.
+
+47:39
+We can compute an error.
+
+47:40
+We do the same thing for smoothing,
+and then we can display that error.
+
+47:44
+And what we notice is, what we
+expect is that, so instead of
+
+47:50
+just showing you a single value For
+error, I've grouped the error by
+
+47:57
+How often something shows up.
+
+47:58
+So when a brand only showed
+up one time and we do not
+
+48:01
+use smoothing, we had a 32% error.
+
+48:03
+Error is bad, right?
+
+48:04
+That 32% of the time we're wrong.
+
+48:06
+But down below, when things
+only showed up one time and
+
+48:09
+we used smoothing, our predictions
+were wrong 23% of the time.
+
+48:14
+And similarly, you could see
+whenever the counts are very low,
+
+48:18
+The error is high without
+smoothing, and with smoothing,
+
+48:21
+it decreases the error.
+
+48:22
+So this is what we expected,
+that using smoothing was sort of
+
+48:27
+a better sort of targeting coding,
+
+48:34
+And calculating error required
+us to turn those probabilities
+
+48:37
+into zeros and ones.
+
+48:38
+The AUC metric doesn't.
+
+48:39
+So we can leave the targeting
+coding as continuous probability
+
+48:44
+predictions and compute the
+AUC, and larger is better.
+
+48:48
+And without smoothing, if we
+interpreted the new targeting
+
+48:52
+coding column as a prediction,
+it would have an AUC of 0.589,
+
+48:56
+and then with smoothing, 0.95.
+
+48:57
+So this is already some preliminary
+evidence that adding smoothing
+
+49:02
+actually sort of made A MORE
+CREATIVE PERSPECTIVE OF
+
+49:04
+You know, if you want to think of
+the new column as the probability
+
+49:08
+somebody's going to like that,
+by adding that smoothing,
+
+49:10
+it kind of gave us a more realistic
+probability because it was
+
+49:14
+based on how many things we saw.
+
+49:19
+All right, so, we can do even
+better than smoothing.
+
+49:25
+We can do nested folds.
+
+49:27
+And now I'll tell you,
+this gets confusing.
+
+49:30
+The first time I saw this, I
+didn't really understand it.
+
+49:34
+The second time I saw it, still
+didn't really understand it.
+
+49:38
+The third time I saw it,
+I said to myself, will I
+
+49:41
+ever understand this?
+
+49:42
+All right, now, six years
+later, I've seen it a thousand
+
+49:45
+times, I understand it.
+
+49:47
+And the idea is this.
+
+49:52
+First of all, the idea is this.
+
+49:55
+If you remember, here was a row
+with a brand, and we were going
+
+50:00
+to add a new number, which was
+the computed mean of all brands.
+
+50:05
+When we computed this mean,
+we used all targets of all
+
+50:09
+rows of the brand.
+
+50:11
+We use the target on the same
+row in the computation.
+
+50:15
+That's leakage.
+
+50:17
+You can't make a feature,
+which we're trying to
+
+50:20
+predict that target.
+
+50:21
+You can't use the target
+to make a feature.
+
+50:23
+That's leakage.
+
+50:24
+So when we actually make
+the targeting coding of
+
+50:28
+this row, we should only
+use the other rows, you see?
+
+50:32
+When we calculate the average
+mean of the targets, we don't
+
+50:37
+want to include the same row
+in its same computation.
+
+50:40
+So we do that with nested
+folds, and the idea is we
+
+50:42
+just do five computations.
+
+50:44
+So for the first 20% of rows, when
+we got to compute all those means
+
+50:48
+for all those target nodes, we're
+going to use the bottom 80% of
+
+50:51
+rows to compute all of those means.
+
+50:53
+And then we merge it up here,
+and there's no leakage.
+
+50:56
+And then when we do the next
+20%, we use the other 80%.
+
+50:58
+And we do it five times.
+
+51:01
+And that's the idea.
+
+51:08
+I'm going to reset the notebook.
+
+51:14
+We're going to load QDF pandas.
+
+51:21
+Yeah, actually, so there is
+a benefit maybe making the
+
+51:26
+number of folds larger because
+you're using more information
+
+51:31
+and pulling in more information.
+
+51:32
+And there's even a technique called
+leave one out, which is actually
+
+51:35
+when I compute this one row, I
+use every other row leave one out.
+
+51:39
+So there's different
+ways to approach it.
+
+51:40
+Good question.
+
+51:42
+Alright, so I want to show you
+this in action, and we're also
+
+51:47
+going to compare the difference
+in speed between GPU and CPU.
+
+51:51
+So once again, 1.6 million
+rows is really tiny, you know,
+
+51:56
+real life data is much bigger,
+so we just artificially, you know,
+
+52:01
+duplicate every row ten times.
+
+52:02
+So now we have 16 million rows and
+
+52:06
+Here's this crazy function,
+which just writes.
+
+52:10
+So as a joke, sometimes I
+say, okay, let's take a minute
+
+52:13
+and you all write this function,
+which has SMOOTHING and KFOLD
+
+52:17
+and GROUP BYs and MERGING.
+
+52:18
+So it's pretty tricky.
+
+52:19
+Y'all can probably work it
+out, but it's hard to work
+
+52:22
+it out in one minute.
+
+52:23
+Or during a session like this.
+
+52:25
+So we wrote it for you.
+
+52:26
+But all this is, is everything
+we learned today.
+
+52:29
+It's going to basically,
+you can see this, what we
+
+52:31
+did earlier, right?
+
+52:32
+There's the smoothing, right?
+
+52:33
+It's calculating
+those three things.
+
+52:35
+It's using the formula, or
+maybe the line below that.
+
+52:39
+And then it's doing it
+five times, right?
+
+52:41
+It's doing from i,
+range, k-fold, five.
+
+52:44
+So it's basically doing,
+right, so it's doing everything
+
+52:47
+we learned today.
+
+52:49
+It's doing a lot of things.
+
+52:51
+A lot of computation,
+and let's run it.
+
+52:56
+So it's combining three categories.
+
+52:58
+It's doing a ton of
+computation, right?
+
+53:00
+Three categories, it's, right?
+
+53:03
+I mean, once you combine three
+categories, that unique pairing
+
+53:07
+might show up, I don't know,
+10, 100, there might be 110,000.
+
+53:09
+So we have to, for
+each one of those,
+
+53:13
+Each one of those pairings we
+have to calculate the computed
+
+53:16
+mean and then we have to merge
+it on and we have to do it five
+
+53:20
+times and we have to do that whole
+formula and do the counting code.
+
+53:24
+There's actually a lot and
+lot of computation which just
+
+53:27
+happened like that in 3.6 seconds.
+
+53:31
+And you see it did
+everything for us.
+
+53:33
+It added that new column on
+the end there, which basically
+
+53:37
+targeting coded the three columns,
+weekday, category, brand, the
+
+53:41
+combination of those three columns.
+
+53:42
+It used KFOLD, it used
+SMOOTHING, everything.
+
+53:45
+It put on a new column, did
+it in three seconds.
+
+53:49
+It put it on the valid data set.
+
+53:51
+And then if we reset the notebook.
+
+53:57
+So the purpose of that is, so
+now no, so QDF is no longer
+
+53:59
+installed, we're once again
+loading the data, we're enlarging
+
+54:04
+the data to 16 million.
+
+54:06
+So we are not installing QDF, this
+will, now we're, it's the exact
+
+54:10
+same function, but pandas will
+be pandas on the CPU, and we're
+
+54:15
+going to run the same thing, I'm
+going to count the three seconds,
+
+54:18
+one, two, three, now I'm going to
+count three again, one, two, three,
+
+54:28
+One, two, three...
+
+54:32
+All right, maybe we need a
+little abracadabra.
+
+54:35
+So you can see, I mean, you're
+really getting a huge speedup
+
+54:37
+because I told you, counting
+coding wasn't a lot of work.
+
+54:40
+Targeting coding is a lot of work.
+
+54:42
+There's a lot of stuff, a lot of
+computations, there's group buying.
+
+54:46
+We have to do all those folds,
+that does it five times.
+
+54:49
+You know what, maybe we wanna
+do it 10-fold, 15-fold to
+
+54:52
+squeeze out a little more
+accuracy, that's even more.
+
+54:54
+So there's lots and
+lots of computation.
+
+54:57
+It's still running, there
+it is, so 40 seconds.
+
+55:00
+So, you can give a round of
+applause, I saw it.
+
+55:03
+Yeah, yeah.
+
+55:04
+Yeah, so I'll tell you the
+most impressive thing, you
+
+55:06
+know, I saw at NVIDIA when
+I joined is, I originally had, when
+
+55:09
+I learned about target encoding,
+I had written some pandas CPU code
+
+55:12
+and we did it, and then someone
+on the team had accelerated it.
+
+55:15
+I mean, here we only witnessed
+maybe a 15 times speedup,
+
+55:18
+but we were working with hundreds
+of millions of rows, these
+
+55:20
+massive data sets, and we
+were seeing, like, 50, 100 times
+
+55:24
+speedup, and it was phenomenal.
+
+55:25
+I mean, that was code that
+I was actually running.
+
+55:28
+Sleeping, waiting overnight,
+and then it was just, I
+
+55:31
+could run it and it would
+just come out in minutes.
+
+55:33
+So, you know, when you start
+messing with lots and targeting
+
+55:36
+coding on big data sets, it's
+really important and helpful
+
+55:39
+to accelerate it like you can.
+
+55:43
+Great, so we can close this
+down, and now Renai's gonna come
+
+55:47
+up here and actually show you these
+features in actual models and show
+
+55:52
+you how it improves the models.
+
+55:53
+Awesome, thank you so much, Chris.
+
+55:57
+So by the way, if you
+search like NVIDIA,
+
+56:01
+Kaggle grandmasters, or
+KG Mon, in short.
+
+56:04
+You can see a lot of write-ups,
+a lot of blog posts about
+
+56:07
+these fancy techniques.
+
+56:09
+Like in the morning, there was
+a session by Jeeva and Chris.
+
+56:13
+They talk about different
+techniques, like hill climbing,
+
+56:17
+stacking, pseudo-labeling.
+
+56:19
+So just, you can search for their
+names and you can find all these
+
+56:23
+write-ups that they explain about
+how they, you know, top up the...
+
+56:28
+Leaderboard for a challenge,
+like giving challenge.
+
+56:31
+It doesn't have to be Kaggle.
+
+56:32
+They've been attending a lot
+of different challenges.
+
+56:36
+So there are a lot of
+resources there, that's
+
+56:38
+what I'm trying to say.
+
+56:40
+Let's shut down this notebook,
+and I will just shut it down
+
+56:45
+to free the GPU memory.
+
+56:47
+That's the goal.
+
+56:49
+We will go to the second part.
+
+56:51
+First part, all about
+feature engineering.
+
+56:54
+One technique was, as Chris
+mentioned, really easy, but
+
+56:59
+it was... Sorry, I'm trying
+to... One second.
+
+57:04
+And the other technique is a
+little bit more complicated,
+
+57:06
+but super useful and generates
+great signals, right?
+
+57:10
+Target encoding. Now, in this
+part, what we want to do, we want
+
+57:13
+to show you, can we actually use
+these features in model training?
+
+57:18
+Okay, that's simple.
+
+57:20
+We load the data again.
+
+57:22
+That's a lot of data.
+
+57:23
+You already know about the data.
+
+57:25
+That's the same data.
+
+57:26
+Data didn't change.
+
+57:28
+You have the 1.6 million rows
+in train data set, 43K in
+
+57:32
+validation, 33K in test data.
+
+57:35
+So if you remember about
+all columns, that's, let's,
+
+57:40
+for example, let's say
+train that shape.
+
+57:46
+We have 21 columns in the train.
+
+57:50
+So this is our data set, right, and
+including our target column, right?
+
+57:55
+So there should be a label
+column, this one.
+
+57:59
+That's our binary target column.
+
+58:01
+So the target column is binary.
+
+58:04
+So what's the problem here?
+
+58:06
+What type of
+
+58:09
+optimization we want to do?
+
+58:11
+Or task, what is the task here?
+
+58:15
+The target column is binary, 0, 1.
+
+58:17
+We want to train a
+machine learning model.
+
+58:20
+It's a classification problem.
+
+58:24
+It is binary classification, right?
+
+58:26
+Just the binary classification.
+
+58:27
+In the morning, if you remember,
+I don't know, not all of you
+
+58:29
+joined in the morning session, but
+there was this regression, exactly.
+
+58:33
+We were predicting
+the calories, right?
+
+58:35
+This one, different data, different
+target, binary classification.
+
+58:39
+Our target could be
+multi-label, right?
+
+58:42
+Multi-class, multi-label,
+it can be more complicated.
+
+58:45
+But here is binary classification.
+
+58:47
+So let's check out our
+categorical columns.
+
+58:52
+Just remember them, user ID,
+product ID, brand, which has NNs.
+
+58:57
+Categorical 0, 1, 2,
+3, all of these are
+
+59:01
+categorical columns, okay?
+
+59:02
+We actually combine them,
+sorry, we created an empty
+
+59:06
+list, cat underscore columns,
+this one, and we added all these
+
+59:10
+categorical columns in this list.
+
+59:12
+It's better to use that that
+way, so we can actually easily,
+
+59:16
+instead of one by one typing
+their names, we can just use
+
+59:19
+this cat columns later.
+
+59:21
+All right, now let's import
+our XGBoost, just one line
+
+59:26
+of code, this is just XGBoost.
+
+59:29
+And the idea here, the first
+thing, how we can train an XGBoost
+
+59:35
+model with categorical columns.
+
+59:38
+XGBoost actually has a way
+of handling categorical
+
+59:42
+columns itself, without
+we do anything, without
+
+59:46
+converting them to anything.
+
+59:48
+But, I mean, creating a new
+feature, like, without us
+
+59:51
+doing, like, label encoding,
+target encoding, right?
+
+59:55
+It has, it can do it in a
+built-in, like, fashion.
+
+59:59
+It has this built-in functionality,
+but it is requiring, I want
+
+01:00:04
+to show you this first.
+
+01:00:05
+Let's check the train D-types.
+
+01:00:08
+You need to check the D-types.
+
+01:00:10
+Here you go.
+
+01:00:12
+It is requiring this categorical
+columns, not in the object D type,
+
+01:00:17
+it should be in category D type.
+
+01:00:19
+So it's kind of, we are
+telling XGBoost, I'm feeding
+
+01:00:23
+you categorical columns,
+be aware of that, right?
+
+01:00:26
+And to be able to do
+that, we do this.
+
+01:00:29
+We actually
+
+01:00:30
+Convert this categorical columns
+D types to category.
+
+01:00:34
+We have to do that first.
+
+01:00:35
+If you want to use XGBoost's
+built-in categorical functionality.
+
+01:00:39
+If we don't want to use it,
+we can handle categorical
+
+01:00:42
+columns as we want.
+
+01:00:43
+That's it, okay?
+
+01:00:46
+We just do sTypeCategory.
+
+01:00:48
+I'm converting my
+categorical columns
+
+01:00:51
+to this specific type, right?
+
+01:00:54
+And the numericals, I keep them as
+float or the rest, and that's it.
+
+01:00:59
+And then you can see, now
+let's check the dTypes again.
+
+01:01:05
+Train.
+
+01:01:07
+That he types.
+
+01:01:13
+Now, we don't see object anymore.
+
+01:01:17
+You see category here, right?
+
+01:01:19
+You can see the difference.
+
+01:01:20
+And the rest, they are flawed.
+
+01:01:23
+Now, I just wanna
+run XGBoost model.
+
+01:01:26
+It's very easy to run
+an XGBoost model.
+
+01:01:28
+You just import it.
+
+01:01:29
+You can actually put
+your hyperparameters.
+
+01:01:31
+XGBoost is a gradient boosting
+decision tree model, right?
+
+01:01:35
+And it has several parameters
+that you can actually
+
+01:01:38
+tune, hyperparameters.
+
+01:01:40
+But this is not the tuning.
+
+01:01:43
+Training topic here, training task,
+you can always play with these
+
+01:01:49
+parameters at home like learning
+rate, change to maximum depth,
+
+01:01:54
+depth of the tree, like do you want
+to subsample, you want to subsample
+
+01:01:59
+at what ratio, for example,
+and you would like to subsample
+
+01:02:03
+the columns, the features,
+you would like to subsample the
+
+01:02:06
+rows, these are all hyperparameters
+that you can change.
+
+01:02:10
+With XGBoost parameters and
+some of them actually helping
+
+01:02:14
+with overfitting, some of
+them making the tree more
+
+01:02:17
+complicated like, you know,
+depth of the tree, for example.
+
+01:02:21
+Some of them actually making
+the tree more, I would say,
+
+01:02:25
+robust in a way that for the
+diversification because you
+
+01:02:29
+sample from columns, right?
+
+01:02:30
+You don't want to, so that model
+is seeing different columns in
+
+01:02:34
+different, for example, branches.
+
+01:02:37
+However, we don't want to change
+the objective here, because
+
+01:02:41
+we know that this is a binary
+logistic, so binary classification,
+
+01:02:46
+so we keep the objective like that.
+
+01:02:48
+Another thing, did you
+notice this parameter?
+
+01:02:52
+So by just changing device to CUDA,
+I'm telling that I want to run my
+
+01:02:57
+XGBoost, train my XGBoost on GPU.
+
+01:03:00
+That's it, just
+one parameter, okay?
+
+01:03:03
+So let's run this cell.
+
+01:03:06
+This is just like setting
+the parameters for XGBoost.
+
+01:03:10
+Now, we are converting the training
+set to the specific format that
+
+01:03:17
+DMatrix, that XGBoost can consume.
+
+01:03:20
+Do you notice another parameter
+here that is important?
+
+01:03:24
+This one.
+
+01:03:25
+If you want to use XGBoost's
+built-in categorical column
+
+01:03:29
+handling functionality, we
+have to turn this argument
+
+01:03:33
+to true, set it to true, that's it.
+
+01:03:35
+So we use the s-type category
+and then we are setting this
+
+01:03:38
+to true, right here.
+
+01:03:40
+That's it.
+
+01:03:41
+Basically, I'm telling XGBoost,
+this is my data, these are
+
+01:03:44
+my categorical columns,
+their categorical types
+
+01:03:48
+is category, D-type, sorry.
+
+01:03:50
+Enable the categorical, it's going
+to run it under the hood, it's
+
+01:03:55
+going to handle the categoricals.
+
+01:03:57
+That's its own feature.
+
+01:03:59
+Let's run this.
+
+01:04:02
+So, our accuracy metric is AUC.
+
+01:04:07
+So you can see that on the
+evaluation data, basically
+
+01:04:09
+validation data, we are getting
+like 60.6, let's say 0.6 AUC,
+
+01:04:15
+right, 0.607 AUC.
+
+01:04:18
+Now, let's just do the prediction
+by using the test set.
+
+01:04:27
+So, we did not use test set
+for model fitting, we are just
+
+01:04:31
+using the test set for prediction.
+
+01:04:42
+We can see that.
+
+01:04:46
+We have, sorry, I missed
+that, we have 0.65.
+
+01:04:49
+We can see that validation AUC
+is 0.65, higher is the better.
+
+01:04:54
+And test AUC is almost 0.66,
+right, if you round it up.
+
+01:04:58
+All right, so far, I didn't
+do any feature engineering,
+
+01:05:02
+like explicitly, but under
+the hood, XGBoost is handling
+
+01:05:06
+the categorical columns.
+
+01:05:08
+Now do explicit feature
+engineering, let's do it.
+
+01:05:11
+Remember we had, we talked about
+when we were doing the count
+
+01:05:15
+encoding, we had this discussion.
+
+01:05:16
+If you had a female, male,
+like a feature called gender
+
+01:05:20
+column, if you want to convert
+it to numerical values, you
+
+01:05:23
+could just label encode them,
+say, map them to numerical values,
+
+01:05:27
+like maybe male zero, female one.
+
+01:05:29
+This is like a
+label encoding, right?
+
+01:05:31
+Mapping. So basically, let's
+do the same thing.
+
+01:05:34
+Let's use some sort of label
+encoding and just like label
+
+01:05:38
+encode these categorical features.
+
+01:05:40
+Is that okay?
+
+01:05:42
+Anything is not clear here?
+
+01:05:45
+Okay, perfect.
+
+01:05:47
+So, super simple.
+
+01:05:49
+We know what are our
+categorical columns.
+
+01:05:51
+We loop over the
+categorical columns.
+
+01:05:54
+We are actually
+
+01:05:56
+When we are converting the category
+D type back to object that was
+
+01:06:01
+original, we are actually filling
+the missing values with none, and
+
+01:06:05
+then we are going to actually apply
+label encoding on our data set.
+
+01:06:11
+So if, let's say,
+
+01:06:15
+We have a feature of height, like
+short, medium, tall, very tall.
+
+01:06:21
+Then let's say we want to
+label encode this.
+
+01:06:24
+Maybe short will be zero,
+medium will be one, tall will
+
+01:06:28
+be two, very high will be three.
+
+01:06:30
+That's label encoding, that's it.
+
+01:06:31
+No more short, tall in the
+data, no more strings.
+
+01:06:34
+Instead, we will
+represent them as numbers.
+
+01:06:37
+That's the idea.
+
+01:06:38
+So that's what label
+encoding is gonna do.
+
+01:06:42
+Let's look at the dataset.
+
+01:06:45
+This is a future
+engineering technique.
+
+01:06:48
+I would like to show
+you the data set.
+
+01:06:51
+Let's just do this.
+
+01:06:55
+All right, if you go to, I
+need to slide, all right.
+
+01:06:59
+So, for columns, category zero,
+one, two, and three, and brand
+
+01:07:06
+and userID, let's look at them.
+
+01:07:10
+You can see that my userID,
+productID, category zero, category
+
+01:07:14
+one, and category two, they
+are all labeled and coded, okay?
+
+01:07:18
+They are not strings anymore.
+
+01:07:20
+You can check that.
+
+01:07:21
+String.
+
+01:07:23
+That D types, because
+I converted them.
+
+01:07:27
+You can check that they
+are actually now numerical
+
+01:07:31
+values, all of them.
+
+01:07:34
+And their D type is flawed.
+
+01:07:35
+Let's run the XGBoost again.
+
+01:07:38
+This time, our D train,
+basically train file, has
+
+01:07:42
+more, one second, shape.
+
+01:07:47
+So there's no more
+like this category.
+
+01:07:52
+There's no more like no longer
+this category D types for
+
+01:07:54
+the user ID, product ID.
+
+01:07:56
+We have them as float, okay?
+
+01:07:58
+Converted the
+categoricals to float.
+
+01:08:01
+Target is same.
+
+01:08:03
+Okay, what is the difference now?
+
+01:08:04
+Do you see
+something not added here?
+
+01:08:07
+And I enable categorical true.
+
+01:08:11
+Yeah, I don't set it now to true.
+
+01:08:14
+Why I'm not setting?
+
+01:08:16
+We don't need it. There's
+no categorical anymore.
+
+01:08:19
+It's everything is flawed, right?
+
+01:08:20
+Exactly. We
+already did our own job.
+
+01:08:24
+Perfect. Let's wait it to run.
+
+01:08:27
+Perfect. Okay.
+
+01:08:30
+Great.
+
+01:08:31
+It keeps running.
+
+01:08:32
+It's done.
+
+01:08:35
+Yeah, we finished it. I see a
+little bit lower accuracy here.
+
+01:08:38
+But again, here we are not
+advocating that built-in
+
+01:08:41
+categorical is better
+or label encoding.
+
+01:08:43
+We are just showing you
+different techniques.
+
+01:08:46
+And we saw a little bit
+lower accuracy if you do
+
+01:08:48
+the label encoding.
+
+01:08:50
+Okay, looks like the other
+technique was better, meaning
+
+01:08:53
+that XGBoost built-in categorical
+handling functionality.
+
+01:08:59
+That's fine.
+
+01:09:00
+How about target encoding?
+
+01:09:02
+Okay, who wants to use Chris's
+long function from the previous
+
+01:09:07
+notebook, or who wants to
+use one-liner import?
+
+01:09:12
+Can we do this just one-liner
+import, is that okay?
+
+01:09:14
+Okay, perfect. But the idea
+in the previous notebook is
+
+01:09:18
+like to show you how target
+encoding working, right?
+
+01:09:22
+So it is great to know
+intricacies, right?
+
+01:09:24
+Under the hood, what we need,
+like global mean, right?
+
+01:09:27
+So like,
+
+01:09:30
+SMOOTHING parameter, et cetera.
+
+01:09:32
+Now, we don't have to
+call this function.
+
+01:09:34
+If we want, we can do it.
+
+01:09:36
+But how about we use target
+encoding, direct target
+
+01:09:40
+encoding method from QML.
+
+01:09:42
+The QML has target encoder.
+
+01:09:45
+We can just use it, okay?
+
+01:09:47
+We don't need to write
+the function again.
+
+01:09:49
+And as you can see, we can
+actually add a smoothing function,
+
+01:09:53
+sorry, smoothing value here.
+
+01:09:55
+We can actually do kfold target
+encoding in one line.
+
+01:09:59
+Is that okay? Everyone is happy?
+
+01:10:01
+Right? In one line, we can
+do target encoding.
+
+01:10:04
+And we want to do this per
+column, categorical column.
+
+01:10:07
+Again, our problem is with
+the categorical columns.
+
+01:10:10
+This is just going to do that.
+
+01:10:12
+It will create
+target encoded columns.
+
+01:10:17
+Per categoricals, let's check
+our train set again.
+
+01:10:21
+Let's check the train set.
+
+01:10:22
+Now, let's see what's going
+on here, what we have.
+
+01:10:25
+All right, I see
+more features here.
+
+01:10:28
+One, two, three, four,
+five, six, seven.
+
+01:10:30
+Seven more features, and let's
+check what is going on.
+
+01:10:37
+All right, we had 21 features, now
+we have 28, because we added seven
+
+01:10:41
+more features, because we started
+to do feature engineering, okay?
+
+01:10:46
+Let's train the XGBoost now
+with these new features.
+
+01:10:50
+I'm training the XGBoost with
+these new features.
+
+01:10:52
+Let's see.
+
+01:10:54
+All right, I see some good
+improvement here.
+
+01:10:57
+We are already reaching
+the 70, 0.7, right?
+
+01:11:02
+That is great.
+
+01:11:03
+Remember, it was around
+0.65 or something.
+
+01:11:06
+What just happened here? Can
+someone summarize me?
+
+01:11:09
+This time, I want
+someone from here.
+
+01:11:11
+Can someone summarize
+what happened here?
+
+01:11:14
+I remember we were
+seeing some 0.65 AUC.
+
+01:11:19
+Why all of a sudden we did 0.75?
+
+01:11:21
+Anyone has an idea?
+
+01:11:24
+Anyone from back or?
+
+01:11:29
+We edit new features, right?
+
+01:11:30
+Exactly, and
+features that model like.
+
+01:11:32
+That's it, that's simple.
+
+01:11:34
+Yeah, and target encoding
+is very efficient technique.
+
+01:11:37
+Voila, perfect.
+
+01:11:39
+Now, this is my favorite part.
+
+01:11:41
+Yes, there's a
+question, or what is it?
+
+01:11:46
+Sorry, this is probably more
+of a basic question, but with
+
+01:11:49
+these float values that we're
+generating, are they basically hash
+
+01:11:52
+codes, where basically if you have
+two identical float values, the...
+
+01:11:58
+Which one is the hash code, sorry?
+
+01:12:00
+Well, these float values that
+you're generating with the...
+
+01:12:06
+Oh, they are not hash.
+
+01:12:08
+Actually, it is literally label
+encoding can go from zero to N.
+
+01:12:13
+And then they are not, you
+could do hashing, but we are
+
+01:12:16
+not doing hashing here.
+
+01:12:17
+They just like mapping directly
+from one category type to
+
+01:12:20
+corresponding integer, like
+one-to-one mapping.
+
+01:12:24
+And is that okay?
+
+01:12:26
+Does that answer the
+question? Sure, yeah.
+
+01:12:28
+I mean, you could do hashing.
+
+01:12:31
+Hashing is a technique, especially
+if you have like a lot of
+
+01:12:34
+like, I would say,
+
+01:12:36
+High cardinality, a column
+has high cardinality.
+
+01:12:40
+And if you do not want to deal
+with this high cardinality,
+
+01:12:44
+you can do hashing.
+
+01:12:45
+But here, think about this
+just literally one to one
+
+01:12:48
+mapping right now.
+
+01:12:49
+Category A, zero.
+
+01:12:51
+Category B, one.
+
+01:12:52
+Does it make sense?
+
+01:12:55
+Do you have any, like, any
+opinion, like any technique
+
+01:12:59
+you would like to share?
+
+01:13:01
+No, I can take it
+offline afterward.
+
+01:13:04
+Sure, sure, yeah.
+
+01:13:05
+Do you want to say anything,
+Chris, or anything, Ed?
+
+01:13:09
+Yeah, let's just catch us up, yeah.
+
+01:13:12
+But here there's no specific or
+any, like this is actually mapping,
+
+01:13:18
+some sort of hashing, but it's not
+like, there's no collision here.
+
+01:13:21
+You see what I mean?
+
+01:13:22
+I don't want to go to
+details, yeah, yeah.
+
+01:13:31
+Normally, it should, implementation
+in the QML, it should.
+
+01:13:38
+And I will say, you
+know, I will say this.
+
+01:13:42
+It's very, very...
+
+01:13:44
+The train is fit transform and
+the other ones are transform.
+
+01:13:48
+So the train is fit transform.
+
+01:13:50
+So you can't fit and
+transform separately.
+
+01:13:54
+You have to call fit transform
+together to transform train
+
+01:13:57
+and then inside it uses the k-fold.
+
+01:14:00
+And then also afterwards,
+it saves the information so
+
+01:14:03
+that when you do test invalid,
+it merges on that information.
+
+01:14:07
+It's not your standard
+fit transform, but if
+
+01:14:09
+you do fit transform,
+it does k-fold internally.
+
+01:14:16
+All right, so favorite part, as I
+was mentioning, I like visualizing
+
+01:14:21
+what features are more important.
+
+01:14:23
+They contribute more to my model
+fitting, like model learning.
+
+01:14:27
+Looks like this target encoding
+columns, they are very popular,
+
+01:14:30
+like product ID, user ID, okay?
+
+01:14:32
+So, let's do the summary, and
+I will speed up a little bit.
+
+01:14:38
+That's what Chris
+already showed you.
+
+01:14:40
+If you remember the slides,
+he gave you this bar chart
+
+01:14:44
+already and showing you the
+differences in accuracy basically.
+
+01:14:48
+Accuracy here represented
+area under curve metric.
+
+01:14:52
+So, it showed you like if
+you do target encoding, how
+
+01:14:56
+much we can boost the model.
+
+01:14:58
+Accuracy, right?
+
+01:15:00
+AUC value. Let's just quickly
+do the CPU-GPU comparison.
+
+01:15:03
+That's one parameter
+I'm changing here.
+
+01:15:05
+It was CUDA.
+
+01:15:06
+Now I'm just setting it to CPU.
+
+01:15:09
+Let's run this so we can
+see the difference.
+
+01:15:15
+It's going to be slow.
+
+01:15:18
+Let's check the previous timing,
+the training time.
+
+01:15:23
+It was like less than four seconds.
+
+01:15:27
+Let's check the
+training timing now.
+
+01:15:29
+It takes a little bit time.
+
+01:15:31
+So you might think like, okay,
+what is like 40 seconds?
+
+01:15:36
+I can wait 40 seconds or I
+can wait like one minute.
+
+01:15:39
+But we are talking about just
+1.6 million rows.
+
+01:15:42
+In real life, we don't have
+such small data, right?
+
+01:15:46
+We are talking about like
+literally maybe 100, 200,
+
+01:15:49
+maybe 1,000 times larger rows.
+
+01:15:50
+That 40 seconds becomes something.
+
+01:15:56
+Like, unpleasant.
+
+01:15:57
+Please go ahead, Chris.
+
+01:15:58
+So you can see, like, this
+is now 24 seconds versus,
+
+01:16:01
+like, less than 4 seconds.
+
+01:16:03
+We can definitely speed
+up XGBoost on GPU.
+
+01:16:07
+Please go ahead.
+
+01:16:10
+Awesome. That was an awesome
+presentation, Rene.
+
+01:16:12
+I loved it.
+
+01:16:13
+So we really saw
+firsthand, right, XGBoost.
+
+01:16:16
+We saw just out of the box,
+built in, achieved this 0.65 AUC.
+
+01:16:21
+Then we did the label encoding,
+which is just a really basic thing.
+
+01:16:25
+And then we saw target encoding
+just push that performance up.
+
+01:16:29
+And this is AUC, right?
+
+01:16:31
+So from going from 0.65 to
+0.70 is a big deal because
+
+01:16:35
+it's not really... So 0.5 means
+that it's just random guessing.
+
+01:16:40
+So you can't even really look
+at the percentage of gain.
+
+01:16:43
+Like it's a big jump, like
+we got a good boost.
+
+01:16:51
+So let's see these techniques,
+how they work with another
+
+01:16:57
+model, specifically a
+support vector machine.
+
+01:17:03
+So once again, we're going
+to do a, we'll be...
+
+01:17:14
+So yeah, a little
+background, right?
+
+01:17:15
+Support Vector Machine, it
+solves like a problem completely
+
+01:17:17
+different, right?
+
+01:17:18
+Boosted trees was, it made
+a sequence of trees.
+
+01:17:21
+Each tree was trying to, you
+know, predict the error of
+
+01:17:25
+the previous collection of trees
+and gradient descent, blah, blah.
+
+01:17:30
+So this is a
+completely different model.
+
+01:17:32
+It treats every point as a
+point in n-dimensional space.
+
+01:17:34
+We're trying to find a hyperplane
+to divide the points, and
+
+01:17:38
+that's the means of classification.
+
+01:17:39
+So fundamentally different,
+has different personalities,
+
+01:17:42
+different performance, different
+behaviors, and it's good to
+
+01:17:44
+try different models on problems,
+and sometimes you'll be surprised
+
+01:17:48
+even a simple machine learning
+model might get better performance.
+
+01:17:51
+So we're going to play around.
+
+01:17:54
+With this now, so to speed
+things up a little bit, we'll
+
+01:17:57
+be training with just 16 million
+rows instead of the whole
+
+01:18:01
+1.6 million rows already SVC.
+
+01:18:04
+So we are on GPU, and that
+significantly speeds up SVC.
+
+01:18:08
+I mean, it made some things that
+are undoable, now they're doable.
+
+01:18:11
+Nonetheless, it's still a
+pretty heavy algorithm, so
+
+01:18:15
+we're going to speed things up by
+just training on a little subset.
+
+01:18:20
+And let's look at our columns.
+
+01:18:23
+Remind us, okay, we know this
+by now, but we have seven
+
+01:18:26
+categorical columns.
+
+01:18:29
+Support Vector Machines, they don't
+have any built-in functionality.
+
+01:18:32
+You cannot, we cannot just
+send this data into SVC as is.
+
+01:18:37
+It cannot accept strings.
+
+01:18:39
+Absolutely no, no way to do it.
+
+01:18:41
+So we're gonna have to use
+what we learned today.
+
+01:18:43
+We're gonna have to convert that
+string column into something.
+
+01:18:48
+So the first thing we do is
+we do this label encoder.
+
+01:18:50
+I think someone was asking
+if it's a hash map.
+
+01:18:52
+It's similar to a hash map, but
+it's really just randomly assigning
+
+01:18:56
+every string a unique integer.
+
+01:18:58
+Maybe it's doing an
+alphabetical order, different
+
+01:19:01
+implementations do differently.
+
+01:19:02
+So we just took all the strings,
+we just randomly turned them
+
+01:19:05
+into numbers, nothing special
+about the new numbers, like
+
+01:19:08
+target encoding or count encoding.
+
+01:19:12
+So, we're preparing here for
+our first SVC model.
+
+01:19:16
+We label encoded.
+
+01:19:18
+So SVC likes another form of
+engineering called normalization.
+
+01:19:24
+So first of all, SVM requires
+every column to be numbers.
+
+01:19:28
+And second of all, SVM prefers
+every column to be standardized.
+
+01:19:34
+So mean zero,
+standard deviation one.
+
+01:19:36
+That helps the algorithm to
+converge and often gives a
+
+01:19:39
+more accurate solution.
+
+01:19:40
+It's not necessarily...
+
+01:19:42
+Yeah, so we
+generally always do that.
+
+01:19:44
+So that's what we're gonna do
+now. We take every column, we use
+
+01:19:47
+the standard scaler, and now every
+column is being converted over.
+
+01:19:55
+All right, so we're ready to train.
+
+01:19:57
+Training the model.
+
+01:20:02
+Using a, so we're using
+a non-linear kernel, the
+
+01:20:05
+RBF kernel, so...
+
+01:20:09
+Working, see still, okay, so yeah,
+so it took 13 seconds on GPU,
+
+01:20:15
+on CPU, it'd be taking minutes, so
+we've got a huge speed up, but it
+
+01:20:19
+still takes a little bit of time.
+
+01:20:21
+And let's see how our first support
+vector classification model did.
+
+01:20:25
+All right, so nothing to
+write home about.
+
+01:20:29
+You know, on the positive side, I
+told you 0.5 is random guessing.
+
+01:20:33
+We're a little better than
+random guessing, but it's
+
+01:20:37
+not looking very good.
+
+01:20:38
+So what this illustrates is...
+
+01:20:41
+SVM, I mean, labeling coding, it
+cannot understand labeling coding.
+
+01:20:47
+I mean, it's not extracting
+anything from those columns.
+
+01:20:50
+Surprisingly, XGBoost was
+able to do something with it.
+
+01:20:53
+That's the nature of the
+different models.
+
+01:20:55
+So we need to do something better.
+
+01:20:56
+So something you often hear when
+you talk about machine learning
+
+01:20:59
+models is one-hot encoding.
+
+01:21:02
+Each column, if there is N
+unique values, we're going
+
+01:21:06
+to turn it into N new columns.
+
+01:21:08
+Each one is, was
+this value present?
+
+01:21:11
+Was this value present?
+
+01:21:12
+Yes or no? One or zero?
+
+01:21:14
+So we do this one hot encoding.
+
+01:21:19
+And now let's train the model.
+
+01:21:21
+So instead of using the, so instead
+of representing the categorical
+
+01:21:25
+columns with label encoding, we're
+now gonna represent the categorical
+
+01:21:28
+columns with one-hot encoding.
+
+01:21:31
+It does blow up our data set,
+unfortunately, so we only did some
+
+01:21:35
+of the columns, but nonetheless,
+we're seeing an improvement, right?
+
+01:21:38
+So the AUC went from, I
+forget, 505 to 515.
+
+01:21:43
+So yes, these machine learning
+models do like one-hot encoding.
+
+01:21:47
+And as I said, we only one-hot
+encoded a few of the columns.
+
+01:21:51
+We're gonna run into...
+
+01:21:53
+On this little machine,
+some memory problems if
+
+01:21:55
+we really explode it out.
+
+01:21:56
+I mean, users might be, I
+forget, there might be hundreds
+
+01:21:59
+of thousands of unique users.
+
+01:22:01
+I mean, if we blow it out,
+it's a bit one-hot encoding.
+
+01:22:04
+But this little test illustrated
+that we got some benefit.
+
+01:22:08
+All right, let's
+pull in the big guns.
+
+01:22:10
+The big guns,
+right? Target encoding.
+
+01:22:12
+Told you it was my favorite,
+told you it was my most powerful.
+
+01:22:15
+It works on machine
+learning models, too.
+
+01:22:18
+So we're now going to represent
+all the categorical columns.
+
+01:22:21
+With target encoding.
+
+01:22:23
+So once again, we imported the
+target encoder from NVIDIA QML.
+
+01:22:29
+So it's running on GPU.
+
+01:22:30
+It blazed through. You see
+how fast it made all these
+
+01:22:33
+seven new columns?
+
+01:22:35
+So it turned the seven new
+columns into numbers.
+
+01:22:39
+But once again, all numbers
+we want to be standardized.
+
+01:22:42
+So we're going to then run
+standardization on those seven
+
+01:22:45
+new columns, or maybe, I guess,
+all the number columns.
+
+01:22:49
+And now let's, uh...
+
+01:22:52
+Train SVC again.
+
+01:22:56
+And let's check the performance.
+
+01:22:59
+Awesome, so 0.6, now this
+is a respectable AUC.
+
+01:23:02
+I mean, this is actually something
+that's making, you know, it's
+
+01:23:05
+far, yeah, it's, anything
+near 0.5 is, you know, whether it's
+
+01:23:09
+even useful is people think about.
+
+01:23:12
+But 0.6, it's already,
+that's just solid.
+
+01:23:15
+We're making actually some
+good predictions.
+
+01:23:17
+And this was all
+because target encoding.
+
+01:23:21
+It re-represented these string
+columns in some manner that
+
+01:23:27
+SVC could recognize.
+
+01:23:29
+And why did it work so well?
+
+01:23:30
+Because the manner
+was so clear, right?
+
+01:23:33
+For every brand, it added
+a number, the percentage of
+
+01:23:36
+people that liked that brand.
+
+01:23:37
+I mean, that
+information is so helpful.
+
+01:23:40
+Ultimately, we wanna predict
+if someone likes the entire
+
+01:23:42
+row, I mean, this item, and
+we now have these new numbers
+
+01:23:45
+about how likable is the brand, how
+likable is this user, or, I mean.
+
+01:23:51
+I guess it's more, how often
+does this user like a product?
+
+01:23:54
+And then, how likable are
+these categories?
+
+01:23:56
+So these target encoding
+features have a lot of,
+
+01:23:59
+the representation of information
+is helpful, and it helped.
+
+01:24:04
+All right, so in XGBoost, we did
+not actually use count encoding.
+
+01:24:08
+Let's go ahead and use it here.
+
+01:24:10
+So this is the function, you
+can recognize it.
+
+01:24:11
+It's the same function
+we wrote earlier.
+
+01:24:15
+And now we're gonna go ahead and
+count encode these three columns.
+
+01:24:19
+So the user ID, the brand,
+and the category.
+
+01:24:23
+And we made three new columns.
+
+01:24:26
+And what is the interpretation
+of count encoding?
+
+01:24:29
+It's this. So this data set
+is a review data set.
+
+01:24:32
+And we're count
+encoding each user ID.
+
+01:24:38
+So what it means is if this
+user, it's saying this user
+
+01:24:42
+showed up 1,000 times, this
+user showed up three times.
+
+01:24:46
+So this column is kind of how
+often does this user write reviews?
+
+01:24:50
+And then for brand, this is
+ultimately, so for a row, it's
+
+01:24:57
+taking brand and it's adding how
+many times has this brand shown up?
+
+01:25:01
+How popular is this brand?
+
+01:25:03
+So these new columns,
+it's nothing about
+
+01:25:07
+Target encoding is telling the
+model how much something is
+
+01:25:10
+liked or not, but count encoding is
+telling the model about popularity.
+
+01:25:14
+How often is this user?
+
+01:25:16
+How popular is this brand?
+
+01:25:17
+It's new information.
+
+01:25:18
+It's a new representation.
+
+01:25:23
+Ultimately, I told you that SVM
+likes standardized features,
+
+01:25:28
+which is a Gaussian distribution,
+mean zero, standard deviation one.
+
+01:25:32
+Count encoding is inherently
+skewed to the right.
+
+01:25:35
+So we're actually going to
+log transform at first.
+
+01:25:37
+We're going to pull that skew
+in and then standardize it.
+
+01:25:40
+Ultimately, we're going to
+turn those new count encoding
+
+01:25:42
+columns into things that look like
+little bell-shaped distributions.
+
+01:25:48
+And now we're training. So
+we're training with three
+
+01:25:50
+new features compared to last time.
+
+01:25:52
+Features about counting
+coding, which are representing
+
+01:25:55
+popularity of brands, how
+often a user is on, and 617.
+
+01:26:01
+So it's a small
+gain, but it's a gain.
+
+01:26:03
+So that means there
+was new information.
+
+01:26:05
+We were at 615, so there
+was new information.
+
+01:26:09
+Let's look at all
+of our experiments.
+
+01:26:11
+So we can see the green and
+blue were using the label
+
+01:26:16
+encoder, and we were very close If
+you're close to 0.5, the S, the...
+
+01:26:22
+The SVM was struggling to
+extract any useful information.
+
+01:26:26
+In red, we targeted coding,
+and we shot the AUC all the
+
+01:26:29
+way up 0.6, and then yellow
+was we added counting coding, and
+
+01:26:34
+we got a little additional benefit.
+
+01:26:37
+But this should illustrate
+to us the power of feature
+
+01:26:41
+engineering, right?
+
+01:26:42
+Some people say, oh, let's
+just read in our data and
+
+01:26:46
+throw it into this model.
+
+01:26:48
+But the thing is, each model has
+different abilities to read data.
+
+01:26:53
+And when you make these new
+columns, you're just representing
+
+01:26:57
+the data in a new way that
+helps the model see patterns,
+
+01:27:01
+recognize things.
+
+01:27:02
+And we witnessed it. So this
+model was not outperforming
+
+01:27:05
+XGBoost, but this is definitely
+illustrating how feature
+
+01:27:07
+engineering helps models learn.
+
+01:27:10
+And, you know, we could sit
+here and make more features,
+
+01:27:12
+and who knows how high we
+can get the performance?
+
+01:27:16
+You know, we could probably get
+this performance even higher
+
+01:27:19
+with more feature engineering,
+but to do that...
+
+01:27:23
+It's what we discussed earlier.
+
+01:27:25
+We would need to do
+lots of experiments.
+
+01:27:26
+Try this, try this,
+try this, try this.
+
+01:27:29
+And experiments take time.
+
+01:27:30
+So if our goal was to boost
+this model, we'd wanna make
+
+01:27:34
+the experiments as fast as
+possible, get them on GPU.
+
+01:27:37
+We can try, try, try.
+
+01:27:39
+I bet we can get this one higher.
+
+01:27:41
+I bet we can get XGBoost higher.
+
+01:27:43
+And hopefully today you see
+that potential, you see the
+
+01:27:45
+value of feature engineering.
+
+01:27:47
+Hopefully you learn some techniques
+to speed things up, to give
+
+01:27:50
+you more experiments.
+
+01:27:56
+And let's talk about what
+we learned today.
+
+01:27:58
+So SVC is actually
+way too slow on CPU.
+
+01:28:01
+We're not even gonna
+do the comparison.
+
+01:28:03
+We'd be sitting here all day.
+
+01:28:04
+So let's talk about, let's
+invite Renee back here, and let's
+
+01:28:09
+talk about what we learned and
+take any questions from you guys.
+
+01:28:18
+All right.
+
+01:28:25
+So my question is,
+
+01:28:42
+For future engineering, I also did
+a project, so probably, I don't
+
+01:28:47
+know why I didn't get the right way
+that you have been doing, because
+
+01:28:52
+it's efficient, and that means it
+has to be better than my solution.
+
+01:28:58
+So, my question is, what made you
+to think you have rows, and then
+
+01:29:06
+you broke them into category type?
+
+01:29:09
+And then you horizontally
+projected it for your own reason.
+
+01:29:14
+What is the rationality in thinking
+about row-wise categorical values?
+
+01:29:23
+For example, student, work type,
+have you finished master's or
+
+01:29:29
+bachelor's or high school degree?
+
+01:29:31
+Those kind of categories.
+
+01:29:33
+And the same thing you flipped.
+
+01:29:35
+As well as few rows when you
+are projecting for the SG
+
+01:29:42
+boost vector, which is one
+of those gradient boost algorithm.
+
+01:29:49
+And the advantage of that algorithm
+is it has the historical input
+
+01:29:56
+based on the feedback, it considers
+them with a historical input.
+
+01:30:00
+But what rationality, how did
+you come up with this idea?
+
+01:30:06
+So I would say, yeah, it's
+a re-representation.
+
+01:30:09
+Because if we see a column
+of, yes, whether a person
+
+01:30:12
+is, you know, a grad student
+or what was the different
+
+01:30:17
+categories in your example?
+
+01:30:19
+Different categories of
+studies, like masters.
+
+01:30:21
+Yeah, so you have master's
+student, PhD student.
+
+01:30:24
+So these values have meaning to us.
+
+01:30:26
+We see that Excel sheet and
+we say, oh, yeah.
+
+01:30:29
+We're predicting salary.
+
+01:30:30
+Oh, yeah, the PhD makes the
+higher salary than the bachelor's.
+
+01:30:33
+It has meaning to us.
+
+01:30:34
+But these words,
+words have no meaning.
+
+01:30:37
+Words have no
+meaning to these models.
+
+01:30:39
+These aren't large language models.
+
+01:30:41
+They don't recognize words.
+
+01:30:42
+So the words have no meaning.
+
+01:30:43
+So all this feature engineering is
+just a way of turning words into
+
+01:30:48
+numbers, but meaningful numbers.
+
+01:30:50
+So label encoding is just
+randomly turning words into
+
+01:30:53
+just random integers.
+
+01:30:54
+But you don't
+convert them to columns?
+
+01:30:58
+What is meant by feature
+engineering here?
+
+01:31:00
+So feature means, in my
+understanding, it's a factor
+
+01:31:05
+contributing to the final results.
+
+01:31:07
+Yeah, so feature engineering,
+I just think is, it's anything
+
+01:31:10
+you do to make a new column.
+
+01:31:11
+So you can re-represent a column,
+you can take a bunch of columns
+
+01:31:14
+and find some way to combine them.
+
+01:31:16
+So anyway, so there's no new
+information, right?
+
+01:31:19
+Because we're not getting
+any new information.
+
+01:31:21
+We're just taking the information
+that's already in the data
+
+01:31:23
+set, re-representing it, whether
+it's single, multiple columns,
+
+01:31:26
+and making new columns.
+
+01:31:27
+So it's just a new way to represent
+the data in such a way that
+
+01:31:31
+now the model can recognize it and
+understand it and then utilize it.
+
+01:31:35
+but it's not the column name
+yeah it's so it's a new column
+
+01:31:40
+okay so PhD students so like
+you have PhD column and then
+
+01:31:45
+column name is called PhD
+
+01:31:48
+No, no, no. No, one-to-one.
+
+01:31:49
+So if the column was, you
+know, a distinction, then
+
+01:31:52
+this whole column turns into
+one column of TE distinction.
+
+01:31:57
+And now, you know, the same
+row that had PhD, now there'll
+
+01:32:01
+be a number two, the same
+row that had masters, a three.
+
+01:32:04
+So it's just one column to
+one column, yeah, yeah, yeah.
+
+01:32:06
+I misunderstood. Oh, I see, I see.
+
+01:32:10
+We have, like, maybe we can
+take two more questions.
+
+01:32:13
+We have another session
+starting right after.
+
+01:32:15
+I have a good question.
+
+01:32:19
+that's great yeah hi there uh
+quick question so so let me
+
+01:32:24
+see if i get this right if you are
+training sg boost model it can find
+
+01:32:30
+obviously non-linear relationship
+between columns but now with
+
+01:32:35
+the target encoding you are pretty
+much propagating the global signal
+
+01:32:38
+into each individual row that's why
+it's better it is performed better
+
+01:32:44
+that's that's the reason well um
+
+01:32:50
+The reason it's
+just, it can use it.
+
+01:32:55
+I mean, it's just a, I'm
+trying to think of a good
+
+01:32:56
+analogy, but it's a.
+
+01:33:03
+Yeah, I mean, it's just a
+way, it just recognizes it.
+
+01:33:06
+It knows nothing about brand.
+
+01:33:07
+So, and then now this is a, here's,
+so here's the popularity of brand.
+
+01:33:11
+Here is how much brand you like.
+
+01:33:12
+It's just, it's just a, it's
+just a new way to view it.
+
+01:33:15
+Right, because if you have
+a learning to rank model.
+
+01:33:18
+It is also by columns,
+because the models know
+
+01:33:22
+the relationship between
+columns and how they interact.
+
+01:33:25
+But then if you are learning
+to rank, it knows the row-wise
+
+01:33:29
+relationship between the samples.
+
+01:33:31
+Okay. In classification,
+each individual row has
+
+01:33:36
+a separate sample.
+
+01:33:37
+It doesn't compare
+with others, right?
+
+01:33:40
+So I think by doing that, what
+you're trying is to give more
+
+01:33:44
+information to each individual row.
+
+01:33:47
+You're saying that, okay,
+you're saying that inherently
+
+01:33:49
+a model doesn't, yeah, sort
+of recognize rows, but these
+
+01:33:52
+techniques are somehow using
+row relationships and giving
+
+01:33:55
+that information to the model.
+
+01:33:56
+I see what you're saying.
+
+01:33:57
+Okay, yes, I do agree with that.
+
+01:33:58
+You're right, because you're right.
+
+01:33:59
+Inherently, the numbers are
+sort of, the numbers are in
+
+01:34:02
+comparison to other rows.
+
+01:34:04
+So when this number is, you
+know, very high, 0.9, it's sort
+
+01:34:06
+of saying that these rows are the
+most popular rows or the most liked
+
+01:34:10
+rows, and that only has meaning
+in comparison to other rows.
+
+01:34:14
+That's a good insight. I hadn't
+thought about it like that.
+
+01:34:15
+That's kind of cool.
+
+01:34:17
+Yeah, that's cool. I like that.
+
+01:34:19
+Chris, I have a question over here.
+
+01:34:22
+Unfortunately, we'll have
+to cut it, but we'll be out
+
+01:34:23
+maybe in the hall.
+
+01:34:24
+Maybe people can come up
+to us and we do it.
+
+01:34:26
+Thanks so much. Thanks for joining.
+
+01:34:27
+Thanks so much for
+attending everybody.
+

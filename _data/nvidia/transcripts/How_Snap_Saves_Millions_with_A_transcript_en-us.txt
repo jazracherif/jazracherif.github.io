@@ -1,0 +1,1925 @@
+Session: https://www.nvidia.com/en-us/on-demand/session/gtc26-s81678/
+
+Transcript Powered by AI
+
+How Snap Saves Millions with Accelerated Apache Spark
+
+
+00:10
+Here's a list of all the things
+we're going to cover today.
+
+00:12
+And honestly, this one reads
+like an epic journey.
+
+00:17
+Well-intentioned heroes set
+out to pursue some righteous
+
+00:22
+goals and ran into hard blockers.
+
+00:25
+And with creativity and
+perseverance, they get over
+
+00:27
+all of these and accomplish
+what they set out to do.
+
+00:33
+So at the very top we're going
+to set up some context about,
+
+00:35
+you know, what we do, why
+it matters to Snap and then we
+
+00:40
+will walk through the months-long
+journey, how it unfolded through,
+
+00:44
+you know, exploration, bottlenecks,
+workaround, success and so on.
+
+00:53
+So, a little background.
+
+00:55
+A-B experimentation, some of
+you may be familiar in the data
+
+00:57
+world, it's where especially online
+services and companies do a bunch
+
+01:08
+of random control trials where they
+compare production behavior versus
+
+01:11
+any new behavior we introduce
+into the system and so on.
+
+01:14
+A-B experimentation is at the
+heart of how Snap ships products.
+
+01:18
+Virtually every single product
+decision at Snap goes through
+
+01:23
+our experimentation platform, be
+it a product feature change, be it
+
+01:27
+an ML ranking model change, be it
+hyperparameter tweaking, anything
+
+01:33
+you can think of goes through
+our experimentation platform.
+
+01:37
+We are talking about 600-plus
+Snap employees using the platform
+
+01:42
+any given day, more than 1,200
+experiments running on
+
+01:46
+Any given day, and each of
+those experiments is looking
+
+01:50
+at 6,000 plus metrics for analysis.
+
+01:55
+And we also do a bunch of
+advanced methodologies,
+
+01:57
+as any self-respecting
+experimentation platform should.
+
+02:01
+You know, we do cupid variance
+reduction, heterogeneous treatment
+
+02:05
+effect detection and sample
+ratio diagnostics, mismatch
+
+02:09
+diagnostics and so on.
+
+02:11
+FastCompany ranked Snap the
+number one most innovative
+
+02:15
+company in the world back
+in 2020 and I like to think
+
+02:19
+that this is the engine behind it.
+
+02:24
+All right, here's the real
+stuff that matters for us
+
+02:26
+engineers, you know, the scale
+and the constraints we get
+
+02:28
+to operate with and have fun with.
+
+02:31
+So we process about 10 petabytes
+of data every day.
+
+02:35
+The results have to be 100%
+accurate because Snap, the
+
+02:38
+company, is making launch
+decisions based on this output.
+
+02:42
+We have a strict 11 AM SLA
+for most of our workloads.
+
+02:46
+Essentially, every feature that's
+currently in flight has to look at
+
+02:51
+these results and make a decision
+about it rating, rolling back,
+
+02:54
+rolling forward, what have you.
+
+02:56
+So the SLA is very strict.
+
+02:59
+And our largest pipeline runs
+on about 45,000 machines.
+
+03:03
+And overall, our entire workload
+runs on about 100,000 machines.
+
+03:08
+And there's zero
+tolerance for failure.
+
+03:10
+Like, you know, thousands
+of features are blocked on
+
+03:12
+this, so it needs to be on
+time, otherwise it costs, like,
+
+03:16
+you know, on aggregate across the
+company, it costs, you know, years
+
+03:22
+of engineering time, in aggregate,
+every time you're late, so.
+
+03:27
+So enter NVIDIA's RAPIDS
+accelerator for Spark.
+
+03:32
+What caught our attention is that
+it requires zero code changes.
+
+03:36
+We wouldn't have to rewrite our
+pipelines in any form or fashion.
+
+03:40
+And it plugs into existing
+Spark workloads and it is
+
+03:43
+runtime agnostic.
+
+03:44
+We can run it on, you
+know, GCP Dataproc.
+
+03:47
+We can run it on our own Kubernetes
+runtime if we wanted.
+
+03:52
+NVIDIA's own reference benchmarks
+were very, very promising.
+
+03:56
+But reference
+benchmarks are one thing.
+
+03:58
+We gotta try it out on our own
+workloads to see how it fares.
+
+04:03
+I'm going to hand it off to
+Liang to walk you through
+
+04:04
+how we went about it.
+
+04:08
+Yeah, thanks Fufi.
+
+04:09
+So we run Benchmark on a few
+of our critical jobs, starting
+
+04:15
+from a join-based workload.
+
+04:17
+So this job joins two tables.
+
+04:20
+On one side it's around
+2 terabytes, and on the
+
+04:23
+other side it's around 100
+gigabytes on average.
+
+04:26
+So when we joined these
+two tables, the test was
+
+04:29
+performed on the T2 GPUs.
+
+04:32
+With the same cluster size,
+the same number of workers,
+
+04:36
+the GPU accelerates the job and
+runs in less than half the time.
+
+04:39
+If you look at this table,
+that's like 2.5x times the
+
+04:44
+speed up, just no code changing,
+just enable the RAPIDS plugin.
+
+04:49
+So this is a very good, the
+best first impression we had
+
+04:53
+when benchmarking these jobs.
+
+04:57
+So if we dive deeper, look at the
+SpyRecruiter details, the total
+
+05:02
+task time dropped from 400 hours
+on CPU to just 28 hours with GPUs.
+
+05:10
+That's a 14 times reduction.
+
+05:13
+But the real important thing
+here is the spills.
+
+05:16
+So when we look at the number
+of spills here, GPU completely
+
+05:20
+eliminates the 54 terabytes
+of memory spill and four terabytes
+
+05:25
+of the disk spills.
+
+05:27
+So if you have experience
+dealing with Spark at scale,
+
+05:30
+you know scale is often the
+main reason when jobs are slow.
+
+05:35
+So with this GPU, it just
+removed this problem entirely.
+
+05:41
+The second job, it's a
+union-based workload.
+
+05:44
+And this job unions two
+data sets ranging from size
+
+05:47
+around 10 terabytes down
+to hundreds of gigabytes.
+
+05:52
+The same setup, the same
+number of workers.
+
+05:55
+When compared GPU and CPU, you can
+see the GPU cuts the runtime almost
+
+06:00
+half, with 1.8 times the speed up.
+
+06:05
+Again, let's look at the
+Spark UI breakdowns.
+
+06:08
+The total task runtime went from
+600 hours down to 150 hours,
+
+06:14
+with 3.8 times the reduction,
+and it eliminates 90 terabytes
+
+06:20
+of the memory spill and 30
+terabytes of the disk spills again.
+
+06:24
+So when we compare the tasks
+duration metric, the GPU beats
+
+06:28
+the CPU at every percentile.
+
+06:31
+The consistency is what
+really stood out to us.
+
+06:38
+Let's look at the third job.
+
+06:41
+It's an aggregation job performed
+on 8 terabytes data sets.
+
+06:45
+Here, the speedup is about
+1.6 times, not as large as
+
+06:50
+the other two jobs.
+
+06:52
+But let's see.
+
+06:53
+The CPUs are already pretty fast
+on some straightforward aggregation
+
+06:56
+functions, like the sum calls.
+
+06:59
+So the gap is smaller.
+
+07:01
+But the thing is, half the
+GPU cluster with only 100
+
+07:05
+workers, it still beats the
+full CPU cluster with 200 workers.
+
+07:10
+So even when CPUs are
+competitive, GPU can do
+
+07:14
+it with half of the machines.
+
+07:19
+So a few things we learned
+during this benchmark.
+
+07:22
+First, GPU significantly benefits
+the non-IO-bounded jobs.
+
+07:28
+So joins and repartition,
+we saw a huge improvement.
+
+07:33
+And some straightforward
+aggregation, like some example,
+
+07:37
+some minor improvement.
+
+07:40
+On the other hand, if the
+job is bottlenecked on IO
+
+07:43
+itself, then we don't expect
+much improvement, though.
+
+07:48
+The second one, there are some key
+Spark configures needed to tune
+
+07:53
+when we use the GPU accelerator.
+
+07:56
+For example, the Spark executer
+resource GPU amount and the
+
+08:00
+task resource GPU amount.
+
+08:01
+Those are the two critical
+configures we should tune.
+
+08:05
+The third part is we check out
+for the image compatibility.
+
+08:10
+At the beginning, we use the
+Dataproc Debian-based images,
+
+08:15
+but we run into some issues
+on the compatibility side.
+
+08:20
+Then we found out we should
+switch to Ubuntu-based images.
+
+08:25
+The last one is the cluster
+creation overhead.
+
+08:28
+The package installation, the
+readiness check, all adds up.
+
+08:32
+So later on, Google Datapark team
+released a dedicated Datapark
+
+08:37
+image called a 2.3mm image that has
+the SCUDAR and the RAPIDS baked in.
+
+08:43
+With all that, I'll hand
+it back to Poovi.
+
+08:50
+As Liang just showed you, the
+case for GPUs was very clear.
+
+08:55
+They're faster, they eliminate
+spill entirely at this kind
+
+09:00
+of scale, and we need far fewer
+machines than we would otherwise.
+
+09:04
+But the biggest
+problem still remains.
+
+09:06
+At our current peak, we were
+running about 62,000 machines
+
+09:11
+at the same time.
+
+09:13
+GPUs would reduce
+this by two-thirds.
+
+09:17
+That would still mean that we
+still needed 20,000 GPUs, 20,000,
+
+09:21
+and that was the biggest problem.
+
+09:29
+So that's the scale
+we're dealing with.
+
+09:31
+Our pipelines, they essentially
+have to be sharded by nature
+
+09:36
+because, you know, there's so much
+data to crunch in so little time.
+
+09:41
+For example, you know, as
+the diagrams show, there is
+
+09:44
+about 38 shards for some metric
+computation and, you know,
+
+09:47
+10 for ratio metrics and so on.
+
+09:49
+There's many other pipelines.
+
+09:51
+So each shard runs on its own
+cluster, and they kick off
+
+09:54
+at like 4 a.m., they peak at around
+6 a.m., and some of them even end
+
+09:58
+up running all day long till like 6
+p.m., so really long-running jobs.
+
+10:02
+Our plan was to do it in
+incremental phases across
+
+10:08
+our sharded architecture.
+
+10:10
+So we thought, okay, phase one,
+we will do one shard, which
+
+10:14
+amounts to around 300 L4s, doable,
+with Dataproc on-demand GPUs.
+
+10:21
+And then we thought, okay,
+we'll do phase two, which is
+
+10:23
+10 shards, which amounts to around
+3,000 L4s, which is still probably
+
+10:28
+doable with Dataproc on-demand.
+
+10:31
+But beyond that,
+honestly, we had no idea.
+
+10:34
+Because there's still a huge
+gap between what is needed
+
+10:37
+and what we were able to get
+with on-demand GPUs.
+
+10:45
+So we started looking around.
+
+10:47
+Where at Snap do we
+have GPUs at scale?
+
+10:52
+Our influence platform
+runs a massive fleet of
+
+10:54
+GPUs for ML serving.
+
+10:57
+Think of ad ranking, content
+recommendations, what have you.
+
+11:01
+So they are doing this at a
+massive scale for our almost
+
+11:07
+billion monthly active users.
+
+11:09
+So there's a massive fleet of GPUs.
+
+11:11
+And
+
+11:12
+They support all the real-time
+ML that supports the company.
+
+11:17
+Snap's usage by nature is
+globally distributed and cyclical.
+
+11:23
+So users come online in the morning
+and they go to bed at night.
+
+11:26
+So following those patterns,
+the traffic follows the sun.
+
+11:30
+Wherever the sun goes,
+the traffic goes.
+
+11:32
+So when our largest markets
+go to sleep, that's when
+
+11:36
+the GPU utilization on the
+inference platform drops.
+
+11:39
+So between 2 and 5 AM Pacific,
+for example, most of the GPUs
+
+11:43
+are just sitting there doing
+nothing for hours on end.
+
+11:45
+And that was our opening.
+
+11:51
+But all of that capacity is
+tailored for online and serving
+
+11:54
+usage and not necessarily
+batch data, which is what
+
+11:58
+we were set out to do, right?
+
+11:59
+So, our mission
+changed a little bit.
+
+12:02
+We set out to build
+something entirely new.
+
+12:06
+A data platform where Spark
+runs on shared CPU and GPU
+
+12:10
+resources on GKE, because that's
+the same infrastructure our serving
+
+12:15
+and online stack already runs on.
+
+12:18
+So, jobs use GPUs when they're
+available, fall back to CPUs
+
+12:23
+on Kubernetes when they're not, and
+we would build a quota system for
+
+12:27
+sharing all of these CPU and GPU
+resources so that it benefits every
+
+12:32
+team at Snap and not just ours.
+
+12:35
+Now, let me hand it back to
+Liang to walk through how
+
+12:37
+we actually ended up building this.
+
+12:40
+So, I will introduce the details
+about our implementations.
+
+12:46
+Now let's see, so the main
+challenge here is we can conclude
+
+12:52
+it with three buckets.
+
+12:53
+The first one is
+the infrastructure.
+
+12:55
+We need a custom Spark RAPIDS
+image just in order to move
+
+12:59
+the Spark jobs from Dataproc
+to Kubernetes, where the serving
+
+13:04
+infrastructure was.
+
+13:06
+Besides, we also need
+middlewares for job management
+
+13:09
+and cluster management
+like what Dataproc provides.
+
+13:12
+Because the serving infrastructure
+uses different machine specs
+
+13:16
+than our data processing machines,
+so then we also had to tune
+
+13:21
+the Spark configures to meet
+the combinations of new code,
+
+13:26
+memory, and disk setup.
+
+13:28
+The second bucket
+is the scheduling.
+
+13:31
+So we have to move our jobs
+into the GPU idle window,
+
+13:34
+as Pruvi just introduced.
+
+13:37
+And then we can align the
+upstream and downstream
+
+13:40
+dependencies in order to
+move into that idle GPU window.
+
+13:44
+The third bucket is GPU
+capacity management.
+
+13:48
+We need to set up preemption
+priorities, the quota checks
+
+13:51
+at the submission time, and
+then graceful fallbacks to
+
+13:55
+CPUs when GPUs are not available.
+
+14:00
+Building the image itself was
+actually pretty straightforward,
+
+14:04
+but this is the first step we take.
+
+14:07
+With the help from the NVIDIA
+team and the official Kubernetes
+
+14:11
+guide, we put together an
+image with CUDA as the base.
+
+14:15
+Then we build a Spark on
+top with some connectors
+
+14:18
+for GCS and BigQuery.
+
+14:21
+And then we put in the RAPIDS jar
+and the GPU discovery scripts.
+
+14:26
+At the end, we install our pipeline
+Python libraries that we need.
+
+14:32
+So the build was actually quite
+easy, but it also takes some extra
+
+14:38
+time to tune the Spark jobs after.
+
+14:43
+So after we build the image,
+we are thinking about how
+
+14:47
+we build the scheduling side.
+
+14:50
+So when operating on Dataproc,
+clusters and the jobs management
+
+14:54
+are handled automatically,
+allowing us to submit Spark
+
+14:58
+jobs directly from Airflow.
+
+15:00
+However, after we move
+to Kubernetes, Airflow
+
+15:04
+doesn't have that support
+for Spark on Kubernetes.
+
+15:07
+So a new middleware solution
+is required to manage both
+
+15:10
+the cluster and the jobs.
+
+15:13
+So here we
+introduce the two layers.
+
+15:16
+One is the Snap Prism operator.
+
+15:18
+That's an internal platform which
+handles the job lifecycle, resource
+
+15:22
+management, and observabilities,
+like how the job is running,
+
+15:27
+what are the ops metrics.
+
+15:30
+Underneath that, we use an
+open-source Spark on Kubernetes
+
+15:33
+operator that manages the
+execute port, the scheduling,
+
+15:37
+and the GPU resource bindings.
+
+15:43
+And the reliability is not
+negotiable, so we build
+
+15:46
+fallbacks at two levels.
+
+15:48
+At the submission time, if
+there is no GPU quota available,
+
+15:52
+the job will automatically
+fall back to the CPU-based
+
+15:55
+Kubernetes clusters first.
+
+15:58
+At the job runtime, if it fails,
+the GPUs got preempted from the
+
+16:04
+serving side, and we will retry.
+
+16:07
+to the GPU-based
+GKE clusters first.
+
+16:10
+Again, if the job fails further,
+then we will fall back to Dataproc.
+
+16:14
+So every single job has a
+path to completion.
+
+16:17
+GPU acceleration is just
+opportunistic, never mandatory.
+
+16:25
+Tuning is also
+another big challenge.
+
+16:28
+You have to match the Spark
+configures to the machine types,
+
+16:31
+like the code-to-memory ratio, the
+parallelism, and the GPU counts.
+
+16:37
+There are environment differences
+between the Dataproc image
+
+16:40
+and our self-built Spark on
+Kubernetes images when we migrate
+
+16:45
+from Dataproc to Kubernetes.
+
+16:48
+Luckily, NVIDIA's ether tool was
+honestly very important here.
+
+16:52
+It gave us the correct initial
+configures from day one and
+
+16:56
+kept tuning consistently across
+all our projects.
+
+16:59
+So it would have taken us
+a lot longer without it.
+
+17:06
+One good thing to call is that
+G2-centered serving machines don't
+
+17:10
+support local SSDs' attachment.
+
+17:13
+But as we know, that's
+a big problem because
+
+17:16
+local SSDs are essential
+for shuffle-heavy Spark jobs.
+
+17:21
+On Spark, on Kubernetes, however,
+it supports several types of
+
+17:26
+ways to mount a Kubernetes volume
+into the driver and executor pods.
+
+17:31
+So our choice is the persistent
+volume claim, which is
+
+17:34
+the so-called PVCs.
+
+17:36
+It lets us use it as a workload
+mount when we can't attach
+
+17:41
+local SSDs on the Kubernetes.
+
+17:43
+So now the problem is
+solved with the PVCs.
+
+17:49
+And the next challenge is
+how we can move our pipelines
+
+17:52
+into the idle GPU window,
+which is from 1 to 5 a.m.
+
+17:57
+So the pipeline normally kicks
+off at 5 to 6 a.m.
+
+18:01
+after all our upstreams are done.
+
+18:03
+For example, we have one
+upstream collecting the
+
+18:06
+exposure event for studies.
+
+18:08
+This upstream started at 2 a.m.
+
+18:11
+and finished by 3 a.m.
+
+18:13
+Another upstream compute source
+matrix started at 3 a.m.
+
+18:17
+and then completed at 4 a.m.
+
+18:20
+So if we want to move
+our upstreams, we need
+
+18:23
+to move them earlier.
+
+18:27
+There are two solutions we used.
+
+18:29
+One is we moved from client
+timestamp to server timestamp.
+
+18:34
+which allows the upstreams
+to be computed earlier.
+
+18:38
+And we also rearranged the
+scheduling dependencies in
+
+18:41
+Airflow to stop jobs at 2 a.m.
+
+18:44
+So these two works out well to
+allow us to move our pipelines
+
+18:47
+into the idle GPU windows.
+
+18:52
+Now to make sure our shards make
+the most out of the available
+
+18:57
+idle capacity, we also kept the
+number of concurrent shards at 10.
+
+19:02
+So the maximum GPU requests
+are under 3,000 to match the
+
+19:07
+idle inference capacity we
+had in the company.
+
+19:11
+We also switched to a more cost
+effective A-B analysis method that
+
+19:15
+can reduce the per shard duration
+from three hour to one hour.
+
+19:20
+So that let us cycle through
+the batch faster.
+
+19:24
+We can see before and after
+in this diagram, and I'll
+
+19:28
+let Poovi go next.
+
+19:37
+This was a massive multi-quarter
+undertaking, about eight
+
+19:43
+months or longer from the
+first time we started testing
+
+19:46
+to fully productionize our
+pipelines at this scale.
+
+19:50
+The first half was largely
+about enablement, building
+
+19:53
+the platform foundations and
+fundamentals, and building the
+
+19:58
+image, solving for storage, getting
+the Kota API in place, and working.
+
+20:05
+And the second half was where
+things got a little more real.
+
+20:08
+We started migrating shards
+one after the other to
+
+20:11
+production, stabilizing
+them and scaling them up.
+
+20:15
+We went from one shard to 30
+out of 38 on the SUM pipeline
+
+20:20
+in about a month.
+
+20:22
+And by early January, we were
+fully migrated on the SUM pipeline.
+
+20:27
+The pace accelerated, the
+second half was so smooth,
+
+20:32
+largely because of the first
+half, where we invested heavily on
+
+20:35
+the platform aspects, and getting
+them right, and iterating heavily
+
+20:39
+there, and that paid off, that
+made our migration so much easier.
+
+20:45
+You all know how hard data
+migrations are in production,
+
+20:47
+I don't have to tell you.
+
+20:50
+All right, so a lot of moving
+pieces here, right?
+
+20:53
+Like throughout, we had to
+pivot a lot of times, we had
+
+20:56
+to work around a lot of things,
+we identified a lot of things.
+
+21:01
+Lots of moving pieces, lots
+of complexity, and we all know
+
+21:04
+what that means, operational risk.
+
+21:06
+When you have a lot of moving
+pieces, you kinda have to
+
+21:10
+account for the operational
+risk it introduces.
+
+21:13
+But not when it is done the
+right way though, right?
+
+21:16
+Like when you emphasize on
+platform pieces first.
+
+21:19
+That work in isolation and
+then build on top of it.
+
+21:22
+And you make sure your work is
+thoroughly tested and weighted
+
+21:25
+at every single step.
+
+21:27
+It doesn't have to be that way.
+
+21:28
+And that's what these charts show.
+
+21:31
+This is what things look
+like in production today,
+
+21:34
+as in recent past.
+
+21:36
+Left chart is about GPU usage
+after the migration.
+
+21:40
+The peak, as you can see,
+is a little over 2,000 GPUs
+
+21:44
+during the idle window, well
+within the capacity bounds
+
+21:47
+that we are working with.
+
+21:49
+The right chart is the production
+job success rate.
+
+21:53
+The hourly computation job is
+successful 99% of the times.
+
+21:57
+The daily sum is successful
+96% of the times.
+
+22:00
+And these numbers aren't
+even cherry picked.
+
+22:02
+These numbers include all the
+infra failures even beyond GPUs.
+
+22:06
+And just one tiny note, for
+small jobs, this system works
+
+22:10
+flawlessly, like 100% of the times.
+
+22:15
+So now let's talk dollars. This is
+where the real impact is, right?
+
+22:20
+So there are two ways of
+looking at how we save
+
+22:23
+dollars for the company.
+
+22:25
+One is, you know, the net
+dollar saved for Snap itself.
+
+22:29
+So one, we reduce the spend
+on experimentation platforms.
+
+22:35
+And also, we started making use
+of the idle GPU capacity, so there
+
+22:40
+is no net new compute cost added.
+
+22:43
+So we reduced costs and also
+used idle capacity, so the
+
+22:48
+net savings are massive, about 90%.
+
+22:50
+The net footprint
+of experimentation
+
+22:52
+platforms dropped by 90%.
+
+22:54
+But for you all, because you're not
+part of Snap and I want to present
+
+22:59
+apples to apples In comparison,
+if we were just doing before
+
+23:03
+To after, between CPU and
+GPU, and count the GPU usage
+
+23:07
+as incremental cost as well,
+the number now is 76%, which is
+
+23:13
+not something to laugh at, right?
+
+23:16
+So, regardless of which way
+you want to cut it, it's a
+
+23:20
+massive, massive win.
+
+23:23
+76% or 90%. I haven't
+seen those numbers.
+
+23:28
+Cool, so here's the breakdown
+by cost type after migration.
+
+23:31
+So this includes all the
+fallback mechanisms and
+
+23:35
+the design trade-offs we
+had to make throughout.
+
+23:38
+For example, the green part,
+that's the GPU executors.
+
+23:44
+Those make up the vast majority
+of our compute at this point.
+
+23:49
+The Spark driver nodes and
+any fallbacks to CPU images
+
+23:54
+because of capacity needs,
+they are the blue thing in there.
+
+23:59
+And then PVC storage replaced
+all of our local SSD costs.
+
+24:03
+And data proc fallback is
+for when both GPU and CPU
+
+24:08
+fail in our Kubernetes environment.
+
+24:11
+So looking at the table at
+the bottom right, you know,
+
+24:15
+cores went down 62.5%.
+
+24:19
+And then the memory went from
+about three petabytes to half
+
+24:22
+a petabyte, 81% reduction.
+
+24:25
+And we are doing it with what
+amounts to a little over 11,000 L4s
+
+24:30
+in total during the six-ish hours
+that we run these pipelines on.
+
+24:37
+So to wrap it all up, like
+I said, the epic journey.
+
+24:41
+We had a ton of things that
+we had to work around.
+
+24:45
+Huge kudos to the team for the
+perseverance and creativity
+
+24:51
+and looking around the corners.
+
+24:54
+And I don't want to
+
+24:57
+Take any of this away from
+our partners, you know, this
+
+25:00
+was really made possible because
+RAPIDS and the NVIDIA team
+
+25:04
+that we worked with were so
+good at what they do, we could
+
+25:07
+just focus on our own migration
+and infrastructure pieces, right?
+
+25:11
+So to summarize, we had to
+make zero code changes.
+
+25:17
+We were able to migrate like
+a petabyte scale pipeline in
+
+25:20
+production without any outages over
+like eight months, three quarters.
+
+25:26
+And then we achieved about
+90% cost savings for Snap,
+
+25:30
+hence the title of the session,
+Saving Millions for Snap.
+
+25:34
+And the reliability is insane,
+like 99% and 96%.
+
+25:40
+So that's the unlock.
+
+25:42
+Thanks everyone.
+
+25:44
+Liang and I, we are happy
+to take questions now.
+
+25:52
+Okay, any questions?
+
+25:59
+Hi, thanks, very interesting.
+
+26:02
+What is your experience of
+replacing local SSD with PD?
+
+26:08
+Is there any like performance
+impacts for this and any
+
+26:13
+cost impacts as well?
+
+26:16
+I think the question is about
+local SSDs versus PVCs, right?
+
+26:20
+PD, like, yeah. Oh, PD, sorry.
+
+26:22
+You said that you replaced local
+SSDs because you could not attach
+
+26:26
+them to G2 with persistent disks.
+
+26:30
+So what is your experience there?
+
+26:33
+So that's because like...
+Yeah, that's from the GCP
+
+26:38
+side for those G2 machines,
+we can't attach local SSDs.
+
+26:42
+Then we have to...if we don't
+attach PD SSDs, then it's like...
+
+26:47
+It's the out-of-box PD
+standard disks there.
+
+26:51
+So quite slow, so we have
+to find some SSD options.
+
+26:54
+And the PD SSD, the PVC is
+the only option we had just
+
+26:59
+in our serving inference side.
+
+27:01
+But that's like an
+additional charger.
+
+27:10
+So just to confirm, you migrated
+the entire Snap ecosystem over?
+
+27:16
+That's what this process was?
+
+27:19
+So there's two components to this.
+
+27:21
+One is the platform that allows
+entire Snap data ecosystem
+
+27:24
+to reuse the GPU capacity
+and shared CPU capacity.
+
+27:28
+And then the other migration
+bit is purely for Snap's
+
+27:31
+experimentation pipelines,
+not for the whole company.
+
+27:35
+Also to add something, you need
+to test what jobs are benefiting
+
+27:41
+most from these GPU accelerations.
+
+27:43
+As listed in this slide, if
+the job is bounded by IO,
+
+27:48
+then you probably don't see
+that much improvement.
+
+27:51
+So one example is we have some
+internal jobs doing the...
+
+27:56
+Serialization and deserialization,
+basically those jobs just
+
+28:01
+read some serialized input
+and do a deserialized.
+
+28:04
+Those are not like a shovel
+heavy, but so far those jobs
+
+28:08
+we don't see a lot of improvement.
+
+28:10
+So we didn't like focus on
+migrations those jobs.
+
+28:14
+Can you tell me a little more
+about why the memory footprint
+
+28:18
+and shuffle spills was reduced
+when you switched?
+
+28:21
+Like what happened there?
+
+28:22
+What was the
+technology that changed it?
+
+28:25
+Yeah, that's a good question.
+
+28:27
+I think the NVIDIA team have
+a better knowledge.
+
+28:30
+What I learned is they spend
+tremendous effort to optimize
+
+28:36
+the CPU when utilizing GPUs.
+
+28:44
+I probably don't have too
+much insights of what they
+
+28:46
+are doing, but it might be like how
+they partition the data frame and
+
+28:52
+how they move the partitions from
+the CPU memory to the GPU memories.
+
+28:57
+So, yeah, I think that's the
+main effort NVIDIA team did.
+
+29:03
+Yeah, I just had a question more
+about the RAPIDS accelerator
+
+29:06
+library and how you worked
+with the NVIDIA team in general.
+
+29:09
+Was this an idea that
+NVIDIA brought to you?
+
+29:11
+Was this something that
+
+29:12
+Your CTO had an idea around
+cost savings here.
+
+29:16
+Yeah, just would love to hear
+a little bit more on where
+
+29:18
+this got started.
+
+29:21
+Yeah, that's a fun story.
+
+29:23
+So first, we look at NVIDIA
+as a blog post, and then we
+
+29:27
+discovered this accelerator.
+
+29:29
+So before this, the popular
+accelerators for Spark are
+
+29:35
+like very large vertex outside.
+
+29:39
+And then we discovered this RAPIDS
+accelerator, and we start to,
+
+29:44
+just on the first time we benchmark
+it, we saw surprising results.
+
+29:49
+So we keep pursuing this direction,
+and then we reach out to Google
+
+29:55
+Cloud, which is our...
+
+29:58
+What we use at Snap and
+Google Cloud connect us
+
+30:02
+with the NVIDIA team.
+
+30:03
+So we are collaborating as three
+parties and moving and pushing
+
+30:08
+forward in these directions.
+
+30:11
+Yeah, and it was definitely a
+very collaborative exercise.
+
+30:15
+I can't stress this enough.
+
+30:17
+I have one.
+
+30:18
+So early on in the presentation,
+you showed benchmarks against
+
+30:23
+T4s, but it looked like you
+used actually L4s.
+
+30:26
+Could you clarify that, please?
+
+30:29
+Oh yeah, so because it's data
+processing, we are not at
+
+30:35
+the highest priorities to use GPUs.
+
+30:38
+And basically those high-end GPUs
+are all reserved by the ML teams,
+
+30:43
+like inference or training side.
+
+30:45
+So what are our choices?
+
+30:47
+It's L4 and T4s.
+
+30:49
+And then we first, the T4 is,
+I think it's the oldest model
+
+30:55
+and the cheapest ones we can use.
+
+30:57
+So we first benchmark on T4s.
+
+30:59
+Then we check all the
+availabilities, how
+
+31:01
+many T4s we can get.
+
+31:03
+Because it's an older model, Google
+said they probably wouldn't have
+
+31:08
+more stocks, Incoming stocks, so
+asking if we can try out the L4s.
+
+31:14
+And the L4s are giving
+similar results, so we
+
+31:19
+can continue on the L4s.
+
+31:21
+And then the lucky part is
+our inference platform are
+
+31:24
+actually on G2 standard, which
+are attached with L4s.
+
+31:28
+So that's why the later works
+are built with L4s.
+
+31:33
+Yeah, I mean, to summarize,
+it's basically opportunistic
+
+31:36
+based on what's available.
+
+31:39
+Perfect.
+
+31:40
+One more question, since we have
+a couple of minutes left, unless
+
+31:44
+folks in the audience have any.
+
+31:47
+So are there other use cases
+other than the experimentation
+
+31:50
+platform that Snap is planning
+on using this for that you could
+
+31:53
+see it being very helpful for?
+
+31:57
+Yeah, so inside Snap, we are also
+migrating the metric computation
+
+32:04
+platform to these GPU accelerators.
+
+32:07
+And it's still in progress,
+but again, the main problem is
+
+32:13
+not on this Rapids and Sparkself,
+it's on the GPU availability side.
+
+32:18
+So that's another discussion, how
+we can get more GPUs and how we can
+
+32:24
+fit it into the idle window better.
+
+32:27
+So I think, as far as I know,
+there are active threads,
+
+32:32
+like arrange different teams, how
+we can align the schedules to use
+
+32:37
+these GPUs in more efficient ways.
+
+32:39
+Yeah, and also, to add to
+that, one of the good things
+
+32:43
+about the platform approach
+we took to GPU sharing is that
+
+32:48
+if Snap's capacity grows, you know,
+reservations grow, capacity grows,
+
+32:53
+more teams can benefit from it.
+
+32:55
+Right now, I know we are hogging
+up all the free capacity.
+

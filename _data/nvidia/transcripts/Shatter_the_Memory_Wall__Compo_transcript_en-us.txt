@@ -1,0 +1,2327 @@
+Session: https://www.nvidia.com/en-us/on-demand/session/gtc26-s81873/
+
+Transcript Powered by AI
+
+Shatter the Memory Wall: Composable Building Blocks for Massive Scale Analytics
+
+
+00:05
+Howdy everybody.
+
+00:06
+As Prachi just said, I'm Rodrigo
+Aramburu, this is Felipe Aramburu,
+
+00:09
+and about 15 years ago, we
+were just two brothers with
+
+00:13
+a get-rich-quick scheme that the
+jury's still out on and we're still
+
+00:17
+working on, so we're pretty excited
+about what we have to show you.
+
+00:20
+But we've been doing large-scale
+distributed query execution
+
+00:23
+on GPUs, previously with a
+company called BlazingSQL, most
+
+00:27
+recently with Voltron Data, and
+then now obviously here at NVIDIA.
+
+00:30
+And so, we're just going to
+talk to you about some of
+
+00:32
+the learnings and some of
+the components that we're building
+
+00:34
+out to try to make it easier for
+everyone and anyone to build out
+
+00:38
+their own large-scale distributed
+GPU accelerated engines.
+
+00:45
+When we think about GPUs,
+most of the time people are
+
+00:48
+talking about compute, right?
+
+00:50
+And how fast the
+compute is on GPUs.
+
+00:52
+But what we're not necessarily
+talking about is the memory
+
+00:55
+footprint of those GPUs and how is
+it that you should be appropriately
+
+00:59
+leveraging that memory footprint.
+
+01:01
+And so GPU memory is growing,
+it's growing quite fast, but
+
+01:06
+probably not as fast as the
+data sets that we're actually
+
+01:08
+processing and required to process.
+
+01:10
+And so, for us, it's not so
+much about thinking about
+
+01:13
+how fast is the compute, but it's
+how fast can we move the data from
+
+01:17
+wherever it happens to be, whether
+that's on remote object store,
+
+01:20
+remote NFS, local NVMe system
+memory, or the GPU memory itself.
+
+01:25
+And so, data movement is actually
+the primary challenge when
+
+01:29
+you're building out these
+large-scale systems.
+
+01:32
+And then the second thing
+is that the GPU memory is
+
+01:35
+a lot smaller than the system
+memory or the local NVMes
+
+01:39
+or the drives on those machines.
+
+01:41
+And so one of the things that
+we care a lot about is what
+
+01:44
+we call memory frugality, right?
+
+01:46
+How is it that we can take
+up the least amount of bytes
+
+01:49
+for the shortest amount of
+time in HBM space so that
+
+01:53
+we're able to actually utilize
+it to its maximum potential?
+
+01:57
+And one of the challenges is that
+you effectively have to start
+
+02:02
+Inverting the paradigm of
+the way that CPU-accelerated
+
+02:05
+systems are built in that
+you are willing to pay a higher
+
+02:09
+computational cost because there
+is leftover compute inside the
+
+02:13
+GPU to shrink the amount of bytes
+for the amount of time that you
+
+02:18
+necessarily have them in memory.
+
+02:20
+And so it's all about this
+memory frugality concept.
+
+02:23
+That Felipe is going to be
+talking about in a bit.
+
+02:25
+And then finally, it's all
+about observability and
+
+02:29
+telemetry for these large-scale
+distributed systems.
+
+02:32
+They're very complex,
+heterogeneous systems.
+
+02:34
+And so, how is it that you're
+actually able to identify
+
+02:38
+what is happening on that system?
+
+02:40
+And what is the causal relationship
+between what's happening on
+
+02:43
+that system and the actual
+GPU or the resources themselves?
+
+02:48
+And so,
+
+02:49
+When we think about the memory
+wall, one of the easiest ways
+
+02:53
+we kind of show this off and talk
+about this is from our prior work.
+
+02:56
+So Theseus was a large-scale
+distributed query execution engine.
+
+03:00
+We were able to scale it up
+to about 100 terabytes, so
+
+03:04
+SF100k for TPC-H and TPC-DS,
+if you're familiar with those
+
+03:08
+database benchmarks.
+
+03:09
+And the amount of actual
+working space in a system
+
+03:13
+like this for ours, because
+everything's happening in
+
+03:15
+GPU memory, is 1.28 terabytes.
+
+03:19
+So we have dramatically less
+memory available to us from
+
+03:23
+a working perspective.
+
+03:24
+We can spill to host.
+
+03:25
+So that's why we're saying
+20x here, because adding the
+
+03:28
+host memory for this system,
+we get to about 9.28.
+
+03:31
+But that's really the
+way that we think about
+
+03:33
+shattering the memory wall.
+
+03:35
+How is it that you can process
+problems that exceed the available
+
+03:38
+memory that you have so that you're
+able to actually complete them?
+
+03:41
+And then these are just some
+numbers that we have from
+
+03:44
+when we scaled that system up from
+as few as two servers, which is
+
+03:47
+kind of the numbers I was showing
+before, all the way up to eight
+
+03:50
+servers or 64 A100 GPUs that each
+have 80 gigabytes of pop in them.
+
+03:56
+And so you can see kind of on
+the lower end, we're talking
+
+03:59
+about 10 terabytes in the white.
+
+04:01
+Then we're talking about 30
+terabytes and then we're talking
+
+04:04
+about 100 terabytes.
+
+04:05
+And that's on both
+TPC-DS and TPC-H.
+
+04:10
+And so why all this matters
+is, here, we're trying to
+
+04:13
+build out composable building
+blocks that enable anyone and
+
+04:16
+everyone to build out these engines
+as effectively as possible, right?
+
+04:20
+We like to call it MICE.
+
+04:21
+It's modular, it's
+interoperable, it's
+
+04:22
+composable, and it's extensible.
+
+04:24
+And so how is it that we can create
+some of these building blocks to
+
+04:27
+make it easier for you to actually
+understand how to manage those
+
+04:32
+memory tiers more appropriately,
+and how to drive faster file I.O.,
+
+04:37
+how to do all sorts of different
+things from the operator level,
+
+04:39
+with cuDF and so on and so forth.
+
+04:41
+And so, Felipe is the one who's
+going to go over this, but
+
+04:44
+just to kind of give you a little
+bit of a sneak peek, we're going
+
+04:46
+to be talking about two projects
+that we're working on right now.
+
+04:49
+These aren't the full breadth of
+all the projects that we're doing,
+
+04:52
+but they're pretty interesting.
+
+04:53
+One of them is a variety
+of primitives for memory
+
+04:56
+management that is actually
+an open source repo that
+
+04:59
+is available on GitHub now.
+
+05:00
+It's called cuCascade.
+
+05:02
+And the other is a distributed
+telemetry and profiling layer.
+
+05:06
+And so with that, Here we go.
+
+05:11
+QDF, Memory Management Privileges,
+this is the library that's
+
+05:16
+called QCascade, and we made
+it because we kept running into the
+
+05:22
+same problem over and over again.
+
+05:24
+Every time we made a new system
+or tried to integrate with
+
+05:28
+a new system, the first aspect
+of this is topology awareness.
+
+05:34
+So we made primitives that make
+it very easy to understand what is
+
+05:39
+the, you know, how many Numa nodes
+do you have, where are those GPUs
+
+05:43
+located, what are the different
+kinds of memories, network
+
+05:46
+interface cards, and different
+things that are connected to this
+
+05:49
+system, so that we can build that
+understanding into the software
+
+05:53
+solutions that we help accelerate.
+
+05:56
+Two, memory management.
+
+05:59
+GPU memory is dear, GPU memory
+is very expensive, and so
+
+06:03
+being able to scale beyond
+just the GPU memory, having
+
+06:09
+functionality for spilling across
+these memory tiers, managing when
+
+06:13
+this spilling is supposed to be
+done, and having an understanding
+
+06:16
+of different strategies for doing
+so, was also something that we kept
+
+06:20
+seeing every engine have to build.
+
+06:22
+And then, data movement.
+
+06:26
+How we move bytes onto the
+GPU matters quite a lot.
+
+06:30
+And one thing I kind of skipped
+on memory management is that
+
+06:33
+a large part of that is a
+reservation system, a way of making
+
+06:37
+sure that we're not oversubscribing
+to the GPU resources.
+
+06:43
+Rodrigo mentioned MICE.
+
+06:46
+So one of the things that was very
+important when we were building
+
+06:50
+this engine is to take these
+design principles into account.
+
+06:56
+So the system is modular.
+
+06:58
+You don't have to use all of
+the components in the system.
+
+07:01
+You can use the reservations.
+
+07:03
+You can use the memory resources
+and the allocators.
+
+07:07
+You can use the tracking,
+the topology discovery, but
+
+07:10
+you don't have to use everything.
+
+07:12
+They're interoperable.
+
+07:14
+So these work out of the box with
+libraries like QDF and RMM that
+
+07:19
+are part of the Rapids ecosystem.
+
+07:21
+So they're meant to be able
+to interface with libraries
+
+07:24
+that you're already using if
+you're using the Rapids ecosystem.
+
+07:29
+They're composable.
+
+07:31
+These components build on
+top of each other.
+
+07:34
+While you can take what you want,
+putting them together allows
+
+07:38
+for more complex and interesting
+behavior in your systems.
+
+07:42
+And most importantly, in my
+opinion, they're extensible.
+
+07:46
+You can make your own
+data representation, your
+
+07:49
+own allocators, your own
+conversion functions for
+
+07:53
+going between memory tiers.
+
+07:55
+And so while we provide these
+things for you, we try not to be
+
+07:58
+opinionated about how you have to
+do it if you want to change that.
+
+08:04
+Memory management in QDF.
+
+08:07
+So I mentioned that we have
+a system of reservations.
+
+08:11
+What this basically means
+is that when I have, let's
+
+08:16
+say I have a bunch of tasks that
+I want to run on the GPU, I need
+
+08:21
+to make sure that I schedule only
+enough so that I'm not exhausting
+
+08:25
+the resources on the GPU.
+
+08:28
+This makes our solutions more
+resilient and also decreases
+
+08:33
+the cost of having to deal
+with out-of-memory errors.
+
+08:37
+Out-of-memory errors are not free.
+
+08:39
+Every time you encounter them,
+you're going to have to move
+
+08:42
+some data somewhere and perform
+some kind of recovery.
+
+08:46
+The other thing that it provides
+is very fast conversion between
+
+08:51
+GPU memory, CPU memory, and
+disk, and encodings that allow
+
+08:56
+you to move between things like
+QDF, Arrow, or host representations
+
+09:03
+that use fixed-size memory buffers.
+
+09:05
+So it really allows you for
+either using utilities that
+
+09:09
+you have built in for this,
+or for building your own to
+
+09:12
+be able to move data quickly.
+
+09:15
+The other thing that's important
+about this is that the memory
+
+09:17
+resources that you get from
+this, which are just RMM,
+
+09:21
+Rapids Memory Manager memory
+resources, are guarded.
+
+09:25
+So if you try to use more
+memory than you've reserved,
+
+09:29
+If these allocators try to use more
+than that, then there are policies
+
+09:33
+that you can use to describe what
+should happen when this occurs.
+
+09:36
+You can ohm, or you can
+increase your reservation
+
+09:40
+if that's available.
+
+09:41
+You can block until you're able
+to increase the reservation.
+
+09:45
+And so there's all different
+kinds of pluggable policies
+
+09:47
+for memory management.
+
+09:50
+And then the last thing, right?
+
+09:53
+These policies are composable,
+so there is, you know.
+
+09:56
+There are things for handling what
+happens when the memory resource
+
+10:00
+runs out of memory versus when you
+try to oversubscribe versus when
+
+10:04
+you try to consume resources that
+are reserved for another system.
+
+10:10
+Another important part
+of KooCascade are the
+
+10:13
+data representations.
+
+10:16
+So built into KooCascade,
+we've got a GPU representation
+
+10:21
+and a CPU representation.
+
+10:24
+These aren't the ones that
+you have to use, but the GPU
+
+10:27
+on is basically a simple wrapper
+around a KooDF table.
+
+10:31
+And the CPU representation
+in QCascade is similar to
+
+10:39
+a QDF table, but it uses fixed-size
+pinned memory buffers so that
+
+10:44
+you can have very fast transfer
+between the GPU and the CPU
+
+10:48
+without having to have any kind
+of synchronization like you would
+
+10:51
+have to have with pageable memory.
+
+10:54
+Now, we talked about the
+extensibility of these data
+
+10:58
+representations, and one
+of the things that we had
+
+11:00
+to do in Sirius DB, which is
+a library that depends on QCascade,
+
+11:04
+is make a DuckDB representation
+so we could easily go from...
+
+11:10
+This GPU data representation
+to a DuckDB representation
+
+11:14
+to return results, and also
+from a DuckDB representation
+
+11:17
+to a GPU representation so
+that we could rely on DuckDB
+
+11:21
+scanning to scan from the
+file format that exists in DuckDB.
+
+11:27
+Now, all of these representations
+work together because they're
+
+11:31
+wrapped in this data batch,
+which erases the idea of,
+
+11:34
+am I GPU, am I CPU?
+
+11:37
+You just have this data batch
+that you're dealing with,
+
+11:40
+and you only worry about it
+being in the correct memory space
+
+11:44
+in the moment that you need it to
+be in that space for computation.
+
+11:49
+For this, we have something
+called the converter registry,
+
+11:54
+where you register converters.
+
+11:56
+So a user can register how
+two different representations
+
+12:00
+get converted between each
+other, and it also takes into
+
+12:05
+account things like one is in CPU
+memory, this one's in GPU memory.
+
+12:08
+And so you're basically
+describing how the data
+
+12:11
+flows from one to another.
+
+12:13
+Thanks for watching!
+
+12:15
+Usually, in both directions,
+because you normally have
+
+12:18
+to convert in both directions.
+
+12:20
+One of the things this allows
+is that you can make a data
+
+12:25
+batch around anything, as
+long as you register converters
+
+12:30
+for those things.
+
+12:32
+So we try to have very little
+opinion as to how that data
+
+12:38
+should be represented, how
+it That should be encoded.
+
+12:43
+And then the last thing that
+we were gonna talk about in
+
+12:47
+terms of like high level,
+what we're providing here
+
+12:50
+is the topology discovery.
+
+12:53
+We've got,
+
+12:55
+Every year we see new and
+new systems come out that
+
+12:59
+have very different configurations,
+very different kinds of
+
+13:02
+interconnect between the
+GPU memory and the CPU memory.
+
+13:07
+We have things like GPU direct
+storage, faster and faster
+
+13:10
+NICs, ways of going directly
+between GPU memory and the
+
+13:15
+network interface card.
+
+13:16
+And what this all means is that you
+
+13:21
+You have to build discovery
+systems into your software.
+
+13:26
+Relying on something like a
+configuration file that a human
+
+13:30
+has to make is very error-prone,
+it's very slow, and that's
+
+13:36
+what your engineers end up spending
+all their time doing, trying
+
+13:39
+to figure out, how do I make this
+piece of software work well with...
+
+13:44
+All this new hardware and
+then keeping up to date with
+
+13:47
+the changes that happen.
+
+13:48
+By building this in Deku Cascade,
+we can allow NVIDIA to help
+
+13:53
+guide that information.
+
+13:54
+So we can provide hints as to what
+are the ways that software should
+
+13:58
+move memory between these things?
+
+14:00
+What are the ways that you
+should schedule this work?
+
+14:02
+And how do you quickly interface
+with your network interface
+
+14:05
+card and your NVMes?
+
+14:09
+Now I'm going to give a few
+examples of how the memory
+
+14:14
+reservation system actually works.
+
+14:18
+So you have an application
+and it says, I'd like to make
+
+14:22
+a reservation request.
+
+14:24
+You might make a request
+that's like, I want...
+
+14:27
+You know, 100MB on this specific
+GPU, you might say I want
+
+14:31
+100MB on any GPU, you might
+say I want 100MB on a GPU,
+
+14:37
+or a CPU, or a disk, what have you,
+like all these are the kinds of
+
+14:40
+requests that you can make there.
+
+14:42
+And then the memory reservations
+manager's job is to figure
+
+14:45
+out where do I route this request.
+
+14:49
+Then you go to that memory space.
+
+14:51
+You see if you have those
+resources available.
+
+14:55
+So if I want 100 megabytes,
+I have to check that I have
+
+14:58
+100 megabytes available to reserve.
+
+15:02
+And if that happens, what
+gets returned is just an RMM
+
+15:06
+memory resource, which is
+reservation-aware.
+
+15:09
+So we call it the
+reservation-aware memory resource.
+
+15:12
+And what it's gonna do is keep
+track of all the allocations
+
+15:17
+that you're making.
+
+15:18
+And if you try to consume more than
+that, you have an oversubscription
+
+15:24
+policy that you can plug in.
+
+15:27
+We've got a few that we
+define ourselves.
+
+15:29
+It's very easy to make a lambda and
+put in your own, to have your own
+
+15:33
+behavior, so that you can control
+what happens when your system goes
+
+15:39
+beyond what it expected to consume.
+
+15:43
+These memory resources can
+be tracked either per thread
+
+15:46
+or per stream at the moment,
+and we're working in a callback
+
+15:54
+implementation so that you
+can actually use this with,
+
+15:56
+you know, even if you don't, if
+you're not relying on streams and
+
+16:00
+you're not relying on threads, you
+can rely on how, whatever mechanism
+
+16:05
+you have, you use coroutines or
+something like that, you are able
+
+16:09
+to still be able to use this memory
+reservation management system.
+
+16:15
+And then the converter
+registry is quite simple.
+
+16:20
+It's part of what we were
+describing before.
+
+16:23
+You have a data batch in.
+
+16:25
+You specify how to convert
+a particular representation
+
+16:29
+from one type to another and what
+memory space you want to go into.
+
+16:32
+And the converter registry's
+job is just to hold
+
+16:36
+Information, basically, that
+allows you to always say,
+
+16:40
+get me the converter from
+this type to this type when I'm
+
+16:43
+trying to go to this memory space.
+
+16:47
+And then the last example we wanted
+to show from Q-Cascade was here.
+
+16:52
+It's just a little code
+example that shows what
+
+16:54
+it's like to use it.
+
+16:57
+You can rely on defaults but
+here we're showing you how
+
+16:59
+you can set a couple of things with
+the configurator and then actually
+
+17:04
+you know run topology discovery and
+what we end up doing after we run
+
+17:09
+this discovery or like get topology
+
+17:12
+We get back a configuration
+that we can use to make the
+
+17:16
+memory reservation manager
+that is what actually routes
+
+17:20
+all of these reservation requests,
+builds the allocators that you can
+
+17:24
+use that track memory consumption,
+and allow you to build safer, in my
+
+17:31
+opinion, GPU-accelerated systems.
+
+17:34
+Now I'm going to
+pass it to Rodrigo.
+
+17:37
+Yeah, so if you...
+
+17:39
+If you saw the Sirius talk,
+I didn't tell Zhengyao and
+
+17:41
+Bobby I was going to steal
+some of their slides, but I did.
+
+17:46
+Sirius is one of the first
+projects that actually integrated
+
+17:48
+Qoocascade into it for figuring
+out how to process out of core and
+
+17:53
+spill outside of the GPU memory.
+
+17:55
+And so one of the things that
+we ultimately needed to do
+
+17:58
+to be able to reach our SF1K
+numbers on a single GPU, and
+
+18:03
+the information isn't here,
+but this is a GB300 that we
+
+18:07
+basically ran all of this on.
+
+18:10
+We were able to get pretty
+astounding results.
+
+18:13
+If anyone's familiar with TPC-H at
+SF1K, 21 seconds of a full query
+
+18:19
+run or of a full benchmark run
+is as we were pleasantly surprised.
+
+18:24
+This actually ended up exceeding
+our original goals for what
+
+18:26
+we wanted to accomplish by
+GTC to show everyone.
+
+18:29
+And Sirius isn't necessarily
+the only project that's actually
+
+18:32
+integrating it now.
+
+18:33
+Rapids MPF is an NVIDIA project
+that's also now starting the
+
+18:37
+integration process of Qoocascade
+for their own spilling mechanism.
+
+18:41
+And there's a variety of other
+partners that are starting
+
+18:43
+to look into this for figuring
+out how they want to spill
+
+18:45
+outside of core and GPU memory.
+
+18:48
+And so this is just kind of
+like a taste of what happens
+
+18:51
+when you start leveraging it.
+
+18:53
+To put it into perspective, I
+think Query 9 was ultimately the
+
+18:55
+query that, like, if we didn't get
+some sort of downgrade policy in,
+
+18:59
+We were not going to be able to
+accomplish it because that's the
+
+19:01
+one that actually ended up blowing
+up on us quite aggressively.
+
+19:06
+Another thing that I thought
+was super interesting was
+
+19:08
+this other chart where effectively
+you can see as we scale up
+
+19:12
+the scale factor on this particular
+benchmark, we're getting better
+
+19:15
+and better except all of a sudden
+when we go from SF300 to SF1000.
+
+19:21
+And the reason for that is the
+downgrade policy is incredibly new.
+
+19:26
+We've literally just put a version
+of it that works and functions
+
+19:31
+in the last couple of weeks.
+
+19:33
+Putting even more into perspective,
+KooCascade as a repo was
+
+19:37
+effectively a blank slate.
+
+19:39
+January 1st.
+
+19:41
+And the gauntlet was thrown,
+these guys were asked to do some
+
+19:43
+pretty wild things, and all of a
+sudden, they were able to actually
+
+19:46
+make it function and operate.
+
+19:48
+And so, in an ideal world, that
+4.9x would start operating maybe
+
+19:53
+like 5.1x or even going a little
+bit higher and higher and higher.
+
+19:57
+We'll see what that necessarily
+pans out to as things actually
+
+19:59
+get integrated, but I just thought
+this was a really awesome chart to
+
+20:02
+kind of show what the scaling looks
+like on this one GB300 As you add
+
+20:07
+more and more data to the system.
+
+20:09
+And so, with that, we're going
+to talk about distributed
+
+20:12
+telemetry, and we've got about,
+like, eight minutes for that.
+
+20:18
+Oh, sorry. I didn't mean to
+clear my throat while on mic.
+
+20:21
+So, when you're building...
+
+20:28
+One of the things that we learned
+a long time ago is that you
+
+20:36
+need to spend almost as much time
+on your observability, tooling,
+
+20:42
+infrastructure, and benchmarking
+as you do on the actual engine
+
+20:48
+that you're trying to build.
+
+20:50
+And so when, you know,
+
+20:54
+When we started our journey
+at NVIDIA not like maybe like
+
+20:57
+six months ago, one of the
+things that we thought could
+
+21:04
+be improved in a lot of this
+distributed GPU database style
+
+21:08
+libraries was how do we collect
+
+21:12
+Information that allows us
+to know how our system is
+
+21:17
+performing, right, what are
+the bottlenecks, how quickly do we
+
+21:22
+go to and from GPU and CPU memory,
+how quickly do our different
+
+21:26
+operators perform across a cluster,
+not just, you know, looking
+
+21:32
+at a single GPU and seeing a single
+run, but how long does it, how
+
+21:37
+does it perform across a cluster?
+
+21:39
+And I forgot, I just
+wanted to chime in.
+
+21:41
+I was supposed to do this
+slide and I totally forgot.
+
+21:44
+As Felipe was saying, the
+systems around the systems
+
+21:46
+matter a great deal, right?
+
+21:47
+Like if you invest heavily
+into the systems that are
+
+21:50
+necessary to actually build
+the system effectively, that is how
+
+21:53
+you're able to build speed of light
+systems or systems that operate
+
+21:56
+in a state-of-the-art fashion.
+
+21:57
+And so just to...
+
+21:59
+Let me chime in on one more thing
+about what you're talking about.
+
+22:02
+We went down a path of
+OpenTelemetry, Grafana,
+
+22:05
+Prometheus, and NSYS, all sorts
+of things to try to figure out
+
+22:09
+what's happening in our engine when
+we're scaling this up from, you
+
+22:12
+know, one GPU to hundreds of GPUs.
+
+22:15
+And it was an
+incredibly onerous process.
+
+22:18
+And what we ultimately realized
+is, the amount of data that's
+
+22:21
+being generated was just a lot.
+
+22:23
+And so we ultimately had to
+build like a Rust level or
+
+22:26
+a Rust instrumentation library
+for us to actually get telemetry
+
+22:29
+and observability from the
+systems that we're building.
+
+22:32
+And then we needed a different
+model where spans and traces
+
+22:34
+didn't appropriately align.
+
+22:36
+And so we need a finite state
+machine, which allows us to
+
+22:39
+really figure out how to get
+causality between the task and
+
+22:43
+the resources inside of our system.
+
+22:45
+And so,
+
+22:47
+Back to you.
+
+22:48
+It's totally fine.
+
+22:50
+So core concepts here.
+
+22:53
+Resources.
+
+22:54
+These are things like threads,
+memory, but it's also like the
+
+22:59
+bandwidth that I have on my NIC.
+
+23:01
+The bandwidth over PCIe or between
+my drive and my CPU memory and
+
+23:07
+between my drive and my GPU memory.
+
+23:09
+And these are different channels,
+different resources.
+
+23:13
+The finite state machines basically
+model how the engine is changing,
+
+23:19
+what is the intention of this
+piece of code, what are we trying
+
+23:22
+to do in this moment, and then the
+usages are what connect those state
+
+23:28
+changes with resource consumption.
+
+23:32
+And then lastly, we have
+Attributes, so that you
+
+23:35
+can add to these different
+states any kind of information that
+
+23:40
+might be relevant to your system.
+
+23:42
+Like, I did this one task
+using unified virtual memory,
+
+23:48
+or this is the number of partitions
+in this partition task that I did.
+
+23:56
+And so, this is a system that's
+meant to be leveraged not
+
+24:00
+just by the engines where
+we've currently implemented,
+
+24:04
+where we'll show you some examples
+in a minute, but it's meant
+
+24:07
+to be used by engine builders,
+in particular people that are
+
+24:11
+interested in building scalable,
+distributed execution engines
+
+24:15
+on GPUs, and providing you with the
+kind of information that you need.
+
+24:20
+In order to be able to optimize
+your system and know, you know, did
+
+24:25
+I make the right hardware choice?
+
+24:27
+Did I make the right, you know,
+software configuration choice here?
+
+24:32
+So here is an example.
+
+24:34
+And I'm going to get down
+here without getting too
+
+24:36
+close to this speaker.
+
+24:38
+But here's an example of how what
+that kind of system can look like.
+
+24:44
+And so you can.
+
+24:46
+What we have here are basically
+different GPUs, these are
+
+24:51
+different threads on GPUs,
+and these different colors
+
+24:54
+can represent different things
+like movement between host to
+
+24:58
+storage, storage to host, between
+GPU memory and CPU memory, and
+
+25:05
+What's interesting about it
+is that the color coding here
+
+25:09
+corresponds to different kinds of
+movements, but we can also tie this
+
+25:14
+in at a high level between what's
+the part of the query plan that I'm
+
+25:19
+actually in at this point in time.
+
+25:23
+And so we can view...
+
+25:27
+Multiple GPUs and a lot of these
+things can collapse so you get, you
+
+25:30
+know, less or more granular views
+and the most interesting thing
+
+25:35
+I think, you know, you get to see
+the timelines of these resources
+
+25:39
+and their utilization, but now
+
+25:43
+We can tie that in to specific
+points in the computation graph.
+
+25:48
+So in this screen, what we've
+done on the left-hand side,
+
+25:51
+we've actually clicked a part
+of a SQL queries computation plan.
+
+25:56
+And now we can see what are
+the parts of that query.
+
+26:00
+What are the consumptions?
+
+26:01
+that we're using to solve just
+that one part of the graph and
+
+26:05
+so this allows you to understand
+where your resources are being
+
+26:10
+spent, where your time is being
+spent, and it helps you figure
+
+26:13
+out what are the parts of your code
+that you need to optimize first.
+
+26:20
+Another interesting thing
+about this system is that
+
+26:22
+we can do tracking of data
+throughout the system.
+
+26:26
+So here what these arrows
+are representing is that we
+
+26:29
+can actually track a particular
+batch of data when it was scanned.
+
+26:35
+If it got moved to CPU memory
+or device memory along the
+
+26:38
+way before it got computed on.
+
+26:42
+And so you're able to extract
+these kinds of histories of your
+
+26:47
+data through the execution graph.
+
+26:50
+Because it's not, you know, when
+you have increased memory pressure,
+
+26:53
+you might be spilling more.
+
+26:56
+And the reason that we can capture
+all this is because instead of
+
+27:00
+just relying on hardware counters
+and looking at things, is that
+
+27:05
+you do have to instrument this,
+but the instrumentation of this
+
+27:08
+makes it both very lightweight, the
+kind of overhead that we're talking
+
+27:13
+about here is less than 0.1%.
+
+27:16
+So unlike other profiling
+tools, you're not gonna have
+
+27:19
+to pay this penalty.
+
+27:21
+You can keep it always on
+and use it all the time.
+
+27:27
+For me, I struggle to know
+how I can understand what's
+
+27:32
+happening on 128 GPUs when
+I don't have a system like this.
+
+27:37
+And then lastly, one of the
+things that I wanted to show
+
+27:41
+here, well, not lastly, but
+
+27:44
+We can also see really
+interesting things because
+
+27:49
+we capture all this data.
+
+27:50
+So we can see
+cluster-wide data movement.
+
+27:53
+How does the data shuffle between
+the different nodes in your system?
+
+27:57
+And worker-local data movement.
+
+27:59
+How much gets moved to CPU
+or disk because I've run out
+
+28:03
+of space the process in the GPU?
+
+28:06
+And you can get all kinds of
+operator statistics like what
+
+28:10
+was my peak memory consumption,
+what were the total number
+
+28:13
+of bytes that moved through
+me, how many rows of data moved
+
+28:16
+through me, how much of the data
+that I received had to get spilled
+
+28:20
+before I was able to operate on it.
+
+28:23
+And so it really helps you
+build a kind of understanding
+
+28:28
+of your system that allows
+engineers to go from benchmark
+
+28:33
+to insight in seconds.
+
+28:35
+As opposed to hours and days
+of combing through low-level
+
+28:40
+profiling statistics.
+
+28:41
+I can close this out so we
+can get to questions, too.
+
+28:44
+Yeah. So the idea of this is
+that any engine can instrument
+
+28:48
+this into their stack relatively
+easily so that you can start
+
+28:53
+getting some of this observability.
+
+28:54
+And so, one of the engines
+that we're working on the
+
+28:57
+integration of is Velox QDF.
+
+28:59
+So there's been a lot of
+great talks around Velox
+
+29:01
+QDF, presto Velox QDF.
+
+29:04
+And so, this is actually,
+I'm on the right one, right?
+
+29:07
+Yeah, this is actually
+happening right now.
+
+29:10
+And we hope to be able to
+actually utilize this at the
+
+29:14
+builder layers, so like the
+teams that are building and working
+
+29:16
+on this, so they can start getting
+this insight relatively quickly.
+
+29:20
+We also have this instrumented
+into Sirius DB, where this
+
+29:24
+is allowing Sirius to see
+what's going on, how it's going
+
+29:27
+on, and we can identify bottlenecks
+and opportunities for further
+
+29:31
+enhancement and improvement.
+
+29:32
+And so, this is just to give
+you kind of like an idea of
+
+29:35
+what we're talking about.
+
+29:36
+CooCascade on the
+memory management side.
+
+29:38
+Distributed to telemetry
+and profiling on the
+
+29:41
+observability stack side.
+
+29:43
+These are open source repos.
+
+29:46
+Actually, so Sirius is obviously
+open source for anyone who's
+
+29:49
+been watching that.
+
+29:50
+Qoocascade is public and
+available in GitHub.
+
+29:54
+We are about to release the
+distributed telemetry and
+
+29:57
+profiling repository as well.
+
+29:59
+And so that's imminent.
+
+30:01
+Let's say in a matter of weeks,
+that'll be available.
+
+30:04
+And we're going to publish that,
+so we'll allow people to see that.
+
+30:09
+Those are the components.
+
+30:13
+Thank you so much.
+
+30:19
+Awesome, thank you.
+
+30:21
+Questions from the audience?
+
+30:25
+I'm very interested in
+the telemetry part.
+
+30:31
+Are these part of the KU cascade,
+the right side of the...
+
+30:35
+These are separate projects, and
+so they can be, to Philippa's
+
+30:41
+point, they can be chosen
+independently of themselves.
+
+30:45
+There is actual instrumentation
+happening into KooCascade,
+
+30:49
+so if you adopt KooCascade,
+
+30:51
+There is some, I'm saying
+that right, right?
+
+30:53
+Yes, so we've instrumented, so
+the instrumentation necessary
+
+30:57
+to generate these outputs
+is integrated in Deku Cascade.
+
+31:02
+Now, if you were trying to
+build this into an engine, you
+
+31:05
+also want to instrument things like
+
+31:08
+CONCAT and, like, the different
+steps in your plan.
+
+31:11
+QCascade is more about the
+movement of the memory management.
+
+31:15
+So it will capture this part.
+
+31:17
+If you want to capture this
+other part, you'll have to
+
+31:20
+instrument that in whatever
+engine you're leveraging.
+
+31:22
+What is this visualization part?
+
+31:24
+Is it some library?
+
+31:26
+No, it's built
+into the repo itself.
+
+31:28
+Which repo?
+
+31:30
+The repo that is not yet public
+but will be very soon.
+
+31:33
+Distributed
+telemetry and profiling.
+
+31:35
+Whose creator is right back there.
+
+31:37
+Yeah.
+
+31:38
+So if you have more questions
+about it, also, he'll be
+
+31:41
+here for questions.
+
+31:42
+Other questions?
+
+31:44
+Thank you for the talk.
+
+31:46
+I guess, you know, when people
+talk about tiering and they
+
+31:49
+talk about, you know, having
+GPU memory, CPU memory, storage,
+
+31:52
+the current NVIDIA project
+that comes to mind is Nixle.
+
+31:56
+So what's the integration?
+
+31:58
+Is there an integration with Nixle,
+especially if I want to spill,
+
+32:01
+you know, cross-host, for example?
+
+32:04
+So you can definitely leverage
+this with a project that's
+
+32:09
+using Nixle, and Sirius, which
+relies on CooCascade, also has an
+
+32:16
+implementation that has used Nixle
+for moving data between workers.
+
+32:24
+We have not thought about
+integrating it yet at the...
+
+32:28
+Local level, I think what
+we're trying to prescribe
+
+32:34
+using these koo cascade, these
+kooDF memory management primitives,
+
+32:38
+for the local movement.
+
+32:41
+Because it is NUMA-aware,
+aware of the bandwidth
+
+32:45
+between things, and has
+the reservation system in place.
+
+32:49
+But as you start operating in
+a distributed fashion, right,
+
+32:53
+like having this instrumentation
+tied into the comms and the
+
+32:55
+shuffle layer is... Oh, this!
+
+32:59
+Oh, this! Sorry, I misunderstood.
+
+33:01
+Yes, absolutely.
+
+33:04
+That is meant to be
+well instrumented.
+
+33:06
+Like, so yes, we will capture,
+like, UCX... I was going in
+
+33:11
+a different direction.
+
+33:13
+Okay, but yeah, for things
+like UCXX, Nixle, and all
+
+33:16
+that, yes, we plan on building
+hooks for being able to capture
+
+33:19
+all that information and show that
+to you here, particularly so we can
+
+33:23
+get that really cool diagram there.
+
+33:25
+Yeah, that's the sweet one.
+
+33:28
+Thank you for the
+presentation, very impressive.
+
+33:31
+Love this, the tooling around it.
+
+33:34
+My question is about libqdf,
+the library itself.
+
+33:39
+Can you talk a bit about your
+experience, just integrating
+
+33:42
+the library, and how can you
+push it further in terms of
+
+33:47
+what it's doing currently?
+
+33:49
+Thank you.
+
+33:51
+So we've been working with
+libcudf for a very long time.
+
+33:56
+We're part of the first
+group of people that was
+
+33:59
+contributing to libcudf.
+
+34:04
+So, when it comes to pushing
+the bounds, I guess, of libcudf,
+
+34:11
+for us, I think what we're starting
+to see is that the most important
+
+34:16
+bounds to start pushing is IO.
+
+34:19
+So, it's getting bytes from file
+formats into GPUs is expensive.
+
+34:29
+And so there's a lot of new
+work being done in this.
+
+34:36
+We've got libraries like nvCOMP
+that are meant to help you
+
+34:41
+improve your speed of compression.
+
+34:43
+There's file formats like
+Vortex, which are trying to
+
+34:47
+optimize the speed with which you
+can get that data read into memory.
+
+34:52
+Right now, I'd say that for things
+like reading from parquet files and
+
+34:59
+things like that, we still haven't
+quite nailed down overlapping
+
+35:07
+the reading of bytes from
+the source and the decompressing
+
+35:11
+and decoding of the pages
+so that we can get the information.
+
+35:15
+So that's a thing I
+think we need to push.
+
+35:20
+Yeah, and even these libraries
+that we're showing, like Coups
+
+35:22
+Cascade itself, right?
+
+35:23
+So if CoupDF is offering us a
+variety of incredibly performant
+
+35:27
+operators, but we don't necessarily
+know how to spill out of core
+
+35:29
+effectively, then that's great
+until you find yourself in
+
+35:33
+a real world situation where
+you have to gracefully handle that.
+
+35:36
+And more than gracefully,
+you have to ideally
+
+35:38
+performantly handle that.
+
+35:39
+And so that's why we're putting
+so much effort into things
+
+35:42
+like Coup Cascade, where anyone
+and everyone who starts building
+
+35:45
+off of CoupDF has
+
+35:47
+That's a tooling where that
+they can instrument what those
+
+35:49
+policies are for downgrade
+and upgrade of those different
+
+35:52
+memory tiers, as opposed to relying
+on effectively like a magical box
+
+35:56
+to just handle it across all those
+different memory tiers, which can
+
+36:01
+be helpful in terms of like getting
+you to build something quickly,
+
+36:03
+but not necessarily getting
+you to build something performant.
+
+36:06
+This also helps make QDF multi-GPU.
+
+36:09
+So QDF itself is not intended
+to be a multi-GPU library.
+
+36:14
+But leveraging it with cuCascade
+and its memory reservation
+
+36:17
+system and its allocation
+system, you're able to do that
+
+36:21
+multi-GPU computation with cuDF.
+

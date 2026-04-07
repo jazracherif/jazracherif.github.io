@@ -1,0 +1,3880 @@
+Session: https://www.nvidia.com/en-us/on-demand/session/gtc26-dlit81754/
+
+Transcript Powered by AI
+
+From Ingestion to Inference: Mastering the High-Performance GPU Data Science Pipeline
+
+
+00:05
+Good afternoon everybody.
+
+00:07
+Thank you very much for coming
+to our DLI session on From
+
+00:11
+Ingestion to Inference, Mastering
+High-Performance GPU Data
+
+00:14
+Science Pipeline.
+
+00:16
+Thanks a lot for coming
+in this afternoon.
+
+00:18
+So in this course you will
+be learning a lot about data
+
+00:21
+science, how you can accelerate
+your data science workload,
+
+00:24
+which becomes very important
+especially if you saw Jensen's
+
+00:27
+keynote, especially when you
+are trying to deal with data sets
+
+00:30
+that goes into billions of samples.
+
+00:33
+So pay attention, we have a
+great speaker here, Allison
+
+00:36
+Ding, who is a senior developer
+advocate at NVIDIA.
+
+00:40
+She's been dealing a lot with
+data science problems and
+
+00:43
+has been a good advocate for us
+in creating really good solutions.
+
+00:48
+As far as her background is
+concerned, she has two master's
+
+00:51
+degrees in data science and
+statistics, one from Cornell
+
+00:58
+and another one from a university
+here, and she's been here
+
+01:02
+with us at NVIDIA for the
+last two years, I think.
+
+01:06
+Moving on, some housekeeping items.
+
+01:09
+So you see cups on your table.
+
+01:12
+They are blue.
+
+01:13
+And then if you take the blue
+cup off, there's a red cup.
+
+01:16
+So if you have any questions
+while you're going through your
+
+01:20
+Notebooks that she'll
+walk you through.
+
+01:23
+Please take the blue cup off
+and bring the red cup on.
+
+01:26
+And one of the TAs will help you.
+
+01:29
+As far as TAs are concerned,
+we have a few TAs over here.
+
+01:33
+So all the TAs, please
+raise your hands.
+
+01:36
+So take a look around.
+
+01:38
+We are all TAs who are here
+to help you out if you are
+
+01:41
+facing any issues.
+
+01:42
+So please get the red cup
+up, and someone of us will
+
+01:46
+come and help you out.
+
+01:46
+Sorry, I was wrong.
+
+01:49
+And another important thing. Yeah,
+that was the important thing.
+
+01:52
+Please keep your mobile phones
+on silent or strategic.
+
+01:56
+But yeah, please keep your
+mobile phone on silent so that
+
+01:59
+we can pay attention on the course
+and your colleagues who are sitting
+
+02:02
+next to you are not disturbed.
+
+02:04
+Another housekeeping item,
+there's a slide that was flashed
+
+02:10
+a few moments ago.
+
+02:11
+That slide has got the codes for
+you to access the DLI workshop.
+
+02:17
+If you did not take a photograph
+of it, don't worry, all our
+
+02:21
+TAs have those details for you.
+
+02:24
+We'll come around you
+and share with you.
+
+02:27
+But we'll flash that before
+we get started so that you
+
+02:30
+guys can get started.
+
+02:33
+Another important thing I
+would like to point out is all
+
+02:36
+this course material is available
+to you for the next six months.
+
+02:39
+Instances and whatnot will
+be available to you so that
+
+02:43
+you can run all the notebooks
+that are available through this
+
+02:46
+course for the next six months.
+
+02:48
+So if you are going through those
+notebooks, again, we have crunched
+
+02:51
+a lot of content in a limited
+amount of time that we have.
+
+02:55
+So if you're going through
+all those technical details
+
+03:00
+And you're not able to...
+
+03:02
+Execute all the cells
+in the notebook in the
+
+03:07
+designated period of time.
+
+03:08
+Don't worry about it. All these
+notebooks will be available to you.
+
+03:13
+And of course, we would like
+to thank our partners for
+
+03:17
+their sponsorship.
+
+03:18
+So Microsoft Azure, along with
+NVIDIA, we have created this
+
+03:22
+DLI workshop so that you guys can
+learn about all the acceleration
+
+03:26
+that you can harness for the
+workloads that you are working
+
+03:29
+on or for the applications you
+are developing for your enterprise
+
+03:34
+or the companies that you work for.
+
+03:37
+And we always like feedback.
+
+03:39
+So at the end of the session,
+you will get a survey link.
+
+03:41
+We would really, really like
+your feedback for two reasons.
+
+03:45
+A, you like the course.
+
+03:46
+We are happy to hear that.
+
+03:47
+B, if you get feedback which tells
+us that we should add this kind
+
+03:51
+of content to our course material,
+we want that feedback so that
+
+03:55
+next year or whenever we run these
+courses again, we are including
+
+03:58
+all that feedback or incorporating
+it into our course material so
+
+04:03
+that you can use it for your work.
+
+04:06
+With that, can you flash the slide,
+which says, oh, there you are.
+
+04:10
+So these are the details that
+will give you access to the
+
+04:17
+DLI notebooks and the course
+material that will be important
+
+04:20
+for this session.
+
+04:22
+With that, I'll give it
+over to Allison, and she
+
+04:24
+can take it from there.
+
+04:25
+Thanks, Allison. Thank you, Mitesh.
+
+04:27
+My boss never remembers my
+educational background well,
+
+04:30
+but thank you for trying hard.
+
+04:35
+So like Mitesh said, my
+name is Allison Ding.
+
+04:38
+I'm a senior developer advocate
+and a senior engineer at NVIDIA.
+
+04:42
+I'm hosting the workshop,
+From Ingestion to Inference,
+
+04:46
+Mastering the High-Performance
+GPU Data Science Pipeline.
+
+04:51
+So some of you might have already
+been to Chris DeYoung's sessions.
+
+04:57
+I admired him a lot, and he talks a
+lot of the computation techniques.
+
+05:04
+For my workshop, I promise it is
+going to be different from his.
+
+05:08
+I will be primarily focusing on
+the tooling, the GPU accelerated
+
+05:13
+tools to accelerate your data
+science pipeline.
+
+05:19
+But before I jump into the
+session directly, I want to give
+
+05:24
+you some background information.
+
+05:26
+So we humans have generated
+enormous amount of data in petabyte
+
+05:31
+skills of data, and we have created
+massive models and applications
+
+05:36
+that a lot of them would require
+the real-time inference.
+
+05:40
+Some good examples could be
+the recommendation systems,
+
+05:44
+the LLMs, forecasting,
+
+05:47
+Fraud detection, genomic analysis,
+and cybersecurity.
+
+05:52
+And on the right-hand side, as
+you can see, the single-threaded
+
+05:56
+CPU performance has been growing
+at 1.5 times per year before
+
+06:02
+2010, and afterwards slowed
+down to 1.1 times per year.
+
+06:06
+And the gold line indicates
+the GPU computing performance.
+
+06:12
+It has been growing at a 1.5 times
+per year and by 2025, the end
+
+06:16
+of last year, is expected to have
+a delivery of 1,000 times speed up.
+
+06:22
+So you may wonder what are
+the advantages of the GPUs.
+
+06:26
+It has a higher throughput,
+
+06:30
+parallel processing, and it
+has a better scalability.
+
+06:36
+And the difference in the
+capabilities of CPU and GPU
+
+06:40
+definitely exists because they have
+different goals in mind, right?
+
+06:45
+Well, the CPU is designed
+to process a sequence of
+
+06:48
+operations called a thread
+as fast as possible, and
+
+06:52
+it usually can process tens
+of these threads in parallel.
+
+06:55
+The GPU can process maybe thousands
+of these threads in parallel.
+
+07:00
+And the GPU is specialized for
+highly parallel computations
+
+07:05
+and is therefore designed
+such that more transistors
+
+07:09
+are devoted to data processing than
+data catching and flow control.
+
+07:15
+So this schematic figure gives
+you an example distribution
+
+07:20
+of the chip resources.
+
+07:25
+For this workshop, I'm going
+to give an overview of an
+
+07:30
+end-to-end GPU accelerated
+data science pipeline.
+
+07:34
+From the left to the right, we
+start with the data ingestions
+
+07:38
+from multiple data sources
+like databases, CSV, Parquet,
+
+07:43
+JSON, different formats.
+
+07:45
+And we move forward to the
+data processing exploratory
+
+07:49
+analysis, data analysis, EEA,
+feature engineering using
+
+07:55
+NVIDIA QDF, like Json talked
+about this tool at his keynote, and
+
+08:00
+GPU Polars, an alternative to QDF.
+
+08:03
+And then we move forward
+to unsupervised learning
+
+08:07
+and supervised learning
+using NVIDIA QML.
+
+08:11
+And in the end, we will deploy
+the model and do the inference
+
+08:16
+on the Triton Inference Server.
+
+08:19
+So if I split it into two
+parts, it's going to be data.
+
+08:23
+First half of my workshop is
+going to be data processing,
+
+08:27
+and the second half is going
+to be machine learning.
+
+08:32
+The session is structured
+into four different modules.
+
+08:36
+In module one, we are going
+to talk about the accelerated
+
+08:39
+data processing, AEA, and
+the feature engineering.
+
+08:43
+And in module two, we are
+going to focus on the GPU
+
+08:49
+accelerated unsupervised learning.
+
+08:51
+And the third part being the GPU
+accelerated supervised learning.
+
+08:56
+And the last piece is going to
+be machine learning inference.
+
+08:59
+And I will end the
+business summary.
+
+09:03
+There is a rich ecosystem of the
+GPU-accelerated data libraries.
+
+09:09
+We have QDF, the GPU-accelerated
+pandas data frame.
+
+09:14
+We have desk QDF, the
+distributed data frame.
+
+09:18
+We have GPU Polars, which
+is a lazy frame queries.
+
+09:23
+We have the cool graph as part
+of the network X, which GPU
+
+09:30
+accelerated cool graph analytics.
+
+09:33
+We have the
+
+09:35
+cuSpatial, which would accelerate
+the geospatial data.
+
+09:40
+We have cuPy to replace NumPy.
+
+09:43
+We have cuSim to deal with
+medical and image data.
+
+09:47
+And lastly, we have cuVS, which is
+the accelerated vector embeddings.
+
+09:57
+We will start with cuDF
+and how it works.
+
+10:00
+cuDF is part of the CUDAX stack
+and a part of the data science
+
+10:07
+and data processing ecosystems.
+
+10:09
+It sits together with other CUDAX
+libraries, like cuML, which is
+
+10:14
+a GPU-accelerated machine learning,
+the cuGraph, the GPU-accelerated
+
+10:19
+graph analytics, the cuVS,
+the accelerated vector embeddings,
+
+10:26
+And so on. And in the middle
+is the key integration point
+
+10:30
+here, the Apache Arrow.
+
+10:33
+Arrow provides them zero copy
+data transfers from pandas
+
+10:38
+to CUDA-X, which means the
+data doesn't need to be copied or
+
+10:43
+converted, just a pointer is passed
+using the regular pandas API.
+
+10:50
+The entire pipeline could
+be GPU-accelerated, and on
+
+10:54
+the right-hand side, it gives
+you the execution flow of
+
+10:58
+the CUDA app pandas, leveraging
+the zero-code change approach.
+
+11:03
+You start by loading the CUDA
+app pandas, then you write
+
+11:07
+your regular CPU code.
+
+11:09
+Then if the operations
+are available on GPU,
+
+11:13
+it would be accelerated.
+
+11:15
+If the operations are not
+supported yet, it would be
+
+11:19
+copied to CPU, and it would
+fall back to regular pandas.
+
+11:24
+And the results would be copied
+to GPU if you need.
+
+11:33
+Let's get started with the
+first two steps, the multiple
+
+11:37
+data sources and data processing.
+
+11:42
+So, CUDA-X can retrieve data
+from multiple sources, like SQL
+
+11:49
+database, like DuckDB or SQLite.
+
+11:52
+Other forms could be CSV,
+
+11:55
+JSON, and Parkit.
+
+11:57
+Basically, you use your regular
+or CPU pandas API by just
+
+12:03
+adding a magic command on
+the top of your notebook,
+
+12:07
+percent, load, underscore, ext.
+
+12:09
+Could you have the pandas,
+your entire Jupyter Notebook,
+
+12:13
+could be GPU accelerated?
+
+12:15
+Or if you are running on terminal,
+you can write a single line
+
+12:19
+code, python-m qdf.pandas.
+
+12:23
+The entire pipeline could
+be GPU accelerated.
+
+12:27
+And as you can see, all the
+syntax are the same.
+
+12:35
+Some key QDF operations include
+the CSV reads, we accelerated about
+
+12:41
+20 times faster, merges about 130
+times faster, a group by operations
+
+12:50
+about 200 times speed up, and last
+one select plus filter operations
+
+12:58
+about three times faster.
+
+13:02
+And then we would move forward
+to exploratory data analysis
+
+13:06
+and feature engineering.
+
+13:09
+So the feature engineering
+would be based on the insights
+
+13:15
+derived from the exploratory
+data analysis, or EDA.
+
+13:20
+On the left-hand side, I'm
+providing you with some example,
+
+13:24
+like, visual plots we are creating.
+
+13:25
+It basically showcases the
+correlation of the...
+
+13:31
+Transaction hours
+versus the fraud rate.
+
+13:35
+I think I missed one point.
+
+13:37
+So for this entire data science
+pipeline, and we are going
+
+13:43
+to leverage a single data set,
+the classic real-world data set,
+
+13:48
+IEEE CIS fraud detection data set.
+
+13:52
+So coming back to the EDA
+and feature engineering step.
+
+13:58
+On the left-hand side, we provided
+the visual plotting to analyze on
+
+14:04
+the correlation of the transaction
+number with the flow rate,
+
+14:08
+the transaction amount percentile
+with the flow rate, and the
+
+14:15
+email domain with the flow rate.
+
+14:18
+And based on the insights,
+we created some new features,
+
+14:22
+such as time-based features.
+
+14:25
+Transaction amount features or
+email features, some examples
+
+14:29
+are like transaction number,
+transaction day, transaction
+
+14:34
+day of the week, or binary
+variables is night or is weekend.
+
+14:39
+And there are different forms
+of the transaction amount
+
+14:42
+created, like the logarithmic forms
+of the transaction amount, the
+
+14:47
+decimal of the transaction amount.
+
+14:49
+And if the transaction is round and
+the cents, like if the transaction
+
+14:54
+amount, how many cents are there?
+
+14:56
+And if the transaction cents
+are zero, zero, or 99, because
+
+15:00
+those may indicate some
+fraudulent behaviors.
+
+15:04
+And lastly, the email
+features could be whether
+
+15:08
+the payer or the receiver
+
+15:11
+Their email addresses are
+common, or their Outlook,
+
+15:15
+their Gmail, their Mules, or
+if the payer and the receiver have
+
+15:20
+a match in their email domains.
+
+15:27
+For the three tasks, data
+processing, EDA, and the feature
+
+15:32
+engineering, on the CPU, it
+takes 87 seconds to execute,
+
+15:38
+and on GPU, it takes only
+43 seconds to execute.
+
+15:43
+It's about a 200% speedup.
+
+15:47
+I ran it. I got those numbers
+from my BlackVille infrastructure.
+
+15:51
+But depending on the GPU models
+you are using, you may get
+
+15:56
+different results.
+
+15:58
+But overall, it's much
+more accelerated.
+
+16:01
+And as you can see, for each
+individual task, the GPU would
+
+16:06
+accelerate the process a lot.
+
+16:12
+So our CooDF has two profilers.
+
+16:17
+One is cooDF.pandas.profile.
+
+16:20
+The other one is
+cooDF.pandas.lineprofile.
+
+16:24
+If you look at the first one on the
+top, by adding the magic command%
+
+16:29
+cooDF.pandas.profile, we're
+able to provide an operation-level
+
+16:36
+breakdown of what ran on CPU
+and what ran on GPU.
+
+16:40
+And if you look at the
+bottom one, it provides
+
+16:44
+a line-by-line profiling to
+help you pinpoint the bottlenecks.
+
+16:49
+It gives you the total executions
+on GPU and total execution
+
+16:55
+time on CPU for each line.
+
+17:01
+Some common performance pitfalls
+or performance killers for,
+
+17:07
+like, Cooley app could be you
+use a small batch of operations,
+
+17:11
+like CPU-to-GPU back-and-forth
+data transfers, the silent
+
+17:16
+CPU fallback, or your screen
+operations, so you may want to
+
+17:20
+choose a larger size for a batch.
+
+17:25
+And you may want to stay on
+GPU for entire data operations.
+
+17:30
+So it wouldn't consume any
+time when you're doing data
+
+17:35
+transfer between CPU and GPU.
+
+17:38
+And you may want to
+monitor and better
+
+17:41
+your operations can stay on GPU.
+
+17:45
+You can use the QDF profilers
+we just discussed to monitor
+
+17:50
+your GPU performance.
+
+17:52
+And the last one is, the fourth
+one is string operations.
+
+17:57
+You may want to avoid some
+very complicated strings.
+
+18:01
+It may slow down your
+execution on GPU.
+
+18:07
+Another tool I'm
+introducing is GPU Polars.
+
+18:17
+Actually uses CUDA app as
+its execution engine, so I
+
+18:21
+wouldn't say GPU Polars is
+an alternative to CUDA app.
+
+18:27
+GPU Polars, just like CUDA-F,
+is part of the CUDA-X stacks
+
+18:32
+and is part of the data science
+and data processing ecosystem.
+
+18:37
+Obviously, for people who
+are more familiar with Polar
+
+18:40
+syntax, you can use our GPU Polars.
+
+18:45
+If you are more familiar with
+Python, Pandas, DataFrame,
+
+18:50
+go ahead with CUDA-F.
+
+18:52
+On the right-hand side, I'm giving
+the GPU Polars architecture.
+
+18:56
+We start with the
+regular Polars API.
+
+19:00
+And it would go to
+
+19:05
+It would do the chorus using the
+lazy query planner and optimizer.
+
+19:10
+Then we will select whether to
+execute the code on CPU or GPU.
+
+19:16
+Basically, if the operations
+are supported on GPU, the
+
+19:21
+QDF engine will accelerate
+the entire process via Apache
+
+19:28
+Arrow, which we just discussed.
+
+19:30
+It's a zero-copy memory sharing.
+
+19:33
+And as a whole, it's supported
+by GPU CUDA kernels.
+
+19:38
+And so the users can just write
+the regular Polars code, and the
+
+19:42
+entire pipeline is GPU accelerated.
+
+19:49
+Using the zero code change
+approach, by simply setting
+
+19:53
+the engine to be GPU in the
+collect operations.
+
+19:59
+I tend to use the laser
+pointer, so here we go.
+
+20:06
+Simply by setting the engine
+to be GPU in the collect
+
+20:10
+operations, the code snippet
+could be GPU accelerated.
+
+20:14
+Leveraging the example of
+the top email domains by
+
+20:19
+flow rate aggregations,
+it takes 78 milliseconds
+
+20:23
+to execute on CPU versus
+11 milliseconds on GPU, which
+
+20:28
+is about a seven times speed up.
+
+20:32
+And if you look at the magic
+commands, presentPersonTime,
+
+20:37
+it basically gives you the
+execution time of the code snippet.
+
+20:42
+What is good about it is the
+output would be saved in memory.
+
+20:46
+In contrast, when we are using
+presentPersonTime it, it wouldn't,
+
+20:52
+it would just give you the
+average execution time by running
+
+20:56
+the code snippet for three times.
+
+21:01
+However, the output wouldn't
+be saved in memory.
+
+21:08
+Let's get started with the
+first of four labs.
+
+21:12
+I would like to
+provide a high-level
+
+21:15
+walkthrough of these labs.
+
+21:18
+And then you are going to
+have 10 to 15 minutes to
+
+21:22
+practice it yourself.
+
+21:26
+Oh, I hate it.
+
+21:29
+It means the execution is running
+out of time, but I still have some
+
+21:35
+results from my last execution.
+
+21:37
+So this is part one of my
+Jupyter Notebook, the GPU
+
+21:42
+accelerated data loadings with QDF.
+
+21:45
+We start with the
+data set overview.
+
+22:06
+Let me try, if I can zoom
+it a little bit more.
+
+22:14
+The problem is...
+
+22:19
+Okay, great. Thank you, Jay.
+
+22:25
+So we started with the
+dataset overview.
+
+22:29
+We're leveraging the classic
+IEEE CIS fraud detection dataset.
+
+22:35
+Sorry, it keeps popping up.
+
+22:37
+Next time, it will be better.
+
+22:43
+Oh, you are right.
+
+22:45
+Then we would set up the
+environment, and we would
+
+22:48
+load CUDA-X, pandas here.
+
+22:53
+By using the magic command,%
+load CUDA-X.pandas.
+
+22:59
+Then we load the regular libraries
+and the data set.
+
+23:04
+And here, we are loading the data.
+
+23:08
+And by adding %% CUDA pandas
+profilers, we're able to see
+
+23:14
+the operation level breakdown
+of the GPU execution time
+
+23:18
+and CPU execution time.
+
+23:20
+Then we perform the join merges
+of the transaction table with
+
+23:26
+the identity table on the GPUs.
+
+23:30
+We use another profiler, Lime
+Profile, so you can see we
+
+23:34
+are able to have a line-by-line
+profiling to pinpoint the
+
+23:38
+bottlenecks you may have.
+
+23:41
+And then we're using
+percent-percent time
+
+23:45
+to calculate the execution time.
+
+23:48
+We're doing minimal observations
+and data cleanings.
+
+23:54
+And then we export the results
+of the feature list and metadata.
+
+23:59
+And if the data source comes
+from the database, like
+
+24:03
+DuckDB, how are we supposed
+to retrieve it using CUDA-X?
+
+24:08
+I'm providing an example here.
+
+24:12
+So I created a DuckDB database.
+
+24:18
+It gave me some error. But
+when you guys are executing
+
+24:21
+it, you shouldn't expect to
+see this JavaScript error.
+
+24:25
+But the results are being saved.
+
+24:29
+And I'm providing two alternatives
+for you to retrieve the data
+
+24:34
+and create the CUDA fpandas
+data frame by retrieving the
+
+24:38
+data directly from DuckDB database.
+
+24:43
+That's part one of my notebook.
+
+24:46
+Part two, we're doing
+GPU-accelerated explorer-free
+
+24:50
+data analysis and feature
+discovery using QDF.
+
+24:54
+Again, we do the environment setup.
+
+24:57
+We do the magic command to
+load the QDF pandas.
+
+25:01
+We load the data, we perform
+the explorer-free data analysis.
+
+25:06
+Some really good EDA insights
+could be time-based patterns.
+
+25:15
+A product called Fraud Raise.
+
+25:19
+The car type patterns, we
+want to observe it as well.
+
+25:24
+The transaction amount patterns,
+
+25:27
+the email domain patterns,
+
+25:31
+and the device type patterns,
+and the address patterns.
+
+25:37
+And in the end, we save all
+the feature list and metadata.
+
+25:42
+And in the next step, we are going
+to do the feature engineering.
+
+25:48
+Again, we load the magic command
+to accelerate the entire pipeline.
+
+25:53
+Then based on the insights
+from the previous notebook
+
+25:56
+or EEA, we create some more
+features like time-based features.
+
+26:05
+And then we do the magic UID
+construction by concatenating
+
+26:10
+the card one and address 1.
+
+26:13
+And we aggregate it
+using the magic UID.
+
+26:20
+And we do card level aggregations.
+
+26:22
+We do the time
+delta column features.
+
+26:25
+We create the
+transaction amount features.
+
+26:28
+We do the count encodings.
+
+26:31
+And we create another
+UID, like by concatenating
+
+26:35
+address 1 and address 2.
+
+26:37
+I call it address combo.
+
+26:39
+We do the aggregations as well.
+
+26:41
+And we do the email features.
+
+26:44
+And we create indicators for
+the missing values.
+
+26:49
+We see the engineered features.
+
+26:55
+And in part four, I provided the
+alternative tool, GPU Polars,
+
+27:03
+for those of you who are more
+familiar with the CPU Polar syntax.
+
+27:09
+I'm giving you two examples.
+
+27:13
+The first example is to analyze
+the product code fraud rate.
+
+27:18
+And the second one is to do the
+email domain patterns analysis.
+
+27:24
+Those are just the same thing
+we did using QDF.
+
+27:30
+I'm just translating it using
+GPU Polar syntax.
+
+27:34
+But we are expecting
+the same results.
+
+27:37
+And I'm also comparing the
+CPU and GPU execution time
+
+27:42
+by doing the two examples.
+
+27:45
+You can see the
+percent-percent timet.
+
+27:51
+These magic commands will
+give you the average execution
+
+27:54
+time without creating any output.
+
+27:59
+Now I give the time back to you.
+
+28:02
+We have 10 minutes to work
+on the four notebooks.
+
+28:06
+If you have any questions,
+please raise your hands or
+
+28:10
+put your red cup on the top.
+
+28:12
+I'm coming over to you.
+
+28:14
+10 minutes to
+practice the notebooks.
+
+28:16
+I know there's a lot of material,
+but please go through it,
+
+28:18
+and if you face any issues while
+you're executing, or if you want
+
+28:21
+to understand what is this command
+for, please raise your hand,
+
+28:24
+we'll come and explain you more.
+
+28:25
+All right, folks, hope you
+played with the notebooks.
+
+28:29
+I'm presuming.
+
+28:31
+All of you were not able to
+run through everything.
+
+28:34
+But as I said, the notebooks
+are available to you.
+
+28:38
+Feel free to test more and
+more with those things.
+
+28:40
+Happy to answer more questions.
+
+28:42
+But in that sense of time,
+we should keep continuing.
+
+28:46
+Yep, yep.
+
+28:48
+I'm fighting with
+the web browser now.
+
+29:09
+Okay, great, you're right.
+
+29:17
+Yep, I need to do the
+presentation mode again.
+
+29:28
+I basically never use the
+notes, but sometimes I'm going
+
+29:33
+to explain very complicated
+machine learning algorithms.
+
+29:36
+I do need some bullet points
+to remind myself.
+
+29:43
+So let's move forward to
+machine learning models.
+
+29:47
+Let's see what's up.
+
+29:48
+Okay, cool.
+
+29:50
+Okay, talking about machine
+learning models, we basically
+
+29:54
+can categorize the machine
+learning algorithms into three
+
+29:57
+primary types, clustering,
+classification, and regression.
+
+30:02
+The clustering is an unsupervised
+learning approach.
+
+30:06
+It's basically
+
+30:08
+Some common algorithms
+could be k-means clustering,
+
+30:15
+HDBSCAN clustering, and
+agglomerative clustering.
+
+30:19
+Some real-world applications
+could be customer segmentation
+
+30:23
+model, the topic modeling.
+
+30:26
+And for the second type,
+classification model, it's
+
+30:29
+a supervised learning approach.
+
+30:31
+It's been used to predict
+discrete labels or categories,
+
+30:36
+and some common algorithms could
+be XGBoost classification, random
+
+30:41
+forest, support vector machines,
+some real-world applications could
+
+30:46
+be our fraud detection use case.
+
+30:50
+And the last one, regression,
+is also a supervised
+
+30:54
+learning approach.
+
+30:55
+It's been used to predict
+continuous numeric values
+
+31:00
+rather than discrete labels.
+
+31:03
+Some common algorithms could
+be linear regression, LASO,
+
+31:07
+or ridge regression.
+
+31:10
+And it's been used to do price
+prediction or demand forecasting.
+
+31:15
+For this workshop, we will
+focus on the first two.
+
+31:18
+The clustering and
+the classification.
+
+31:23
+And now we are moving
+forward to the next step,
+
+31:26
+unsupervised learning.
+
+31:32
+For the unsupervised learning,
+we're trying to build a customer
+
+31:36
+segmentation model to understand
+the customer's behaviors using
+
+31:41
+the underlying transaction data.
+
+31:46
+We are going to use two clustering
+algorithms, K-means and HDBSCAN.
+
+31:53
+For the first one, K-means,
+
+31:57
+it basically performs very
+well for simple clusters.
+
+32:02
+It can partition the customers
+into a predefined number
+
+32:06
+of balanced segments, for
+example, five clusters.
+
+32:10
+And for HDBSCAN, it handles
+the noise data very well.
+
+32:15
+In our case, we can discover
+natural transaction clusters
+
+32:19
+of varying densities and sizes.
+
+32:22
+We can flag a certain percentage
+of customers as outliers.
+
+32:27
+For example, the unique spender,
+the potential fraudsters,
+
+32:31
+or the dormant account.
+
+32:37
+And before we jump in the
+cluster directly, I would
+
+32:41
+like to give some background
+information and a tool to
+
+32:45
+visualize the clustering results.
+
+32:47
+So you know, the data we have
+is really high dimensional data.
+
+32:52
+You're really like 100 to
+1,000 features is expected.
+
+32:57
+We humans cannot visualize
+anything beyond three dimensions,
+
+33:02
+therefore we have to create
+very comprehensive descriptive
+
+33:07
+statistics, for example, means,
+standard deviation, minimum,
+
+33:12
+maximum, or count to understand
+the high-dimensional data.
+
+33:16
+It's very numeric.
+
+33:18
+And we don't like it.
+
+33:21
+And here we are providing
+an alternative way called
+
+33:24
+UMAP, the GPU accelerated UMAP.
+
+33:28
+The uniform manifold approximation
+and projection to visualize,
+
+33:33
+I'm sorry, to reduce the high
+dimensional data into 2D or
+
+33:37
+3D dimensional data and create
+the visualizations in the output.
+
+33:42
+On the right-hand side, I'm
+providing two examples.
+
+33:46
+On the top is a 2D visualizations
+of the HDBSCAN clustering.
+
+33:51
+We use UMAP to reduce the
+dimensionality and create
+
+33:55
+the visualizations.
+
+33:56
+And at the bottom, we are
+visualizing the k-means
+
+33:59
+clustering results using
+UMAP in 3D dimensions.
+
+34:09
+So the UMAP algorithms,
+it has two parts, the
+
+34:13
+high-dimensional analysis and
+the low-dimensional optimizations.
+
+34:19
+For the high-dimensional analysis,
+in step one, we would...
+
+34:26
+Compute the KNN graph.
+
+34:28
+And we will do the local
+connectivity and construct the
+
+34:33
+weighted high dimensional graph.
+
+34:36
+From step one to step three,
+our GPU accelerated, because
+
+34:41
+the distance computation and
+the width computation can
+
+34:44
+be parallelized by GPU.
+
+34:47
+As talking about the low
+dimensional optimization,
+
+34:51
+step four, we would initialize
+the low dimensional embeddings
+
+34:55
+and then we would define the
+low dimensional similarities and
+
+34:59
+in the end, we would optimize the
+layout using the gradient descent.
+
+35:03
+In step five and step six,
+their GPU accelerated because
+
+35:08
+the low dimensional similarity
+calculation as well as the
+
+35:12
+gradient descent calculation
+It can be parallelized on GPU.
+
+35:18
+And there are three
+important hyperparameters
+
+35:21
+for the UMAP algorithms.
+
+35:23
+N-neighbors, minimum distance,
+and N-components.
+
+35:28
+The first one, N-neighbors, would
+control the global versus the
+
+35:33
+local structure of the clustering.
+
+35:37
+And the minimum distance would
+control how tightly your data
+
+35:40
+points are to each other.
+
+35:42
+And the last one, N-components,
+
+35:45
+By specifying it to two or
+three, your output, the dimension
+
+35:50
+of your output visualizations
+could be two-dimensional or
+
+35:55
+three-dimensional.
+
+35:57
+The key features of the UMAP
+is the structure preservations.
+
+36:02
+So when you are reducing
+the dimensions from the
+
+36:04
+high dimensional to the
+low dimensional, the UMAP
+
+36:08
+is able to preserve the structure.
+
+36:11
+So you are basically visualizing
+as if it's in the original form.
+
+36:16
+And it can also do the
+dimensionality reduction.
+
+36:20
+And some use cases of it could be
+the data visualizations, of course.
+
+36:25
+And it can also be used as
+a preprocessing step for the
+
+36:30
+machine learning models.
+
+36:33
+Just like PCA or t-SNE.
+
+36:37
+And the GIF on the bottom right.
+
+36:42
+What I'm trying to indicate
+here is the two clusters could
+
+36:45
+be very close to each other,
+but in reality, it could be
+
+36:50
+very far apart on the high
+dimensional, just like this.
+
+36:58
+And we are using UMAP to visualize
+the HDBSCAN classroom results.
+
+37:02
+I'm providing an example here.
+
+37:05
+Like you say, we sometimes have
+to create the comprehensive
+
+37:09
+statistic to understand the
+high-dimensional data.
+
+37:13
+The alternative way would be
+to reduce the high-dimensional
+
+37:17
+data to 2D or 3D dimensions.
+
+37:20
+And then we would fit and
+transform the original data
+
+37:25
+And create the visualizations.
+
+37:29
+By adding the magic commands,
+cdf, pandas, and qml.accel,
+
+37:36
+the entire process, both the data
+operation and the machine learning
+
+37:43
+step could be GPU accelerated.
+
+37:45
+For the 2D UMAP projection, it
+takes 48 seconds to execute on CPU
+
+37:52
+and 1.3 seconds to execute on GPU.
+
+37:55
+That is roughly a 40x speedup.
+
+37:58
+At the bottom, or to create the
+3D UMAP projection, it takes 56
+
+38:04
+seconds to execute on CPU and 2.8
+seconds to execute on GPU, which
+
+38:10
+is about maybe 20 times speed up.
+
+38:18
+And moving forward to these
+k-means algorithms, we would
+
+38:22
+start with randomly selecting,
+let's say, three random points
+
+38:28
+as the centroids.
+
+38:30
+And then we would assign the data
+points to the nearest cluster
+
+38:34
+by computing the distance of
+the data points to each centroids.
+
+38:40
+And afterwards, we would assign
+the data points to the cluster
+
+38:44
+of the nearest centroids.
+
+38:46
+This step could be GPU accelerated,
+as the calculation of the
+
+38:50
+distance between the data
+points to the centroids can
+
+38:55
+be calculated in parallel.
+
+38:57
+And in step 3, we need to update
+the cluster centroid by calculating
+
+39:02
+the mean of the distance of
+all the points to its centroid.
+
+39:06
+This step can also be GPU
+accelerated, as the sum
+
+39:10
+of the distance of the data
+points to a centroid can
+
+39:14
+be calculated in parallel.
+
+39:16
+And in step four, we check
+for the convergence.
+
+39:19
+We check if the convergence
+criteria has met or the centroids
+
+39:24
+have stopped the changing.
+
+39:26
+And in step five, if the
+convergence criteria hasn't
+
+39:31
+met, we would repeat step two
+and three until the convergence.
+
+39:37
+And talking about the HDBSCAN
+clustering, the algorithm
+
+39:41
+is a little bit more complex.
+
+39:46
+The first step to build a
+minimum spanning tree, MST, some
+
+39:52
+of you may have heard about it.
+
+39:54
+It's a pretty popular computer
+science algorithm.
+
+39:58
+In step 2, we built the
+hierarchical clustering.
+
+40:02
+And in step three, we condensed
+the cluster tree.
+
+40:06
+And in step four, we
+extract clusters.
+
+40:09
+And in the end, we do convergence.
+
+40:14
+And when we are trying to
+build the minimum spanning
+
+40:16
+tree, we would first start
+with building a K and N graph.
+
+40:22
+Then we would calculate the
+mutual reachability distance.
+
+40:25
+And in the end, we build the
+minimum spanning tree by connecting
+
+40:29
+all the data points with the
+minimum distance.
+
+40:34
+And in step two, we need to build
+a hierarchical cluster on the MST.
+
+40:40
+As you can see, the tree structure
+can be parallelized.
+
+40:47
+And in step three, when we
+condense the cluster tree,
+
+40:51
+we really simplify the dendrogram
+condensation to extract the
+
+40:57
+meaningful information.
+
+40:58
+The tree structure can be
+parallelized by GPU.
+
+41:02
+And in step four, we may extract
+the meaningful information
+
+41:07
+from the dendrogram.
+
+41:10
+Oh, when we only check for the
+stability of the dendrogram,
+
+41:15
+the tree diagram can again
+be parallelized by GPU.
+
+41:27
+So moving forward to k-means
+clustering, we're not digging
+
+41:31
+deep into the techniques, just
+providing a high-level introduction
+
+41:35
+of how to use ELBO method
+to identify the optimal number
+
+41:39
+of clusters for k-means clustering.
+
+41:43
+The ELBO point I'm
+observing here is three.
+
+41:47
+So when the number of clusters
+equals to three, we may have
+
+41:53
+the best k-means clustering.
+
+41:55
+I get an average sql web score
+of 0.615, which is considered as
+
+42:01
+a reasonable structure for k-means.
+
+42:04
+But adding the magic command
+loadxtqml.accel, the k-means
+
+42:10
+algorithm can be GPU accelerated
+on your Jupyter Notebook.
+
+42:15
+It takes 4.9 seconds to execute on
+CPU and only 1.3 seconds on GPU.
+
+42:22
+That is over 40 times speed up.
+
+42:28
+And some of the key warning signals
+from k-means that would tell
+
+42:32
+you to go to HDBSCAN algorithm.
+
+42:36
+Therefore, the first one is
+the cluster shape issues.
+
+42:42
+The k-means would assume the
+cluster to have a spherical shape.
+
+42:48
+So if the data isn't having a
+spherical shape, the classroom
+
+42:53
+wouldn't be accurate.
+
+42:55
+In contrast, HDBSCAN handles the
+arbitrary shapes and densities
+
+43:00
+very well, and it has been
+using a density-based approach to
+
+43:04
+automatically build the clustering.
+
+43:07
+The second one is the
+number of clusters.
+
+43:09
+So k-means would assume a
+predefined number of clusters,
+
+43:14
+like I want to build up five
+
+43:19
+I want to segment my customers
+into five different categories.
+
+43:26
+In contrast, HDBSCAN does
+not require you to have a
+
+43:29
+predefined number of clusters.
+
+43:31
+The HDBSCAN will build the
+clustering itself automatically.
+
+43:38
+The third one, k-means being very
+sensitive to noise and outliers.
+
+43:45
+So it would force every single
+data point to belong to a
+
+43:51
+specific cluster.
+
+43:53
+And when there is a larger
+cluster and a smaller cluster,
+
+43:58
+it always tends, it always
+prefers the larger cluster
+
+44:02
+and distorts the smaller one.
+
+44:05
+And in contrast, the HDBSCAN
+doesn't force every single data
+
+44:09
+point to belong to any cluster.
+
+44:11
+Some of the data
+points could be noise.
+
+44:15
+It would simply label those
+noise as negative one.
+
+44:19
+And also,
+
+44:25
+Oh, the last one being the
+uneven cluster sizes.
+
+44:29
+When k-means has uneven cluster
+sizes, like what you see on
+
+44:33
+the bottom right, the frequency
+table, in cluster zero, we
+
+44:37
+have over 43,000 data points,
+and in cluster one, there
+
+44:41
+are only 500 data points.
+
+44:44
+That's very uneven.
+
+44:47
+The k-means cluster will run
+into a lot of issues.
+
+44:52
+As you can see in cluster 2,
+the average of the transaction
+
+44:58
+amount is negative 999.
+
+45:00
+What does that mean?
+
+45:01
+It means basically for cluster
+2, all the data points are
+
+45:06
+missing in transaction amounts.
+
+45:09
+So this clustering is definitely
+not going to be performing well.
+
+45:17
+Then we would go to the
+HDBSCAN clustering.
+
+45:20
+I'm using a technique called grid
+search to identify the best value
+
+45:26
+for minimum cluster sizes, which
+is a hyperparameter of HDBSCAN.
+
+45:33
+And then I would observe from
+the persistent visual plots,
+
+45:39
+like persistence score, the
+Sihowet score, and the HDBSCAN
+
+45:44
+parameter tuning results.
+
+45:46
+The C-HOWET as a persistence
+score doesn't really give
+
+45:50
+me any insight, because it's
+consistent over different values.
+
+45:55
+And the C-HOWET does give
+me some insights, because
+
+45:58
+the smaller the value is,
+the higher the C-HOWET score, which
+
+46:02
+means the better the cluster is.
+
+46:06
+But if we can't simply choose
+the value of 2 or 10, because
+
+46:10
+we may end up with 72 clusters
+or 64 clusters, which means
+
+46:17
+that we can't simply have
+72 or 64 customer segments, right?
+
+46:23
+And we can't just assign 2
+customers or 10 customers
+
+46:27
+to a single customer segmentation.
+
+46:31
+So we would have to balance between
+the value of the hyperparameter
+
+46:36
+with the number of clusters
+and the percentage of the
+
+46:39
+noise and the C-hole wide score.
+
+46:40
+I would personally think 1,000
+is a good value, because 19
+
+46:46
+customer segments seems to
+be fair, and 12% of the data
+
+46:51
+being noise is fair, and the
+C-hole wide score of 0.89 is
+
+46:56
+still considered as a good cluster.
+
+47:04
+Here, I'm observing my classroom
+results using UMAP.
+
+47:10
+Let's use HDBSCAN, for example.
+
+47:13
+I start by performing the
+HDBSCAN classroom using QML.
+
+47:19
+I would extract cluster labels
+and reduce the dimensionality
+
+47:24
+to 2D by specifying the end
+components to be 2.
+
+47:28
+Or by specifying the end
+components to be 3, reducing
+
+47:33
+the dimensionality to
+3D using QML UMAP.
+
+47:37
+Then I fit and transform
+the skilled data.
+
+47:40
+And on the right, you can see
+the HDBSCAN cluster results.
+
+47:46
+And the same pipeline we
+follow for k-means.
+
+47:48
+We start with k-means, and
+then we use UMAP to build
+
+47:52
+the visualizations.
+
+47:56
+Just like Qt app, we provide
+two profilers for QML.
+
+48:00
+The first one is qml.accel.profile.
+
+48:04
+And the second one is
+qml.accel.line.profile.
+
+48:09
+Similarly, the first one would
+provide an operation-level
+
+48:13
+breakdown of what ran on CPU
+and what ran on GPU.
+
+48:18
+And the second one, line profile,
+can provide you the line-by-line
+
+48:23
+profilings to pinpoint the
+bottlenecks of the core ML.
+
+48:27
+It gives you the execution time
+of each line, the percentage
+
+48:32
+of GPU you use for each line.
+
+48:34
+And it gives you an overall
+of the execution time, the
+
+48:39
+overall percentage of the
+operations on GPU.
+
+48:46
+Let's get started with part five.
+
+48:57
+In part 5 of the notebook,
+we're building a class ring
+
+49:01
+and use UMAP for visualizations.
+
+49:04
+But we'll start by loading
+the two magic commands we
+
+49:07
+just discussed, loadxt, cdf.pandas,
+and the QML accel.
+
+49:15
+And then we'll load the feature
+engineer data from part 3.
+
+49:21
+And then we, for this workshop
+purpose, we only demonstrated
+
+49:26
+on 50,000 samples.
+
+49:29
+If you go back, you have enough
+time, you can use the entire
+
+49:34
+population to build the clusters.
+
+49:39
+And then we use the k-means,
+use elbow method to identify
+
+49:44
+the best value for number
+of clusters for the k-means.
+
+49:53
+And then we use UMAP to reduce
+the dimensionality of the
+
+49:57
+data and to visualize by adding%
+qml.accel.profile, as you see.
+
+50:06
+It gives you the operational
+level breakdown of CPU and
+
+50:10
+GPU execution time.
+
+50:17
+And in the end, we calculate
+the SIGHOVS score to
+
+50:21
+evaluate the cluster.
+
+50:24
+And similarly, we do the
+same for HTTPScan.
+
+50:28
+We use grid search to identify
+the best value for minimum
+
+50:35
+cluster size for HTTPScan model.
+
+50:39
+And we use the line profile to
+monitor the GPU performance.
+
+50:45
+As you can see, it ran in
+3 minutes and 21 seconds.
+
+50:51
+Only 4.2, oh yeah, this is
+great search approach.
+
+50:55
+So basically that is a for loop.
+
+50:58
+Only the HDBSCAN pieces
+are GPU accelerated.
+
+51:07
+And then...
+
+51:10
+After we identify 1,000 to be
+the best value, we plug it in.
+
+51:17
+We do the HDBSCAN clustering again.
+
+51:20
+We reduce the dimensionality
+to 2D and 3D, and we
+
+51:23
+visualize the results.
+
+51:25
+We calculate the
+state-of-the-art score again.
+
+51:28
+As far as I recall, it gives
+me a value of 0.888.
+
+51:33
+That is considered a very
+strong structure.
+
+51:36
+Excellent.
+
+51:37
+So you now have 10 minutes
+to work on this notebook.
+
+51:41
+I will start counting the time.
+
+51:50
+Just one second.
+
+51:52
+Let me restart the environment.
+
+52:16
+Should I just stop the
+task and redo it?
+
+52:22
+There are a lot of people,
+so I'm going to kick it off.
+
+52:30
+Okay, thank you.
+
+53:05
+Yeah, this is Rakesh Goyal
+from ServiceData.
+
+53:09
+The question is that when
+you go for higher dimension,
+
+53:12
+let's say five dimensions
+to two dimensions or three
+
+53:15
+dimension, how do you visualize
+the parameters, the five dimensions
+
+53:22
+in a two-dimensional plot?
+
+53:24
+What are the values? Like,
+what are the axis on the
+
+53:26
+two-dimensional plot?
+
+53:28
+If you have cholesterol.
+
+53:30
+That is, you are asking about
+the algorithm question.
+
+53:34
+So it's
+
+53:35
+No, on the visualization, I
+should be able to figure out.
+
+53:38
+You want me to explain it on the
+stage or on your own platform?
+
+53:44
+Because I explain it using- No, on
+the diagram, on your PowerPoint,
+
+53:49
+you went from five dimensions
+to two-dimension clusters.
+
+53:54
+That's actually two options.
+
+53:56
+The first option is to
+create a five ..
+
+54:00
+It does not have to be five
+dimensions, but you need to create
+
+54:03
+the comprehensive descriptive
+statistics to understand your
+
+54:08
+high-dimensional data.
+
+54:09
+It's very hard.
+
+54:11
+You have observed a lot
+of numeric values.
+
+54:14
+It's hard for human beings
+to understand, but the other
+
+54:18
+alternative would be to reduce
+the dimensions of the data
+
+54:23
+so the high-dimensional data
+could be visualized.
+
+54:27
+at the low dimensional, so it
+follows the six steps as part
+
+54:31
+of the algorithm I just explained.
+
+54:33
+Oh, okay, okay. Yeah, the
+first three is high dimensional
+
+54:36
+analysis, and the last three is
+the low dimensional optimizations.
+
+54:41
+It basically gives you sort of a
+projection from high dimensional
+
+54:45
+data to lower dimensional.
+
+54:46
+Okay, understood. It
+basically preserves the
+
+54:49
+global structure to the local.
+
+54:50
+Okay, thank you.
+
+54:52
+You're welcome.
+
+55:17
+Not using any
+repeat, it's turned off.
+
+55:35
+No, it's still
+starting the environment.
+
+55:38
+Yeah, I need to go to that
+
+55:43
+And then it, wait a second, how
+can I quit this presentation?
+
+55:59
+In the URL there, in the URL.
+
+56:01
+Can you use my computer?
+
+56:10
+Press your button.
+
+56:13
+Sounds like it's working.
+
+56:22
+Great.
+
+56:23
+Yeah, now I have to restart
+from the beginning and execute.
+
+56:27
+Thank you so much, Divash.
+
+58:04
+Really? Yeah, let me run into that.
+
+58:09
+You said five?
+
+58:19
+Where is it?
+
+58:24
+It's from part 3.
+
+58:26
+You have to run each single
+notebook in sequence and remember
+
+58:31
+don't repeat, don't execute
+the same cell twice.
+
+01:02:05
+Because in the end, I'm going
+to show you how to do the Triton
+
+01:02:09
+Inference Server on the terminal
+and preparing all the datas.
+
+01:02:15
+Yeah, let's go back to our slides.
+
+01:02:22
+Next one is the
+supervised learning.
+
+01:02:25
+For the supervised learning, we
+are doing the real-time fraud
+
+01:02:28
+detection using the same data.
+
+01:02:33
+And the model we are going
+to use is XGBoost.
+
+01:02:38
+So to recap, because we're
+trying to determine whether
+
+01:02:42
+the transaction is fraudulent
+or not, we're creating the
+
+01:02:46
+discrete labels or categories.
+
+01:02:48
+We're using the
+classification models.
+
+01:02:51
+And the tree-based models are super
+robust in doing the classification.
+
+01:02:57
+So I'm introducing three different
+tree models here.
+
+01:03:02
+The first one is the decision tree.
+
+01:03:05
+And the last one, the first
+one is a decision tree.
+
+01:03:08
+I'm using a single tree.
+
+01:03:11
+It's been using the single tree
+to split the data recursively
+
+01:03:15
+to create interpretable
+if-then rules, like...
+
+01:03:22
+If A, then we go to the left.
+
+01:03:25
+If B, we go to the right.
+
+01:03:26
+So an example could be if the
+transaction amount is above$
+
+01:03:30
+5,000, and if the transaction
+address isn't the same as
+
+01:03:34
+the billing address, it's
+potentially a fraud transaction.
+
+01:03:38
+And the second one
+is a random forest.
+
+01:03:41
+Random forest is an ensemble
+of many independent decision
+
+01:03:45
+trees Treat them as random
+subsets of the data.
+
+01:03:49
+And last one is what we are going
+to use for today, the XGBoost.
+
+01:03:54
+XGBoost is a sequential ensemble
+that builds trees iteratively.
+
+01:04:00
+It's basically each of the
+new trees would correct the
+
+01:04:04
+error from the previous trees.
+
+01:04:06
+It would give us the highest fraud
+detection accuracy by iteratively
+
+01:04:11
+focusing on the hard-to-classify
+edge cases, like when they are
+
+01:04:15
+having very complex fraud patterns.
+
+01:04:20
+And the XGBoost GPU acceleration
+spans every major step.
+
+01:04:26
+The first step would be to
+compute the prediction errors.
+
+01:04:34
+So for each boosting round,
+the XGBoost would compute
+
+01:04:38
+the first derivative and the second
+derivative, which is the gradient
+
+01:04:42
+and adhesion of the loss function
+for every sample by using GPU.
+
+01:04:47
+We can do that for all the
+samples in parallel.
+
+01:04:51
+And step two, we are building
+the decision trees.
+
+01:04:55
+It basically follows a
+two-step instruction.
+
+01:04:58
+The first step would be to...
+
+01:05:02
+The second would be to find
+the best splits and using
+
+01:05:07
+GPU we can build all the decision
+trees at once or simultaneously,
+
+01:05:12
+that's what I mean.
+
+01:05:13
+In step 3, when we're computing
+the objective functions or
+
+01:05:17
+the loss functions of the tree,
+
+01:05:20
+All the tree leaves, like
+weight computations and loss
+
+01:05:24
+evaluations across all samples
+can be parallelized simultaneously.
+
+01:05:31
+And in step four, when we are
+computing the final weighted
+
+01:05:35
+average, we can do traverse T-trees
+for n samples simultaneously.
+
+01:05:42
+So all the four steps can
+be GPU accelerated.
+
+01:05:49
+So to train XGBoost on CPU,
+you basically just need to
+
+01:05:53
+specify the device to be CPU
+in the baseline parameters.
+
+01:05:59
+And it takes 26.8 seconds
+to execute on CPU.
+
+01:06:04
+It would give us the training
+validation AUC scores together
+
+01:06:08
+with the feature importance.
+
+01:06:10
+And if we swap the CPU into
+CUDA, it can be GPU accelerated.
+
+01:06:16
+The execution time is
+only 4.6 seconds.
+
+01:06:20
+That is going to be roughly
+
+01:06:24
+A seven times speedup and
+the results are essentially
+
+01:06:29
+the same with minimal difference.
+
+01:06:32
+Like I explained to one of
+the attendees, we are writing
+
+01:06:37
+the algorithms, like we are trying
+to make the algorithms parallel
+
+01:06:45
+by rewriting the algorithms.
+
+01:06:46
+So the minimal difference in
+the results or in the output
+
+01:06:51
+is expected by QML.
+
+01:06:54
+And the feature importance
+is essentially the same.
+
+01:06:58
+And there is one way to monitor
+your XGBoost performance
+
+01:07:02
+on the GPU, NVTop.
+
+01:07:06
+By typing in NVTop on your
+terminal, you can see the upside
+
+01:07:11
+and down of the GPU utilizations.
+
+01:07:14
+And you can see the GPU memory and
+the power consumption, et cetera.
+
+01:07:22
+And two approaches, at how level
+
+01:07:26
+To prevent the overfitting and
+improve the AUC scores, the first
+
+01:07:31
+one is the K-Fold Cross-Validation.
+
+01:07:34
+If we are doing a five-fold
+cross-validation, we are
+
+01:07:38
+going to run the XGBoost
+model for five times.
+
+01:07:42
+It takes 124 seconds to
+execute on CPU, and 26.7
+
+01:07:48
+seconds to execute on GPU.
+
+01:07:50
+That is roughly
+probably a five-to-time
+
+01:07:54
+Five to six times speed up.
+
+01:07:57
+And we are going to do grid
+search on top of, for example,
+
+01:08:00
+three-fold cross-validation.
+
+01:08:03
+Basically, for each of the task
+configurations, we are doing
+
+01:08:07
+a three-fold cross-validation.
+
+01:08:09
+In total, we are going to execute
+the XGBoost for nine times.
+
+01:08:13
+On CPU, it takes 159
+seconds to execute, but
+
+01:08:16
+on GPU, only 44 seconds.
+
+01:08:17
+That is roughly a
+four-time speedup.
+
+01:08:26
+Let's work on the part
+six of the notebook.
+
+01:08:30
+You have another 10
+minutes to get started.
+
+01:08:33
+And if you feel very
+tired, you want to use
+
+01:08:35
+the restroom, feel free to.
+
+01:08:39
+And after the supervised
+learning, we only have the
+
+01:08:41
+Triton inference left.
+
+01:08:53
+That probably is best for me to
+provide a high-level walkthrough
+
+01:08:58
+of part 6 of the notebook.
+
+01:09:01
+Again, we are using the magic
+command on the top, CUDA app
+
+01:09:05
+pandas loads the environment
+with data preparations for
+
+01:09:09
+the baseline model training.
+
+01:09:13
+You are using the CPU for
+the value of the device.
+
+01:09:19
+You can calculate the wall
+time by using percent-percent
+
+01:09:23
+time on the top of your notebook.
+
+01:09:25
+And by swapping it from, sorry,
+I need to zoom it.
+
+01:09:33
+Command and plus.
+
+01:09:48
+And by swapping CPU to CUDA, in
+
+01:09:51
+the XGBoost training process,
+its GPU accelerated.
+
+01:09:55
+It finished in five seconds.
+
+01:09:59
+And on GPU, it
+finished in 15 seconds.
+
+01:10:04
+And then we use cross-validation
+approach, as well as grid search,
+
+01:10:11
+on top of the cross-validation
+approach to improve the AUC
+
+01:10:16
+score and prevent the overfitting.
+
+01:10:19
+Accuracy would be very
+inaccurate when we are
+
+01:10:23
+doing a classification model.
+
+01:10:28
+And in the end, we plug
+the hyperparameters into
+
+01:10:32
+the final model training.
+
+01:10:35
+And I'm creating some
+model explainability with
+
+01:10:39
+sharp visualizations.
+
+01:10:41
+I created the summary plot,
+a detailed summary plot, a
+
+01:10:46
+fourth plot, and a waterfall
+plot, as you can see here.
+
+01:10:55
+And we generate the prediction,
+summarize the model performance,
+
+01:10:59
+and save the model.
+
+01:11:01
+The saved model will be used
+for the next step, the model
+
+01:11:05
+deployment and inference.
+
+01:15:38
+Are you guys ready
+for the next step?
+
+01:16:06
+I don't think I need note
+for the last session.
+
+01:16:09
+So the last session
+is about inference.
+
+01:16:12
+So after we build the XGBoost
+model, we want to deploy it
+
+01:16:18
+and do the data inference.
+
+01:16:20
+Here, the tool we are using is
+the Triton Inference Server.
+
+01:16:26
+On the left-hand side is a
+Triton server architecture.
+
+01:16:30
+The Triton sits between the
+client applications and the GPUs.
+
+01:16:36
+It can handle the requests
+or queries from the client
+
+01:16:40
+applications, like the web apps,
+the mobiles, and the services.
+
+01:16:48
+In the middle, it's been through
+a clean and scalable layer
+
+01:16:52
+with different size for the
+batching from 128 all the
+
+01:16:57
+way to 1,024 and with different
+inference backends such as
+
+01:17:02
+Python, TensorRT, ONNX, or PyTorch.
+
+01:17:06
+And in the middle, we have
+the key configurations table.
+
+01:17:11
+You got to have it as
+part of your file.
+
+01:17:15
+It basically would require
+461 dimensions for the input
+
+01:17:19
+features and only one dimension
+for the fraud probability output.
+
+01:17:26
+And it also, you can use
+dynamic batching with the
+
+01:17:30
+preferred batch sizes of
+128, 256, all the way to 1024.
+
+01:17:32
+On the right-hand side,
+I'm providing and I'm
+
+01:17:34
+explaining why Triton
+is the best for fraud detection.
+
+01:17:45
+In our case, it gives me a
+perfect reliability, like a 100%
+
+01:17:49
+success rate, zero failure rate.
+
+01:17:53
+It requires very low latency, very
+efficient in batching and using the
+
+01:17:58
+resources, and also is a
+production-ready-grade
+
+01:18:03
+infrastructure.
+
+01:18:07
+And to do the Triton Inference,
+to do the model deployment
+
+01:18:12
+and inference, it's basically
+a two-step, right?
+
+01:18:15
+First step is the deployment
+workflow and the server setup.
+
+01:18:19
+The second one is to do the
+inference on the client Triton.
+
+01:18:24
+For the first part, deployment
+workflow and server setup,
+
+01:18:29
+we will start with the
+model repo structure.
+
+01:18:34
+Here on the right, I'm providing
+you with an example for
+
+01:18:38
+your own reference.
+
+01:18:41
+And then we start the Triton
+Server without docker by running
+
+01:18:45
+this piece of code.
+
+01:18:46
+At the same time, we can choose
+to build different packages,
+
+01:18:50
+like XGBoost, numpy.
+
+01:18:52
+And when you see the model
+fraud detection, XGBoost
+
+01:18:56
+is ready in status.
+
+01:18:57
+Feel free to move on
+to the next step.
+
+01:19:00
+You can verify the server health by
+executing the curl on the terminal.
+
+01:19:06
+And then you would implement the
+Python backend model.py to do the
+
+01:19:11
+model loading and inference logic.
+
+01:19:15
+And on the right-hand side,
+I'm giving you an example
+
+01:19:18
+of the dynamic batching in action.
+
+01:19:20
+When the batch size is 512, it
+basically means a single GPU call.
+
+01:19:27
+You can do the inference for
+512 transactions at once.
+
+01:19:35
+And in part two, you may want
+to do the client inference
+
+01:19:38
+and performance check.
+
+01:19:40
+And first, you set up the client by
+pip-installing the Triton client.
+
+01:19:45
+Then you would execute
+the inference code, the
+
+01:19:48
+TritonInference.py.
+
+01:19:50
+I'm just providing
+you with an example.
+
+01:19:52
+You can either do a single
+transaction prediction, or
+
+01:19:55
+you can do a prediction on
+a batch of transactions using
+
+01:20:01
+different batch sizes.
+
+01:20:05
+And in the end, you can monitor
+the metrics on the premises.
+
+01:20:11
+And by executing the command
+on the terminal, you're able
+
+01:20:16
+to have different metrics,
+like reliability, 100 success rate,
+
+01:20:20
+your latency, your throughput,
+your queue efficiency, and
+
+01:20:25
+your GPU utilizations if you
+are using multiple GPUs like I do.
+
+01:20:36
+And it's supposed to be your
+notebook time, but let me
+
+01:20:41
+just finish with a summary,
+and then we can use the rest
+
+01:20:44
+of time for the notebook.
+
+01:20:47
+So to summarize and to recap,
+for this workshop, I have
+
+01:20:52
+provided a GPU-accelerated
+data science pipeline.
+
+01:20:56
+From the left to the right, we have
+
+01:20:58
+We learned the data ingestion,
+data processing, exploratory
+
+01:21:05
+data analysis, EDA, and the
+feature engineering using
+
+01:21:08
+NVIDIA QDF and the GPU Polars.
+
+01:21:12
+And then we move forward to
+unsupervised learning and
+
+01:21:15
+supervised learning for the
+model training and optimization
+
+01:21:20
+using NVIDIA QML.
+
+01:21:21
+And in the end,
+
+01:21:24
+We did the model deployment
+and inference on Triton
+
+01:21:27
+Inference Server.
+
+01:21:29
+Let me walk you through the
+notebook and the terminal code.
+
+01:21:41
+So in part seven of the notebook,
+we started with some sanity check.
+
+01:21:46
+Now, at this stage, you're
+already having your exit boost
+
+01:21:50
+fraud detection model.
+
+01:21:52
+So you set up the environment,
+load the trained model, do
+
+01:21:56
+the model serialization format.
+
+01:22:00
+You can choose different format.
+
+01:22:01
+Model.json is probably the
+preferred format.
+
+01:22:06
+And you load the data for
+inference, check the results.
+
+01:22:11
+Either do a single sample
+inference or you can do a
+
+01:22:16
+batch inference on your GPU.
+
+01:22:20
+You analyze your prediction
+and see if it's consistent
+
+01:22:24
+with your assumption.
+
+01:22:27
+And then we prepare the
+model for Triton Inference
+
+01:22:30
+Server by building the
+
+01:22:37
+Let me see.
+
+01:22:39
+Oh, this is your key
+configuration file.
+
+01:22:43
+You need to save it in the
+designated location.
+
+01:22:47
+And this is your, where you
+need to implement the Python
+
+01:22:52
+backend using model.py.
+
+01:22:54
+This is your code to handle
+the model loading and
+
+01:22:57
+the inference logic.
+
+01:22:59
+You can design it your own way.
+
+01:23:01
+I'm just providing you
+with a reference.
+
+01:23:04
+And this is the example, like,
+folder structure I'm demonstrating.
+
+01:23:10
+And then we move forward with the,
+like, part one, model deployment.
+
+01:23:16
+For the purpose of this
+workshop, you don't need
+
+01:23:19
+to execute those pieces of
+code because the Triton Inference
+
+01:23:22
+Server is already initiated
+and running in the backend.
+
+01:23:26
+We can just move
+forward to the part two.
+
+01:23:29
+You run your client inference.
+
+01:23:31
+Again, the Triton client has
+been installed for you because
+
+01:23:35
+you don't need to install it again.
+
+01:23:38
+We can simply run the
+test Triton.py and execute
+
+01:23:43
+the inference code.
+
+01:23:46
+Let me open up the terminal.
+
+01:23:57
+First, you start by testing it.
+
+01:24:03
+There's a typo.
+
+01:24:10
+Okay, now it gives you the
+Triton Server Status, Server
+
+01:24:25
+Live True, Server Ready True,
+and the model is ready.
+
+01:24:28
+Then we move forward to the
+Realtime Inference.
+
+01:24:32
+To execute Python Triton
+
+01:24:46
+Yeah, it's very fast.
+
+01:24:48
+On the top, you have your
+single transaction prediction.
+
+01:24:52
+And then you have the
+transaction predictions
+
+01:24:56
+on the top 10 transactions.
+
+01:24:59
+And for different batch sizes,
+we look them over.
+
+01:25:03
+It gives us the time,
+throughput, and the latency.
+
+01:25:06
+So it depends on your needs.
+
+01:25:07
+You can execute for the entire
+population, entire test data set,
+
+01:25:12
+or just one single transaction.
+
+01:25:14
+Now as I'm giving the time
+back to you, you can work
+
+01:25:17
+on your notebook and work
+on the code on your terminal.
+
+01:25:21
+And if you have any question to
+us, feel free to come over to me.
+
+01:25:28
+Thanks, Alison.
+
+01:25:29
+I think it's very important
+to note here that we only have
+
+01:25:31
+15 minutes left, or not even 15.
+
+01:25:34
+We only have seven minutes left.
+
+01:25:35
+So it would be great if you
+have any questions.
+
+01:25:37
+We take questions now while others
+are practicing those notebooks.
+
+01:25:41
+So if you have any questions,
+please raise your hand.
+
+01:25:43
+I'll come over and give you my mic.
+
+01:25:48
+And while you're working on those
+notebooks, please, please, please
+
+01:25:51
+fill out the feedback survey.
+
+01:25:53
+It's very important for us
+so that we can learn what
+
+01:25:55
+are the type of contents you
+want to see as we keep developing
+
+01:26:00
+different technical workflows,
+different technical explainers
+
+01:26:04
+for you to utilize GPX-related
+libraries or any other things
+
+01:26:09
+that you're trying to work on.
+
+01:26:14
+Oh, thank you so much for
+coming over to my workshop.
+

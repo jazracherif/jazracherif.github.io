@@ -1,0 +1,2121 @@
+Session: https://www.nvidia.com/en-us/on-demand/session/gtc26-s81614/
+
+Transcript Powered by AI
+
+Top-K Selection at the Speed of Light
+
+
+00:05
+Good afternoon, everyone.
+
+00:06
+Welcome to GTC and welcome
+to our presentation.
+
+00:09
+My name is Yuewen.
+
+00:11
+Today I am presenting top-k
+selection at the speed of light.
+
+00:15
+The main contribution of this
+role is from Christina Zhang
+
+00:18
+and Elias Stehle.
+
+00:20
+They are from the ZETA team
+and CCCL team, respectively.
+
+00:24
+Due to family reasons, they are
+unable to attend in person, so
+
+00:28
+I am here to do the presentation.
+
+00:31
+When we say Speed of Light at
+NVIDIA, we mean engineering
+
+00:35
+the algorithm to hit the peak
+of hardware performance.
+
+00:38
+Today, I will be discussing a
+Speed of Light top-k algorithm
+
+00:42
+that has recently been productized
+and made available as the
+
+00:46
+first-class citizen in the
+CUB library, and how we can
+
+00:51
+use it without having to worry
+about any implementation details.
+
+00:57
+This is our agenda today.
+
+00:59
+I will start with the background
+of top-k selection and its
+
+01:02
+common applications.
+
+01:04
+I will then walk you through the
+CUB API, highlighting its flexible
+
+01:08
+features and common parameters.
+
+01:11
+Next, I will share a 116-ton
+speedup from a real-world
+
+01:16
+drug discovery case.
+
+01:18
+Then, I will dive into the
+evidence details.
+
+01:21
+Finally, I will close with
+an outlook for Wacom SNES for
+
+01:26
+the CAS family of toolkit evidence.
+
+01:31
+Let's first look at the background
+and application of top-k.
+
+01:36
+To start, let's define what
+top-k actually does.
+
+01:40
+Conceptually, you can think
+of it as sorting your entire
+
+01:43
+input and then only take the
+first of the K items.
+
+01:47
+Given that mental model, the
+nature question is, why don't
+
+01:50
+we just use a full sort every time?
+
+01:54
+The answer is simple, because
+we can do better.
+
+01:57
+Sorting for top-k is overkill.
+
+02:00
+You are ordering the data and
+just to discuss most of it.
+
+02:04
+By focusing only the partition
+we care about, CUB device
+
+02:08
+toolkit delivers as much as 5 times
+speed up over a full-readed source.
+
+02:16
+This page showcases some of
+top-k application scenarios.
+
+02:20
+Let's first focus on the
+large language model.
+
+02:24
+In a mixture of expert models,
+a router looks at the scores
+
+02:28
+for many experts and picks
+the top few experts for each token.
+
+02:34
+Only the selected experts
+will participate in the
+
+02:37
+subsequent calculations.
+
+02:39
+That's literally a top-k
+over expert scores.
+
+02:43
+Next is the top-k sampling.
+
+02:45
+When we generate the tags, we
+do not always pick a single
+
+02:49
+token with a high DD score.
+
+02:52
+This will make the model
+very deterministic.
+
+02:56
+However, sometimes we want
+the output to be more diverse.
+
+03:00
+So we first select the top-k tokens
+and then sample from these subsets.
+
+03:05
+This allows the model to
+produce more diverse yet
+
+03:08
+reasonable results.
+
+03:11
+On the right is the
+sparse attention.
+
+03:13
+Full attention is projected
+in sequence length, which
+
+03:17
+is very expensive.
+
+03:19
+In many sparse attention variants,
+we use top-k to select only the
+
+03:24
+strongest attention scores and drop
+the rest, tuning dense attention
+
+03:29
+into a much cheaper sparse pattern.
+
+03:33
+On the button load, drug discovery
+uses top-k to sift through millions
+
+03:38
+or billions of candidate molecules
+and keep only the best golden
+
+03:41
+ones for the further evaluation.
+
+03:45
+Recommended systems rely on top-k
+to pick the most relevant items
+
+03:50
+from each user from a huge catalog.
+
+03:54
+Inventor database uses top-k to
+return the nearest neighborhoods
+
+03:58
+to query an embedding.
+
+04:01
+So even though these applications
+look very different, they
+
+04:04
+all depend on fast scalable
+top-k operators to filter down from
+
+04:08
+everything to the few key items.
+
+04:12
+That's why having a highly
+efficient top-k algorithm
+
+04:15
+on GPU is critical for keeping
+those workloads both accurate
+
+04:20
+and affordable at modern scales.
+
+04:25
+Next, please allow me to introduce
+how to quickly use a speed-of-life
+
+04:29
+toolkit based on CUB.
+
+04:32
+So, what is CUB?
+
+04:34
+CUB is a library of collective
+parameters for CUDA.
+
+04:38
+And it has been unified under
+the CUDA core compute library,
+
+04:42
+which we call CCCL.
+
+04:45
+CUB provides the state-of-the-art
+and reusable software components
+
+04:50
+for every layer of the CUDA
+program model, device-wide,
+
+04:53
+block-wide, warp-wide, and
+per-thread permittees.
+
+04:57
+For the device-wide algorithms that
+you involve from the host, think of
+
+05:01
+the algorithm like the ReduxSource,
+PrefixedScan, or Reduction.
+
+05:06
+When you call one of these,
+the algorithm utilizes the
+
+05:09
+entire GPU to perform the task.
+
+05:13
+However, CUB is
+also highly modular.
+
+05:16
+For low-level developers who
+write their own kernels, CUB
+
+05:20
+provides granular building
+blocks like the block-level
+
+05:23
+and warp-level pragmatics.
+
+05:27
+The motivation behind CUB is
+to prevent developers from
+
+05:30
+having to reinvent the wheel.
+
+05:34
+We don't want you to have to
+rewrite your old algorithms, or
+
+05:38
+even more importantly, worry about
+the maintenance and the measuring
+
+05:41
+tooling for every new architecture.
+
+05:44
+CUB ensures that these algorithms
+are tuned for the peak performance.
+
+05:52
+If you have worked with CUB
+before, this API structure
+
+05:55
+will be very familiar to you.
+
+05:57
+We offer two distinct
+interfaces, DeviceTopKMaskKeys
+
+06:01
+and DeviceTopKMaskPairs.
+
+06:04
+For the mask key, you provide an
+array of keys and the algorithm
+
+06:10
+will use this key to To determine
+the TopK items, and write
+
+06:14
+those K elements to the output.
+
+06:17
+But more than that, you need to
+know where those keys came from,
+
+06:21
+or keep some metadata attached.
+
+06:24
+That's where the
+Paris API comes in.
+
+06:27
+Here, each key is associated
+with a corresponding value,
+
+06:31
+like an index or other data.
+
+06:34
+CUB ensures that these values stay
+pinned to their key throughout
+
+06:39
+the whole selection process,
+and returning both keys and
+
+06:43
+their associated values in
+the final output.
+
+06:50
+Now let's talk about how you
+can sequence out even more
+
+06:53
+performance by defining exactly
+what your application needs.
+
+06:57
+By default, DeviceTopK guarantees
+a sorted output and determined
+
+07:02
+state result from run to run.
+
+07:05
+This is great for debugging, but
+it comes with a performance cost.
+
+07:10
+If your specific application
+doesn't require a straight
+
+07:13
+reorder, for example, if you
+just need top 100 values and
+
+07:18
+pass into a parallel sampler,
+you can leave these requirements
+
+07:22
+by passing your exact requirements
+as an environment to the algorithm.
+
+07:28
+By passing knock guarantee for
+determinism and unsorted for the
+
+07:32
+output ordering, you are allowed
+the algorithm to leverage faster
+
+07:36
+and parallel-friendly selection
+kernels, which can give the
+
+07:41
+sorting and extra bookkeeping work.
+
+07:45
+This is a simple knock but
+can lead to significant
+
+07:48
+runtime improvements.
+
+07:52
+Similar to other CUB aggregates,
+DeviceTopK supports arbitrary
+
+07:57
+iterators as both input and output.
+
+08:01
+This allows us to use
+fancy iterators that
+
+08:04
+perform data generation
+and transformation on the fly.
+
+08:10
+For instance, you can use a
+transform iterator to modify
+
+08:14
+values as they are being read
+from memory or use a counting
+
+08:19
+iterator to generate a sequence
+without actually having to
+
+08:23
+solve it in memory.
+
+08:25
+This is particularly helpful
+if you need the index of the
+
+08:28
+toolkit items but you do not want
+to materialize in an index array.
+
+08:35
+Using fancy iterator can
+drastically improve the
+
+08:38
+performance, instead of
+allocating temperature
+
+08:41
+memory buffers and writing
+intermediately data up-form.
+
+08:46
+We generated it and running it
+while running the algorithm.
+
+08:52
+This is illustrated in the example.
+
+08:54
+On the left, we see the
+traditional approach.
+
+08:57
+Launching a separate kernel like
+stress sequence and physically
+
+09:02
+view an array in global memory.
+
+09:05
+On the right, we replace that with
+a CUDA-Making-Counter iterator.
+
+09:10
+This generates the sequence
+with virtually as it will be
+
+09:14
+dereferenced by the Top-K kernel.
+
+09:17
+As you can see in the graph,
+this lazy generation eliminates
+
+09:21
+unnecessary allocations and
+memory transfers, resulting
+
+09:25
+in up to a 1.5 times speedup
+for typical workloads.
+
+09:33
+One of the most powerful
+features of CAF's Redis-based
+
+09:36
+algorithm is the ability
+to support custom types.
+
+09:41
+But because we are performing
+bit-level selection, the
+
+09:45
+algorithm needs to understand
+the structure of your data.
+
+09:49
+Think of a decomposer as the
+comparator for the Redis selection.
+
+09:54
+Just a sorting algorithm needs
+a comparator to know which
+
+09:57
+of two objects is larger.
+
+10:00
+A ready's algorithm needs to know
+which bits represent the primary
+
+10:04
+and the secondary sorting members.
+
+10:08
+By providing a decomposer, you
+are informing the algorithm
+
+10:12
+how to map your custom drafts
+into the bits order components.
+
+10:19
+For example, treating
+a struct member as the
+
+10:22
+primary key and another
+as the secondary tiebreaker.
+
+10:27
+This establishes the
+lexicographical order necessary
+
+10:31
+for CUBS to perform high-speed
+selection on your user device type.
+
+10:39
+Let me show you a real-world
+example of using device toolkit
+
+10:43
+to accelerate an application.
+
+10:48
+Let's look at a real-world success
+story that showcases the impact of
+
+10:51
+CUB's new device-token algorithm.
+
+10:56
+Numerion Labs is a pioneering
+structure-based drug discovery,
+
+11:00
+using their APEX protocol
+to search ultra-large combinatorial
+
+11:04
+libraries of billions of compounds.
+
+11:08
+At the heart of their workload,
+they need to retrieve the
+
+11:11
+token's most relevant compounds
+based on drunken scouts across
+
+11:16
+billions of compounds.
+
+11:18
+Their original CPU-based
+implementation was a major
+
+11:22
+bottleneck, requiring 30
+minutes for a single search
+
+11:26
+across 50 billion compounds.
+
+11:29
+As part of their solution,
+they adopted CUB's new device
+
+11:33
+toolkit algorithm to speed
+up their processing pipeline.
+
+11:37
+Also, as the input side exists
+the device memory on a single
+
+11:41
+GPU, NVIDIA together with
+Numerion Labs developed a trained
+
+11:48
+TopKey approach to solve this.
+
+11:50
+As you can see in the diagram,
+the input is processed in
+
+11:54
+manageable chunks.
+
+11:57
+For each chunk, we run the
+device TopKey to exact the local
+
+12:00
+TopKey candidates, which are then
+carried forward to the next chunk.
+
+12:06
+The result is very impressive
+by moving from a CPU
+
+12:09
+implantation to the GPU.
+
+12:12
+The runtime drops from 30 minutes
+to just 11 seconds on a single
+
+12:16
+RTX 6000 ADA, which corresponding
+to more than a 116 tons speedup.
+
+12:26
+So now you have seen what CAP is
+and how to use CAP device toolkit
+
+12:29
+to accelerate an application.
+
+12:32
+In the next few slides, I
+want to lift the hood and
+
+12:35
+show you how parallel algorithms
+that power CAP device toolkit.
+
+12:40
+We will walk through how
+it works under the hood
+
+12:42
+and why it was so fast.
+
+12:47
+Before I introduce the
+implementation details, let
+
+12:51
+me highlight the key contributions
+that make CapDevice TopK so fast.
+
+12:56
+We have adopted two major
+innovations, the iteration-fused
+
+12:59
+design and an adaptive strategy
+based on data distribution.
+
+13:05
+We will explain each
+part in detail later.
+
+13:10
+To understand our optimization,
+you first need to understand
+
+13:13
+how the parallel predicts
+top-k works fundamentally.
+
+13:17
+Let me walk you through an
+example, finding the top four
+
+13:21
+smallest elements from a list
+of eight elements.
+
+13:25
+The Redis approach processing
+the data digit by digit, starting
+
+13:29
+from the most significant digit.
+
+13:32
+Similar to the Redis source, we
+can think of it like organizing
+
+13:36
+the number in a library.
+
+13:38
+You first solve by the first
+digit, and then within those groups
+
+13:44
+by the second digit, and so on.
+
+13:48
+But unlike full sorting, we
+are smart about eliminating
+
+13:53
+the elements we know can
+be in the toolkit.
+
+13:57
+The algorithm
+processes in iterations.
+
+14:00
+Each iteration has four key steps.
+
+14:03
+Step 1 is computing histogram.
+
+14:05
+We will look at one digit for each
+element, for example, the first two
+
+14:11
+bits and count how many elements
+fall into each digit value.
+
+14:16
+For instance, we might find
+that two elements have digit
+
+14:20
+0 and 0, and three elements
+have digit 01, and so on.
+
+14:26
+This histogram tells us the
+distribution of the value
+
+14:29
+for this digit position.
+
+14:32
+Step 2 is computing the
+accuracy prefix sum.
+
+14:35
+We convert the histogram into
+a cumulative count.
+
+14:39
+After this step, for each digit
+value x, we know how many elements
+
+14:44
+are at or below that threshold x.
+This is crucial for the next step.
+
+14:51
+And step 3 is finding
+the target digit.
+
+14:54
+Using the prefix sum, we
+identify which You should
+
+14:57
+enjoy the case-smallest
+elements you must have.
+
+15:02
+This is people that
+devise our candidates.
+
+15:05
+In our example, since we want
+the top four elements, we
+
+15:09
+look for the digit where the
+cumulative counts cross fours,
+
+15:14
+and the final step is flitling.
+
+15:16
+Based on the target digit,
+we partition elements
+
+15:19
+into three groups.
+
+15:21
+The first group is the elements
+with smaller digit, which
+
+15:25
+are definitely in the top
+K and go directly to the results.
+
+15:30
+The second group is the
+elements with larger digit,
+
+15:33
+which will be eliminated.
+
+15:36
+And the third group is the
+element with the target digit,
+
+15:39
+which will be treated as the
+candidate for the next iteration.
+
+15:44
+We pass only these candidates
+forward, greatly reducing the
+
+15:47
+workload from the next iteration.
+
+15:53
+Now let me show you how
+this process features
+
+15:55
+across two iterations.
+
+15:57
+This diagram illustrates
+exactly how the data flows
+
+16:01
+through the algorithm.
+
+16:03
+The right side is the second path.
+
+16:05
+Now we repeat the progress
+by only working with the five
+
+16:10
+candidates from the first path.
+
+16:14
+We look at the next two bits
+of these remaining elements.
+
+16:18
+These iterations might
+identify two more results
+
+16:21
+and pass three candidates
+to a potential third path.
+
+16:26
+The key insight is the progressive
+reduction in workload.
+
+16:31
+The first iteration might
+process millions of elements,
+
+16:35
+but by the second iteration,
+you might down to thousands.
+
+16:38
+And by the third or the fourth
+iteration, maybe just hundreds.
+
+16:43
+That's why Radix top-k can
+be much more efficient than
+
+16:46
+full install, than full sorting.
+
+16:49
+We are not wasting time to
+organize the elements that
+
+16:52
+will not be in the final top-k.
+
+16:57
+In traditional Naive Radix
+top-k implementation for GPU,
+
+17:02
+the algorithm requires four
+iterations for 32-bits data.
+
+17:07
+Each iteration will use 8-bits
+digits and involve four separate
+
+17:12
+kernel cores, corresponding to the
+four steps we mentioned earlier.
+
+17:17
+This results in 16
+kernel cost total.
+
+17:23
+The diagram with the stacked
+rectangle representing the kernels
+
+17:27
+with multiple thread blocks.
+
+17:30
+The major problem with this
+approach is that we need to
+
+17:34
+roll the input data twice
+in each One for the histogram
+
+17:40
+computation and one for Fritilin.
+
+17:43
+This creates enormous
+device memory traffic,
+
+17:47
+which becomes the bottleneck.
+
+17:51
+Our iteration fuse design
+solves this by recognizing
+
+17:54
+that flitting out the current
+iteration and histogram compute
+
+18:00
+for the next iteration can
+be merged into a single kernel.
+
+18:05
+This is the breakthrough.
+
+18:06
+We wrote the data once and
+use it for both operators.
+
+18:11
+When an element is identified
+as a candidate during the
+
+18:14
+free-telling, we immediately
+exact the needed bits for
+
+18:18
+the next iteration's histogram and
+update the corresponding counter.
+
+18:24
+This eliminates
+redundant memory loads.
+
+18:28
+Additionally, because we compute
+the prefix sum in parallel
+
+18:32
+on GPU rather than sequentially
+on CPU, we afford to use 11-bit
+
+18:37
+3-digit digit instead of 8-bit.
+
+18:42
+This reduces the iteration from
+4 to just 3 for 32-bit data.
+
+18:49
+Look at the color
+box in the diagram.
+
+18:52
+In the second and the third
+iteration, all four stats are fused
+
+18:56
+together into a single kernel.
+
+18:59
+The purple shading on the final
+filtering step indicates it runs as
+
+19:04
+a separate kernel at the very end.
+
+19:07
+As a result, we go from 16
+kernels call down to only
+
+19:11
+four kernel calls total.
+
+19:13
+This reduces both kernel launch
+overhead and memory traffic.
+
+19:20
+Next, let's look at the impact
+of data distribution on the
+
+19:23
+TOC-K calculation.
+
+19:24
+Let's look at two extreme examples.
+
+19:28
+Looking at the left-hand screen
+on the slide, this represents
+
+19:32
+an evenly distributed data set.
+
+19:35
+If this case, the first iteration
+of reduced TOC-K is expected
+
+19:40
+to reduce the work role to just
+1 over 2048 of the original size.
+
+19:47
+In this case, we are flitting
+out most of the data in
+
+19:52
+just one iteration.
+
+19:54
+Now let's look at
+the right histogram.
+
+19:56
+This shows what we call the skewed
+or reduced adversary distribution.
+
+20:02
+In another extreme case, if all
+the first 11 bits are identical,
+
+20:08
+no elements can be removed at all.
+
+20:10
+We make zero progress
+in this iteration.
+
+20:14
+This is actually what occurs in
+practice, but when the imposed
+
+20:18
+value range is narrow, the release
+algorithm is blind to this member
+
+20:25
+in the first or two iterations.
+
+20:28
+So what is the impact does
+the data distribution have?
+
+20:33
+This will actually affect
+whether we need to use a buffer
+
+20:37
+to stop the candidate set.
+
+20:40
+The advantage of not using
+a buffer is that it avoids
+
+20:44
+storing the candidates, thus
+reducing memory traffic for
+
+20:47
+Riddick's adversary distribution.
+
+20:50
+However, for evenly distributed
+data, we need to reload
+
+20:54
+the entire original dataset
+in every iteration.
+
+20:59
+So how about using a buffer?
+
+21:02
+It reduces the amount of
+data read each time.
+
+21:05
+But for the extreme case,
+we may need to read the
+
+21:08
+same data repeatedly.
+
+21:11
+So we are fixing a dilemma,
+buffer or no buffer?
+
+21:16
+The answer depends on the
+data distribution, which we
+
+21:20
+typically do not know in advance.
+
+21:24
+Our adaptive strategy makes
+this decision automatically,
+
+21:27
+based on three key observations.
+
+21:30
+Observation 1.
+
+21:31
+The histogram gives us a quick
+picture of the data.
+
+21:36
+After each round, we already have a
+histogram, so we can see how values
+
+21:41
+are separated across buckets.
+
+21:44
+This tells us whether the data is
+roughly uniform or heavily skewed.
+
+21:50
+Observation 2, the number
+of candidates, is the most
+
+21:53
+important signal.
+
+21:55
+From the histogram and prefix
+sum, we know the updated candidate
+
+21:59
+number, which is how many elements
+fall into the target bucket.
+
+22:04
+If it is small, it means that
+this row treated the data
+
+22:08
+very well, otherwise we barely
+removed anything.
+
+22:13
+Observation 3, a simple threshold,
+let us to pick the right strategy.
+
+22:19
+We compare the updated candidate's
+number with N divides alpha,
+
+22:26
+where N is the total number
+of the element, and alpha
+
+22:30
+is a user control parameter,
+for example, 128.
+
+22:35
+If the updated candidate's
+number is smaller than N over
+
+22:41
+alpha, we stop the candidate
+in a buffer and only load
+
+22:47
+this item in the next row.
+
+22:50
+If the updated candidate's
+number is larger or equal,
+
+22:53
+we skip the buffer and just
+read from the original input again.
+
+22:59
+So these three observations
+together give us a simple
+
+23:02
+rule that adapted to the data
+distribution automatically.
+
+23:10
+Now let's look at the performance
+results comparing CUB DeviceTopK
+
+23:13
+with other state-of-the-art
+GPU TopK implementations.
+
+23:19
+We test on NVIDIA B200 GPU using
+32-bit floating-point data.
+
+23:26
+The slide shows 6 plots, the top
+row shows Gaussian distribution
+
+23:31
+data, and the bottom shows
+the uniform distribution data.
+
+23:36
+Each row tests with three different
+k-values, from 32 to 30,000.
+
+23:43
+The x-axis shows the log base
+of 2 of n, ranging from about
+
+23:48
+12 to 30, which means we are
+testing the input size from
+
+23:53
+about 4,000 elements up to
+over 1 billion elements.
+
+23:58
+The y-axis shows the time in
+milliseconds on a log scale.
+
+24:02
+The smaller is better.
+
+24:05
+We'll compare four algorithms
+shown in the legend.
+
+24:08
+Green line is our CUB
+DeviceTopK implementation.
+
+24:12
+Original line is
+PyTorch built-in TopK.
+
+24:15
+Blue line is the highly efficient
+CUB Redux source baseline.
+
+24:19
+And red line is Redux
+Glass, which is the previous
+
+24:23
+state-of-the-art Redux-based
+TopK from DR TopK library.
+
+24:29
+Looking at all the
+C++, the green light
+
+24:32
+is consistently at the bottom.
+
+24:35
+Meaning our algorithm is the
+farthest in every case.
+
+24:39
+The performance gets become
+more pronounced as an increase,
+
+24:43
+especially for larger problem
+size beyond 1 million elements.
+
+24:48
+The original PyTorch line
+performs better than Redux
+
+24:51
+class, but worse than our method.
+
+24:56
+It's worth to mention that,
+device token can still maintain
+
+24:59
+an execution time of less
+than 100 million seconds, even with
+
+25:03
+a data scale of 1 of 1 billion.
+
+25:09
+Finally, please let me introduce
+our RoMAT and CAP ecosystem.
+
+25:16
+The toolkit problem seems
+simple at first, but users may
+
+25:19
+have different output requirements.
+
+25:22
+These are some common
+output requirements, for
+
+25:24
+example, non-deterministic
+and deterministic.
+
+25:29
+Non-deterministic also has no
+requirements on order, and tasks
+
+25:34
+are handled by random selection.
+
+25:37
+While Deterministic, we have
+Deterministic selection from
+
+25:41
+tasks from run to run.
+
+25:44
+One more requirement is sorting
+the output, sorted has most
+
+25:47
+three requirements, output must be
+ordered by the key first and within
+
+25:52
+the time, ordered by the index.
+
+25:57
+Take this input as an example,
+we have 8 elements, 4 of which
+
+26:01
+have the same key, which is 6.
+
+26:04
+If we want to select the top 4
+smallest value, we need to choose
+
+26:08
+2 from these 4 identical Both keys.
+
+26:12
+Let's look at the result for
+different output requirements.
+
+26:16
+Suppose we have three runs.
+
+26:18
+For non-deterministic, the
+output might be different
+
+26:21
+in these three runs.
+
+26:23
+The first two small list values
+are fixed, but for pairs with
+
+26:27
+key 6, it could be any two
+values between 4, 5, 6, and 7.
+
+26:33
+While for deterministic, it
+will always be the two pairs
+
+26:37
+with values 4 and 5.
+
+26:40
+As to the sorting, the output is
+not only deterministic, but also
+
+26:45
+sorted with the key and indices.
+
+26:51
+And different application has
+very different requirements
+
+26:54
+for the toolkit operators.
+
+26:56
+Not only are there different
+requirements for the outputs, but
+
+26:59
+also for the degree of parallelism.
+
+27:02
+For example, in sparse attention,
+the size of toolkit candidate
+
+27:06
+is relative to the sequence length,
+which can be hundreds of thousands.
+
+27:12
+We need a block-wide parallelism.
+
+27:14
+However, in routing, the 12K
+candidates represents the
+
+27:19
+total number of the experts,
+which is usually a few hundreds.
+
+27:24
+Therefore, a warp or subwarp-wide
+parallelism may be enough.
+
+27:30
+As to the sampling, which were
+samples from the top-k tokens
+
+27:35
+or from the small list sets whose
+possibilities must exist P. We
+
+27:41
+treat this as a segmented workflow,
+which means a batch of independent
+
+27:46
+top-k or top-P problems.
+
+27:49
+There are many similar examples
+and application scenarios.
+
+27:54
+Because these workloads
+are so different, a single
+
+27:57
+one-size-fits-all top-k kernel
+cannot work well for each case.
+
+28:02
+Therefore, we need specialized
+implementation for different
+
+28:06
+needs in order to achieve
+the best performance.
+
+28:12
+So top-k isn't just one feature,
+it's a whole feature matrix.
+
+28:17
+We won't have to provide a
+comprehensive top-k API.
+
+28:21
+If you look at the path of
+the circle, you can see four
+
+28:26
+dimensions we care about.
+
+28:29
+The first path is parallel
+parameters, which means using
+
+28:32
+different parallel levels
+to solve the problem.
+
+28:37
+The second part is the output
+requirements, which are what the
+
+28:41
+user aspect to see in the result.
+
+28:44
+And the third part is to
+distinguish different types of
+
+28:47
+questions, such as top-k or top-p
+problems, or a mix of these two.
+
+28:54
+The final part we care about is
+the algorithm implementation,
+
+28:58
+which means what algorithm
+we will use under the hood.
+
+29:03
+Our goal is to expose the solution
+in a very simple way by using CUB.
+
+29:08
+We want developers to be able
+to say, hey, this is the kind
+
+29:12
+of problem I'm solving, and
+the output requirement of
+
+29:16
+my application needs.
+
+29:18
+And here's the parallelism
+label I want, and then the
+
+29:21
+CUB will take care of the rest.
+
+29:26
+To give you a better idea
+of where we are and where
+
+29:29
+we are going, this roadmap
+highlights our current progress.
+
+29:33
+Right now, DeviceTopK fully
+supports non-deterministic
+
+29:37
+requirements, both fundamentally
+as well as custom types, using
+
+29:42
+the LTopK algorithm we just
+mentioned earlier.
+
+29:47
+We currently support the
+semantic version for the
+
+29:50
+batch workload, together
+with Warp and Block-level TopK.
+
+29:57
+To summarize, first, CUB
+DeviceTopK brings a fast,
+
+30:01
+production-ready top-k parameters
+into the CUB ecosystem.
+
+30:06
+Second, it delivers
+high-performance device-wide
+
+30:10
+top-k by using an iteration-fused
+design and an adaptive strategy
+
+30:15
+for different data distributions.
+
+30:17
+Third, in practice, Numerion
+Labs uses CUB device topk to
+
+30:22
+speed up their APEX drug discovery
+pipeline from 30 minutes on CPU to
+
+30:27
+11 seconds on a single GPU, which
+gives a 164 times acceleration.
+
+30:34
+Finally, we are building
+an intensive family on the
+
+30:37
+topk aggregates, ranging
+from work-wise to segmented
+
+30:42
+device-wide aggregates.
+
+30:45
+Ensuring every application has an
+optimized implementation tailored
+
+30:49
+to its specific constraints.
+
+30:54
+Finally, I would like to thank
+our colleagues and partners.
+
+30:58
+Their help and guidance made
+our implementation and design
+
+31:02
+have continued to improve.
+
+31:06
+We also want the
+power of community.
+
+31:08
+Your feedback and contributions
+are welcome and will be
+
+31:12
+a pleasure to us.
+
+31:13
+These are the QR codes for the
+CCCL report and documentation.
+
+31:18
+Please feel free to use them.
+
+31:21
+That's all. Thank you
+for your attention.
+
+31:27
+We do have a little time left
+for some Q&A, so do you guys,
+
+31:31
+anyone have any questions?
+
+31:42
+Thank you. I think you mentioned
+there's an automatic selection
+
+31:46
+for buffered versus non-buffered
+algorithm design.
+
+31:50
+And in sparse attention, especially
+in inference, the batch size
+
+31:55
+is really fixed and the sequence
+length is really varying.
+
+31:59
+I mean, and for CUDA graph
+capture, you really fix a
+
+32:02
+batch size and you never capture
+for different sequence lengths.
+
+32:06
+And does that automatic selection
+break the CUDA graph?
+
+32:10
+Is that logic on some CPU
+host code or automatically
+
+32:13
+in the device kernels?
+
+32:15
+I'm not very sure I understand
+your question clearly, but
+
+32:19
+this buffer was carried on
+the shared memory, so it was
+
+32:28
+inside the kernel and it will
+be comparable with the CUDA graph.
+
+32:32
+Oh, okay, okay, sure. So it's
+not a global device memory,
+
+32:35
+it's a shared memory?
+
+32:35
+Yeah, it's a shared memory.
+
+32:37
+Oh, okay, okay, sure.
+
+32:38
+And my another question is,
+there's a really short stage
+
+32:43
+and then a refinement stage
+on the selected bucket to
+
+32:48
+get the final top-k results.
+
+32:51
+And is there, I mean, I know a lot
+of fast top-k algorithm actually
+
+32:55
+does not guarantee the exact
+output because they usually stage
+
+32:59
+the bucket in the shared memory
+and the shared memory has a limited
+
+33:03
+volume so that it does not always
+guarantee the correct result.
+
+33:06
+And what is the status here
+in this device top-k kernel?
+
+33:10
+Actually, our implementation
+can guarantee the correct
+
+33:14
+result, because we will allocate a
+StringMainReverber large enough to
+
+33:21
+save all the elements that can be
+processed in the next iterations.
+
+33:28
+So the StringMainReverber
+will be large enough to hold
+
+33:32
+all the elements.
+
+33:33
+Okay, okay, cool. And sorry,
+I have one last question.
+
+33:38
+I think you mentioned
+there's a deterministic
+
+33:40
+mode and a sorted mode.
+
+33:42
+And sometimes when we want
+
+33:47
+to, say sometimes we want to
+prefer to, when there's a type, we
+
+33:51
+want to prefer the smaller index.
+
+33:53
+From a performance perspective,
+would you recommend using
+
+33:56
+deterministic mode or we make
+a compound key to include
+
+34:00
+both the top key values and
+the index as a key?
+
+34:05
+If you want the smallest index
+output at the beginning, I
+
+34:10
+think you need to use the
+slot requirement.
+
+34:14
+It will guarantee that the
+smallest index will be put
+
+34:17
+at the beginning of the output.
+
+34:19
+Okay, sure.
+
+34:21
+Thank you so much.
+
+34:25
+Okay, anyone else
+have any questions?
+
+34:30
+Just a caveat, the whole
+team's not here, so in case
+
+34:33
+Yei doesn't know the answer,
+we'll make sure we find it.
+
+34:36
+Just a question, maybe
+follow the previous.
+
+34:39
+What's the non-deterministic
+mode, the scenarios for the
+
+34:44
+non-deterministic mode?
+
+34:46
+Oh, you mean what scenario
+can meet the requirement of
+
+34:52
+non-deterministic?
+
+34:53
+Yeah, yeah, yeah.
+
+34:54
+Oh, maybe in the sampling
+in the LLM, because...
+
+35:03
+For the non-deterministic way
+around that, maybe the different
+
+35:09
+elements have the same score,
+but their indexes are different.
+
+35:13
+So, choosing one of these can
+be reasonable for the output.
+
+35:18
+Both of them may be readable or
+be reasonable as the next token.
+
+35:25
+So for the LLM scenario, I think
+the output can be more diverse
+
+35:30
+and it will be not so straight
+that you need to guarantee the
+
+35:35
+next token must be deterministic.
+
+35:37
+It will give the model output
+more diverse, I think.
+
+35:40
+Okay, it may be something
+like a temperature, right?
+
+35:43
+oh sorry I think this will be
+keep the different something
+
+35:48
+like a temperature maybe make
+the LRM can explore more output.
+
+35:52
+yeah yeah yeah it's very similar
+
+35:58
+Okay, any other questions?
+
+35:59
+Okay.
+
+36:02
+Is this feature I might be
+missing some of the talk, but
+
+36:07
+is this feature available in like
+
+36:11
+PyTorch level API or transformer
+level if I want to, let's say, just
+
+36:17
+run a fine tune of a certain model?
+
+36:20
+Oh, this is a good question, and
+we want to merge our implementation
+
+36:26
+in the framework such as PyTorch.
+
+36:29
+We're working on it.
+
+36:36
+So, what happens when using
+float values and you can't bin
+
+36:41
+them into a histogram very well?
+
+36:44
+Oh, sorry, I beg your pardon.
+
+36:45
+I didn't understand you.
+
+36:47
+Okay, so your examples were
+all using integer values and
+
+36:51
+you created a histogram where
+you basically put the things in.
+
+36:56
+What if you use float values
+and the histogram does not work?
+
+37:00
+Float value, what is the
+meaning of float?
+
+37:02
+Floating point.
+
+37:03
+Oh, floating point.
+
+37:08
+Floating point, you mean
+how to cut this value into
+
+37:12
+separate digits or...
+
+37:15
+Well, how the binning into
+a histogram works, because
+
+37:20
+essentially every floating point
+value will end up in its own bin.
+
+37:24
+Actually, we use a mask
+to exact the digits we are
+
+37:29
+calculating in this iteration
+from the floating data.
+
+37:39
+It can be used for different
+data types like the floating or
+
+37:45
+the int or others or even double.
+
+38:04
+Okay, and how does this scale
+with different values of k?
+
+38:10
+The scalable or
+different value of k?
+
+38:14
+I think our implementation
+can support varied, the range
+
+38:19
+of the k will be very, is large.
+
+38:23
+It can support any
+value of k, I think.
+

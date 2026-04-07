@@ -1,0 +1,4517 @@
+Session: https://www.nvidia.com/en-us/on-demand/session/gtc26-dlit81642/
+
+Transcript Powered by AI
+
+Accelerate Apache Spark With GPU and AI: A Hands-On Workshop
+
+
+00:06
+Okay, good.
+
+00:07
+So, these are just to give you some
+details about connectivity and just
+
+00:15
+how to get your environment set up.
+
+00:16
+So please do all these steps
+and the TAs will help you
+
+00:20
+if you have any issues, okay?
+
+00:23
+And the most important part
+is the event code.
+
+00:26
+So make sure you get that
+event code into the platform so
+
+00:32
+that you get access to the course.
+
+00:34
+Okay, and with that we'll start.
+
+00:39
+Okay, so this is Accelerator
+Apache Spark with GPU and AI.
+
+00:43
+It's a hands-on workshop, so
+here's the agenda for today.
+
+00:48
+First we're gonna introduce
+Spark and GPUs, and then we'll
+
+00:52
+introduce Project Aether.
+
+00:54
+Which is a tool to help you
+migrate your existing Spark
+
+00:57
+workloads to GPU.
+
+01:00
+And then we'll sort of talk
+about some job tuning with AI.
+
+01:05
+That's very fascinating stuff
+that Aether gives us.
+
+01:09
+And also we'll wrap it up
+again with sort of using sort
+
+01:13
+of an LLM assistant to sort
+of help you rewrite some of
+
+01:17
+your Spark workloads to make
+them run more efficiently on GPU.
+
+01:23
+So here's some of the goals
+for the training.
+
+01:26
+So you'll see how Spark queries
+are planned and executed.
+
+01:31
+So if you're not familiar
+with Apache Spark, you'll
+
+01:33
+learn a little bit about that.
+
+01:34
+You'll understand how GPUs fit into
+this process and optimize Spark.
+
+01:40
+We'll show off Project Aether
+again so that we can do some
+
+01:43
+testing and migration for
+your existing Spark workloads.
+
+01:47
+And then we'll show you TuneML,
+which is our AI-based job
+
+01:51
+tuning platform built into
+Aether that helps you sort
+
+01:55
+of fine-tune your jobs for
+peak performance and cost savings.
+
+01:59
+And then we'll talk about
+the Aether Assistant, which
+
+02:03
+is, again, an LLM-based tool that
+will rewrite your custom UDFs into
+
+02:07
+your GPU optimized equivalents.
+
+02:10
+Okay, and with that, we'll start
+on the first part, so how many of
+
+02:15
+you have gotten into the platform
+already, or are we still waiting?
+
+02:20
+And how many of you are
+still not in yet?
+
+02:28
+So, um...
+
+02:35
+Yeah.
+
+02:38
+Okay, so we'll give like maybe a
+minute or two, and then if you have
+
+02:42
+any issues, definitely show the red
+cup to, and a TA will assist you.
+
+02:50
+Okay, so you'll click that launch
+button, and it will automatically
+
+02:55
+launch our Jupyter Notebook here.
+
+02:58
+So what we're gonna ask everyone
+to do is on that Jupyter page,
+
+03:04
+go to the run menu,
+
+03:15
+Let's go to the menu.
+
+03:30
+Okay, and then we'll click
+Run All Cells here to sort
+
+03:34
+of start this up, and this
+will take a bit of time, so
+
+03:38
+we'll kind of revisit this in
+the next part of the presentation.
+
+03:48
+And while this is going, I
+will discuss sort of Apache
+
+03:53
+Spark and why Spark is important.
+
+03:59
+So Spark is the leading platform
+for Scale-Out Analytics.
+
+04:04
+It was developed in 2009, so
+it's It's been around for about
+
+04:08
+Maybe 17 years.
+
+04:09
+It became a top level Apache
+open source project in 2013.
+
+04:13
+Spark is a data
+processing framework.
+
+04:18
+It's optimized for in-memory
+distributed computing
+
+04:21
+on a large scale.
+
+04:22
+And additionally, with the
+introduction of Spark ML,
+
+04:28
+it actually bridged the gap between
+ETL ML and a single platform.
+
+04:32
+GPU acceleration with Spark was
+formally introduced with Spark 3.0.
+
+04:41
+So let's look at a sample
+execution flow for Spark.
+
+04:45
+In this example, data from
+one billion connected devices
+
+04:50
+needs to be analyzed.
+
+04:52
+By the way, there are sort of
+25 billion devices, connected
+
+04:56
+devices today, and they're growing
+to 50 billion in a few years.
+
+05:00
+And so this is just one use case.
+
+05:04
+Assuming each connected device
+generates about five megs
+
+05:07
+of data to be analyzed each
+day, that's five petabytes
+
+05:10
+of data that needs data processing.
+
+05:13
+So ETL, Jobs, and Spark process
+all that data, and they'll
+
+05:17
+probably place about half
+a petabyte of that data after
+
+05:20
+they've extracted all the relevant
+information into a data lake.
+
+05:24
+And so that data lake, you
+can think of, will grow to
+
+05:27
+about 180 petabytes per year.
+
+05:28
+So, and, you know,
+
+05:34
+In this, and so, you know,
+as Jensen showed off in the
+
+05:38
+keynote, this is related to
+AI in the sense that, you know,
+
+05:41
+we're taking all this data and
+we're going to use it for our sort
+
+05:44
+of analytics and machine workloads.
+
+05:51
+Okay, and then like here's
+sort of a little bit more
+
+05:53
+of the architecture of Spark.
+
+05:56
+You look here, you'll see the
+driver program, the cluster
+
+05:59
+manager, and worker nodes.
+
+06:02
+The driver program will create the
+query plan, and it'll intelligently
+
+06:06
+distribute the work over the
+worker nodes via the Spark context.
+
+06:12
+So it distributes that information,
+it's a singleton on instance
+
+06:16
+that contains the full state
+of the application.
+
+06:19
+And each of these processes
+are isolated from each other.
+
+06:26
+Many of them are just on
+separate machines.
+
+06:29
+So applications themselves are just
+totally isolated from one another.
+
+06:32
+And so each can sort of schedule
+its own tasks, and work can be kept
+
+06:37
+isolated from other applications.
+
+06:41
+So, in this isolation, this
+means that data between Spark
+
+06:45
+applications is only shared
+by external storage.
+
+06:49
+Which, you know, in this case
+could be a Hadoop data lake,
+
+06:53
+it could be a data warehouse
+system, or something like
+
+06:57
+Delta Lake, or even like an
+S3 or an object store like that.
+
+07:03
+And Spark is sort of agnostic
+to the cluster manager.
+
+07:07
+This is a collection of JVM
+processes that need to potentially
+
+07:13
+communicate with each other
+and acquire resources, so
+
+07:16
+it can run on YARN, Kubernetes,
+Mesos, these sort of advanced
+
+07:22
+sort of resource managing cluster
+operating systems to do the work.
+
+07:31
+Okay, and now we'll just introduce
+GPU acceleration in Apache
+
+07:35
+Spark and how that works.
+
+07:37
+So, this is Apache Spark.
+
+07:41
+We accelerated, this is Apache
+Spark accelerated with cuDF.
+
+07:47
+We built a plugin, we refer
+to that plugin as cuDF, into
+
+07:52
+the SQL API of Apache Spark that
+checks which operators are planned.
+
+07:59
+And then if we can accelerate that
+operation, we'll leverage the GPU.
+
+08:04
+And this enables
+applications to run
+
+08:06
+on the GPU without any code change.
+
+08:08
+So if all the operations in that
+Spark workload can run on GPU,
+
+08:13
+we will accelerate all of them.
+
+08:15
+If all but one of them can
+be accelerated on GPU, your
+
+08:18
+application will still run.
+
+08:20
+That one operation
+will run on the CPU.
+
+08:23
+And then finally that'll
+be collected at the end
+
+08:25
+of the day and it'll be
+
+08:28
+And so when we run on the GPU,
+
+08:34
+we leveraged JNI bindings,
+so Apache Spark is a Java, a JVM
+
+08:40
+application, so we leveraged the
+JNI bindings that interface with
+
+08:44
+libcuDF, which is a C++ library
+that does advanced GPU kernel,
+
+08:51
+advanced data processing on the
+GPU, and it's built on top of CUDA.
+
+08:58
+And cuDF also has a custom
+Spark shuffle implementation
+
+09:03
+that can support a multi-threaded
+mode, which is sort of our
+
+09:07
+default performant mode.
+
+09:09
+And then we can even leverage
+
+09:12
+UCX, which is an advanced
+sort of communication framework
+
+09:16
+for GPU-to-GPU communication.
+
+09:19
+And we can even use that to
+perform shuffle in sort of
+
+09:21
+performance-critical situations.
+
+09:27
+Okay, so let's look at how a
+Spark SQL query is executed.
+
+09:32
+So, what ends up happening
+is, in Spark, you start off
+
+09:36
+with SQL or a set of DataFrame
+API calls, and these are all
+
+09:42
+converted into a logical plan.
+
+09:45
+And that logical plan is actually
+translated into a physical plan.
+
+09:49
+And then on the Spark system
+by default, that physical plan
+
+09:54
+then uses sort of Spark primitives.
+
+09:57
+One of the Spark primitives
+is called RDDs, which allows
+
+10:01
+distributed data processing.
+
+10:02
+And in this case, it's distributed
+data processing on like
+
+10:06
+large numbers of rows.
+
+10:09
+And so, the row-based format,
+each of those rows individually
+
+10:12
+is processed on a CPU in a
+single thread and then we, of
+
+10:16
+course, distribute this over many
+threads in a CPU and many CPUs in
+
+10:21
+a cluster, and that's how Spark...
+
+10:26
+Now, when you introduce the
+GPU, much of the same early
+
+10:31
+part of this is the same.
+
+10:33
+So we again get a data frame
+and then a logical plan, and
+
+10:38
+then that logical plan is still
+converted into the Spark physical
+
+10:43
+plan, the default physical plan.
+
+10:45
+But then our plugin will step
+in and convert that physical
+
+10:48
+plan into a GPU physical plan.
+
+10:51
+And then that GPU
+physical plan operates
+
+10:53
+on columns instead of rows.
+
+10:56
+So typically, the CPUs operate
+on rows, the GPU can operate
+
+10:59
+on columnar batches.
+
+11:01
+We say columns and so what
+will happen is that as the
+
+11:06
+workload is run on the GPU, all of
+it is processed in columnar batches
+
+11:12
+and then at the very end we convert
+it into rows that are consumed
+
+11:17
+by the existing sort of data lake
+or any other output that we want.
+
+11:26
+So this columnar processing
+is really substantial.
+
+11:29
+The benefit here is very
+substantial when you
+
+11:31
+process on the GPU.
+
+11:33
+Majority of SQL operations are run
+on a per column basis on the GPU
+
+11:38
+and the GPU physical plan in our
+plugin allows the data to remain
+
+11:43
+in columnar batches between stages.
+
+11:45
+So as long as the operators
+stay on the GPU, we keep the
+
+11:51
+data in the GPU format.
+
+11:53
+So that the GPU can process
+that very efficiently.
+
+11:56
+Once we fall back to CPU,
+then the data is converted
+
+12:00
+back into rows and then that
+allows the CPU to process it.
+
+12:05
+And then if we go back to
+GPU, we will convert that
+
+12:07
+back into columnar batches.
+
+12:11
+And that will enable us to
+run on GPU again.
+
+12:18
+So the question is like, will
+GPUs get you better performance?
+
+12:23
+Like we're saying here, like,
+okay, you put on the GPU,
+
+12:27
+all of a sudden everything
+will run really fast, right?
+
+12:30
+Well, that's not quite, that's
+not always the case.
+
+12:33
+You know, it sort of, it depends
+is always the answer.
+
+12:38
+So a good rule of thumb here is
+that if you have systems with very
+
+12:43
+large amounts of high cardinality
+data, so very large sets of data,
+
+12:48
+And joins and aggregates and
+sorting, those tend to be
+
+12:53
+the most ideal workloads for GPU.
+
+12:56
+So this is sort of as opposed to
+sort of I-O intensive operations.
+
+13:01
+So when there are operations where
+you're dealing with a lot of I-O
+
+13:05
+waiting, where you're reading from
+like your data store or writing out
+
+13:10
+to the data store, those operations
+tend to be, those are I-O bound
+
+13:14
+operations and those tend not to be
+the ideal workloads to run on GPU.
+
+13:20
+And then also, you know, the
+GPU doesn't do as great with
+
+13:23
+very small data sets mainly
+because there's an overhead
+
+13:27
+of moving the data into the GPU
+so, you know, for very small data
+
+13:33
+sets, you know, you're probably
+better off just keeping it as a
+
+13:36
+CPU workload and you probably won't
+see a huge performance benefit.
+
+13:48
+So now I'll dive into the second
+part and introduce Project Aether.
+
+13:56
+So today we're introducing
+Project Aether, and this is
+
+14:00
+a system for automatically
+qualifying, testing, and migrating
+
+14:03
+Spark workloads to GPU.
+
+14:06
+So we introduced the qualification
+tool a few years ago, and
+
+14:11
+this extends the work from
+that tool into adding more
+
+14:15
+advanced functionality.
+
+14:16
+So we automate the process
+of using that tool and then
+
+14:20
+testing the workload on GPU.
+
+14:22
+And we store a history of like how
+your workload performs from CPU to
+
+14:29
+GPU and the differences in configs.
+
+14:31
+And this gets you a big picture
+of your workload migration.
+
+14:35
+So like when you're trying
+to migrate your workloads,
+
+14:38
+you can see what configs needed
+to be changed, what performance
+
+14:41
+benefit you got, if there
+was any, and what workloads
+
+14:45
+are actually ready to be migrated.
+
+14:49
+In the current version, we support
+
+14:52
+On-prem and workloads, and we also
+support two CSPs natively, one
+
+14:57
+of Amazon EMR and Google Dataproc.
+
+15:01
+And there are four service areas
+listed here, the qualification,
+
+15:06
+GPU submission, profiling
+and tuning, and we're going
+
+15:09
+to dive into that shortly.
+
+15:13
+First, let's sort of discuss
+the problem space a little
+
+15:16
+bit, you know, so usually
+when you migrate a workload,
+
+15:21
+and this is before when we
+used to use the qualification tool,
+
+15:26
+and this was a slide developed
+by one of our application engineers
+
+15:31
+who works directly with customers.
+
+15:34
+So you can see here, like,
+there's a very iterative process,
+
+15:40
+you know, you have to get a
+list of applications from your sort
+
+15:44
+of data team that you're thinking
+of, that you run, these could
+
+15:48
+be like thousands of jobs, and then
+you would run the qualification
+
+15:53
+tool on each one of those
+jobs and get those candidates.
+
+15:56
+And typically this happens
+in a customer environment, so
+
+15:59
+typically, you know, this requires
+someone to run that tool, to gather
+
+16:05
+the workloads, and then create a
+POC environment for testing, so we
+
+16:11
+have to stage the candidates, that
+takes a long time usually, because
+
+16:16
+you usually have to fight for
+resources, and then also running
+
+16:21
+it on the GPU finally, and then
+that process takes time because
+
+16:25
+You have to set up
+your environments,
+
+16:27
+keep doing config changes.
+
+16:29
+So in that sense, you would
+keep moving back, you would
+
+16:32
+keep doing all these steps
+of profiling, seeing if it works,
+
+16:36
+seeing if it shows cost savings.
+
+16:38
+And then eventually you have
+to then create an argument
+
+16:41
+to move it to production,
+that also takes time.
+
+16:43
+And so essentially like...
+
+16:46
+This requires a lot of
+engineering resources.
+
+16:50
+And typically, if there's a single
+data engineer or maybe a small,
+
+16:55
+very small team of data engineers
+working on this, this process
+
+16:59
+generally stops somewhere before
+getting the workloads migrated.
+
+17:03
+So what Project Aether is
+trying to do is, and let's
+
+17:07
+dive into the flow, is to
+automate this flow completely.
+
+17:10
+So first, what we're doing is
+we're predicting which workloads
+
+17:15
+You know, using our qualification,
+we're predicting which workloads
+
+17:19
+actually will be ideal for GPU, and
+say they are, so then we proceed
+
+17:25
+and automatically test it for you.
+
+17:27
+We submit it into your on-prem
+cluster or your CSP cluster,
+
+17:33
+and then we then, like, when the
+job is finished, we automatically
+
+17:37
+profile that job, And then
+we say, okay, is...
+
+17:41
+Can this job run better?
+
+17:42
+Can this job be more optimized
+and we apply a new set of
+
+17:45
+configs and run that iteratively
+and then automatic and then after
+
+17:50
+a couple of iterations we figure
+out what's the best configuration.
+
+17:53
+We also then validate like that
+the job performed as expected
+
+17:57
+so we make sure that there's
+no data corruption and everything
+
+18:02
+ran to completion and then once
+
+18:06
+Once that's done, we can actually
+report that information and
+
+18:10
+create the argument for, okay,
+here are the candidates to be
+
+18:14
+staged for migration, everything.
+
+18:16
+And we do this all automatically.
+
+18:22
+So just as before, as stated
+with the qualification tool,
+
+18:30
+we need Spark event logs.
+
+18:32
+So Spark event logs are generated
+by Spark applications, if
+
+18:37
+you enable config setting.
+
+18:38
+And in most environments,
+these are enabled by default.
+
+18:43
+And event logs contain all
+the granular data about...
+
+18:47
+These are the CPU physical plan,
+the order of operations, and
+
+18:51
+the details of the data sources.
+
+18:54
+And for many cases in CSP
+environments, we can actually pull
+
+18:58
+this information automatically.
+
+19:00
+So for many of these environments,
+the event logs are enabled
+
+19:03
+by default, and we just
+automatically can pull them
+
+19:06
+out and actually analyze them.
+
+19:10
+This information is essential
+for us to sort of figure out
+
+19:15
+what the best parameters you
+can use to configure Spark
+
+19:19
+jobs for acceleration.
+
+19:24
+Okay, so let's talk briefly about
+the material in the first notebook.
+
+19:30
+So that first notebook you ran runs
+something called an NDS benchmark.
+
+19:35
+NDS stands for NVIDIA
+Decision Support.
+
+19:38
+It's our adaptation of the
+very popular TPC-DS benchmark.
+
+19:43
+If many of you are familiar
+with data workloads, it is a
+
+19:47
+very widely commonly used benchmark
+to evaluate large data systems
+
+19:51
+and large sort of databases.
+
+19:56
+So our version of that benchmark
+contains the same 100 plus
+
+20:02
+queries that are used.
+
+20:04
+In TPC-DS, but we've modified
+them slightly in terms of
+
+20:07
+syntax to run in Apache Spark.
+
+20:10
+And we essentially, this is
+how these queries are executed
+
+20:14
+in a customer environment.
+
+20:15
+So we're sort of more equipped
+to sort of dictate like, okay,
+
+20:21
+because the customer is using
+Apache Spark, this is the
+
+20:23
+type of query they would use.
+
+20:26
+So, sort of because of this,
+it's a derived benchmark from
+
+20:30
+TPC-DS, so we can't officially
+say that the results that
+
+20:35
+we get are the same as TPC-DS.
+
+20:37
+TPC-DS is a very strict standard
+where you have to apply the
+
+20:40
+benchmark as is in order to
+say that you have performed
+
+20:44
+really good TPC-DS numbers.
+
+20:47
+In our case, because we modified
+them slightly, even though
+
+20:49
+they're mostly syntactical changes,
+we don't comply with that spec.
+
+20:57
+Okay, let's get
+started with Aether.
+
+21:00
+So, to install Project Aether,
+you'll have to request access using
+
+21:07
+the form on the NVIDIA website.
+
+21:11
+And then a member of the NVIDIA
+team will actually give you
+
+21:16
+access via NGC, so you'll
+need an NGC account.
+
+21:19
+And then once you get access
+to the artifacts, you'll be
+
+21:22
+able to download them by a
+private registry.
+
+21:24
+In the future, it's possible
+that it will be available in the
+
+21:28
+catalog, so stay tuned for that.
+
+21:31
+And then all you'll need to do is
+actually download the artifacts
+
+21:37
+using the first command listed
+here, and then use an installation
+
+21:40
+script to install them.
+
+21:45
+Okay, so let's get into the
+Project Aether notebook.
+
+21:48
+So, the next notebook that you'll
+need to open if you have your
+
+21:53
+Jupyter page is the O2 notebook.
+
+22:09
+Okay yeah so this notebook will
+like work off this notebook
+
+22:14
+for this section of the lab
+and so you can see this notebook
+
+22:20
+has we've already installed
+Project Aether in this environment
+
+22:26
+and we'll show you sort of
+how to use it so the first thing
+
+22:30
+What we'll do is we'll run
+the first cell, and you can
+
+22:34
+see our Aether help page.
+
+22:36
+So Aether is, we access Aether
+through a command line interface.
+
+22:41
+So you do Aether, and then...
+
+22:44
+You'll have options, then
+a command, and then args.
+
+22:48
+So all the sort of ether commands
+here reflect the individual
+
+22:53
+services we're gonna show today.
+
+22:54
+So qualify, profile, submit,
+and then we also have run,
+
+22:59
+which will show off later,
+and then validate, and there are
+
+23:02
+a few others that we'll mention,
+but we won't dive into today.
+
+23:08
+So the first thing you'll want to
+do is initialize the configuration.
+
+23:14
+So, you'll see here the
+configuration is initialized
+
+23:18
+with defaults and then
+
+23:22
+And you can actually look at
+the configuration and you'll
+
+23:25
+see there's a huge number of
+settings and various things here.
+
+23:30
+It's a hierarchical sort of
+configuration, but once you
+
+23:34
+set this configuration, then
+
+23:38
+You can then, we'll then proceed.
+
+23:40
+So you'll see here, you'll
+use ether config set to set
+
+23:44
+particular config settings
+for your environment.
+
+23:48
+So this includes saying, so
+in this case, we're gonna
+
+23:51
+use the on-prem platform because
+we'll demonstrate that.
+
+23:56
+We'll also set an event log
+directory and we'll also set
+
+23:59
+a target cluster file, which
+we'll talk about in a bit
+
+24:03
+once we get to that use there.
+
+24:07
+And so now that we've
+set those settings,
+
+24:13
+See here, those settings are
+now set in this sort of file.
+
+24:20
+So you'll see the event log
+directory is set there.
+
+24:24
+Great, now we can start
+using Project Aether.
+
+24:32
+Okay, so we're now, first of
+all, we'll need an app ID.
+
+24:37
+So we're gonna use the app
+ID from that first notebook
+
+24:39
+that you just ran.
+
+24:41
+So if you see an app ID here,
+that means your first notebook
+
+24:46
+ran to completion successfully.
+
+24:47
+So congratulations.
+
+24:50
+And so the first thing we're
+gonna do is we're gonna actually
+
+24:55
+qualify this application.
+
+24:56
+So we're gonna run ether
+qualify to do this.
+
+25:03
+And you'll see a lot of logs,
+and then eventually qualification
+
+25:10
+section will run, and then
+you'll get a recommendation
+
+25:14
+on, okay, on whether this
+job should move to GPU.
+
+25:18
+So we have a recommendation,
+it says small, which means this
+
+25:22
+job is a good candidate for GPU.
+
+25:25
+It's not the most ideal.
+
+25:27
+So we have different categories,
+we have small, medium, and large.
+
+25:34
+Large reflects workloads that
+are very big, that are very
+
+25:39
+ideal candidates, that we
+believe will get a huge speed up.
+
+25:44
+And then medium, and then
+small reflects candidates that
+
+25:47
+should get a speed up, but may not
+be the highest priority workloads
+
+25:50
+you should focus on for ROI.
+
+25:53
+So the Aether stores all
+this information in a job
+
+26:00
+history database, which
+is a SQLite database.
+
+26:03
+So if you run the next cell,
+you'll see the Aether job
+
+26:06
+ID that we pulled out of the
+job history database.
+
+26:08
+So you can actually use
+SQLite 3, query the job
+
+26:12
+history database, and play
+around with the content in there.
+
+26:16
+Of course, if you don't want
+to corrupt it, then Aether
+
+26:19
+may not function, but you
+can actually see the data
+
+26:23
+in there directly if you want to.
+
+26:26
+So okay, now we have
+a recommendation.
+
+26:31
+That recommendation produced
+a Spark config, and here's
+
+26:35
+the identifier for that.
+
+26:36
+You can actually query that in the
+job history database if you want.
+
+26:39
+But now that we have a
+recommendation, let's
+
+26:43
+just try running the job on GPU.
+
+26:47
+You'll see here, now we're going
+to run a GPU version of the job I
+
+26:52
+just ran automatically with all the
+configs that we're recommending.
+
+26:57
+So you'll see here, so here's
+some of the configs for the
+
+27:04
+accelerated Apache Spark plugin.
+
+27:05
+So you'll see here, we're using
+the NVIDIA Spark plugin here.
+
+27:10
+SQL plugin, which
+enables acceleration.
+
+27:13
+And you'll see various
+settings here, like rapid,
+
+27:17
+shuffle, multi-threaded.
+
+27:18
+And you'll see Spark RAPIDS SQL
+batch size bytes, concurrent
+
+27:21
+GPU task, et cetera.
+
+27:23
+And you'll see that the
+plugin is enabled.
+
+27:26
+And you'll see that
+it's now running.
+
+27:31
+And it's actually
+run to completion.
+
+27:33
+And so everything successfully ran.
+
+27:36
+And we have, we've now tracked, we
+have a new run that ran on the GPU.
+
+27:42
+Now, what do we want
+to do after that?
+
+27:44
+We want to evaluate
+it and profile it.
+
+27:46
+So we'll run ether profile.
+
+27:53
+And then the profiling tool
+will run as well.
+
+27:57
+And we have new configs that
+we can try as well.
+
+28:01
+So let's try some new configs here.
+
+28:05
+So this will run the same
+ether submit command that
+
+28:09
+we ran before, but now we run but
+the most recent set of optimized
+
+28:13
+configs that we just made.
+
+28:17
+So there's slight
+differences in the configs.
+
+28:19
+If you actually look at them,
+you'll see that the one config
+
+28:23
+that we changed for tuning
+purposes is batch size bytes.
+
+28:27
+So the original recommendation
+recommended one gigabyte.
+
+28:30
+The new recommendation says
+try it with two gigabytes.
+
+28:32
+Let's see how that performs.
+
+28:35
+And then we're sort of waiting
+for the submission to sort
+
+28:38
+of complete, so we'll give
+it a few minutes here.
+
+28:49
+Okay, so now that submission
+has sort of run successfully.
+
+28:56
+So after we've done
+all this, we've...
+
+29:00
+We've qualified a CPU job,
+we've tried it on the GPU
+
+29:04
+once, then we decided to tune
+one more time, so now we've
+
+29:09
+gotten another result from there,
+so let's, why don't we track,
+
+29:14
+how do we view all this information
+that we've just produced about
+
+29:18
+sort of this workload.
+
+29:24
+I thought I'd run this.
+
+29:51
+Sorry about that. I
+re-ran the previous.
+
+29:53
+Let's just go start
+up the E3UI here.
+
+30:02
+So, Ether provides a built-in
+UI that lets you actually
+
+30:08
+view all the information about
+the various workloads.
+
+30:13
+So, here it's loading.
+
+30:15
+A few minutes.
+
+30:38
+Let's try this again.
+
+30:42
+Okay, there we go, took a
+few minutes to load up here.
+
+30:46
+So we have one job in here,
+so we say that that job has
+
+30:52
+gotten some speed up.
+
+30:54
+So let's actually view
+details about that job.
+
+30:59
+So you can see here, here's the
+original CPU job that we ran.
+
+31:04
+And then it ran and took about
+45 seconds to complete.
+
+31:13
+On the CPU, and then you can
+see here, you can see the
+
+31:19
+original config for that CPU job.
+
+31:23
+And then we tried it on the GPU.
+
+31:27
+And that ran in about 33 seconds.
+
+31:29
+So we got about a
+1.3x speed up there.
+
+31:32
+And then you can see that
+config and you can even view
+
+31:38
+the difference in the config.
+
+31:39
+So we, you can see here, like
+what we did is we added these
+
+31:44
+properties on that for that job.
+
+31:49
+And then we're, and then we
+changed them to sort of
+
+31:53
+We changed a few properties
+as well, to sort of better
+
+31:55
+reflect the environment we're in.
+
+31:58
+And so, that's the sort of
+initial set of tuning.
+
+32:02
+And down here, you'll see
+that we also ran the job with
+
+32:07
+sort of updated configs.
+
+32:09
+We haven't profiled this job,
+so that's why we're not seeing
+
+32:12
+the duration, but we see some of
+the various changes in tuning that
+
+32:16
+the profiling tool recommended.
+
+32:27
+And then the same
+
+32:31
+Sort of the same commands here.
+
+32:32
+We can see, we can actually run
+a lot, we can get a lot of the
+
+32:37
+same information that I just showed
+you on the command line as well.
+
+32:40
+So if you prefer a command line
+version of that information,
+
+32:46
+you can see it here.
+
+32:47
+So you'll see here, you'll
+see a list of the query, the
+
+32:52
+speedups of the same information
+that I just showed.
+
+32:55
+And then you can see the
+specific job information
+
+32:57
+that I also showed as well.
+
+33:02
+Okay, so I'm going to go back
+to the slides for a bit and
+
+33:08
+then sort of recap some of
+the things that we saw here.
+
+33:14
+Okay, so we configured Project
+Aether and we did, you know,
+
+33:21
+we initialized the configuration,
+we saw it, and then we set
+
+33:25
+specific configs in our notebook,
+and then we ran qualification.
+
+33:30
+So we ran Aether qualify and,
+you know, we sort of saw,
+
+33:35
+we saw an event log packed and
+we predicted whether the workload
+
+33:38
+was a good candidate, it was,
+it showed a small recommendation.
+
+33:43
+We used Aether Submit to sort
+of try it on the GPU, so we
+
+33:47
+automatically created a Spark
+Submit command and we ran
+
+33:50
+it against our on-prem cluster
+just like it ran on CPU, but
+
+33:56
+we ran it on GPU.
+
+33:58
+And then, after running that,
+we profiled that workload.
+
+34:03
+We took the most recent GPU
+job run, we ran it with that
+
+34:06
+event log, and we saw
+
+34:08
+That we could get slightly
+better performance, so we
+
+34:10
+tuned the configs and we were
+able to run it again with
+
+34:14
+Aether Submit to sort of get
+a slightly better run than before.
+
+34:20
+And then I showed the UI here
+and then you could see the
+
+34:29
+summary of jobs to migrate and
+then the individual job details.
+
+34:35
+And then I also showed you the
+sort of analog on the command line.
+
+34:41
+So, these four services are
+the core services of Aether.
+
+34:46
+So, Qualify, you can predict the
+future performance on the GPU.
+
+34:52
+Submission, where we automatically
+submitted the job on the GPU
+
+34:56
+with the recommended configs.
+
+34:58
+And then Profiling, which we took
+an existing GPU, runs event logs,
+
+35:03
+and we produced a more optimal
+configuration for running on GPU.
+
+35:09
+So that we can
+maximize performance.
+
+35:11
+And then I show it off report,
+which allows you to sort of
+
+35:14
+visualize, view the results, and
+basically see what you can migrate
+
+35:21
+and see what makes the most sense.
+
+35:25
+So these services are the core
+services that Aether offers.
+
+35:28
+So in many cases you would
+tie these services into your
+
+35:33
+existing automations.
+
+35:36
+But what if we want to sort
+of fully optimize, automate
+
+35:40
+the process, so let me show
+
+35:46
+the last cell of the notebook
+is a service called EtherRun.
+
+35:56
+I'm going to do that.
+
+35:57
+This one will take a little
+bit more time than the
+
+36:01
+previous ones, but
+
+36:02
+What you can see in the output
+as it's being generated, it's
+
+36:07
+qualifying an app just like
+before, but then it's automatically
+
+36:11
+submitting that app, automatically
+submitting to the GPU.
+
+36:16
+And so what we're doing here
+is we're taking the services
+
+36:20
+that I showed off and which we ran
+one by one, and now we're running
+
+36:25
+them all using a single command.
+
+36:28
+And so we're doing the process
+automatically for you.
+
+36:31
+And then let's see how long
+this will take to complete.
+
+36:41
+See submission again.
+
+36:42
+The profiling tool is now
+running and the profiling says
+
+36:46
+it can do better configurations.
+
+36:49
+And so there's some validation
+also being performed here.
+
+36:53
+So one of the other services
+I did not show initially was
+
+36:57
+a service called EtherValidate.
+
+37:01
+So the main thing that we
+validated is, so So between
+
+37:06
+the CPU and GPU we may not
+read the exact same number of rows.
+
+37:10
+But we are
+inserting the same number.
+
+37:13
+And that's more because of
+the nature of scanning.
+
+37:16
+So when you scan in a data
+environment, you scan the
+
+37:21
+whole set of rows and then you
+figure out which will get inserted.
+
+37:26
+So that can be different across,
+the scanning part can be different
+
+37:30
+across, you know, even CPU
+workloads, just depending
+
+37:33
+on how distributed systems
+work, but the output is validated
+
+37:36
+to be exactly the same.
+
+37:41
+You can see here, it ran submission
+again, it's profiling.
+
+37:45
+So, this is, EtherRun wraps
+another service called EtherTune,
+
+37:52
+which actually will run, which
+will do this iterative process of
+
+37:56
+submitting the workload, profiling
+the workload, and submitting
+
+37:59
+it again for a fixed set of
+iterations until we get essentially
+
+38:04
+the most optimal configuration.
+
+38:06
+Okay, so.
+
+38:10
+Okay, so I think now we've
+gotten it to run to completion.
+
+38:14
+And then at the very last
+bit, we actually do a version
+
+38:18
+of ether report, which actually
+shows off the summary of what
+
+38:23
+happened, how many runs we
+ran, and everything else.
+
+38:28
+And then we can actually go
+back to the ether UI, so.
+
+38:34
+This is the query that we showed
+off before was query four.
+
+38:38
+This is query 75 from
+the NDS workload.
+
+38:42
+And you can see here all the
+runs that we ran.
+
+38:46
+So we ran, we had our
+original CPU run.
+
+38:49
+That was the run we ran in
+the first notebook.
+
+38:51
+That's, actually that was
+not the run we ran.
+
+38:53
+That was the run we ran
+before this course.
+
+38:57
+And then, then we ran three
+test GPU workloads and we
+
+39:02
+saw an initial speed up of 117.
+
+39:06
+Then we got about a sort of a
+slight bump in speed up based
+
+39:09
+on sort of tuning recommendation.
+
+39:11
+So you'll see here, this
+is the initial set of
+
+39:14
+configs Thank you, Thad.
+
+39:15
+You would use to sort of use
+GPU acceleration.
+
+39:18
+And then here is the sort of,
+here's sort of the follow-up
+
+39:24
+set of configs from ether
+profile to sort of get, you
+
+39:28
+know, slightly better performance.
+
+39:29
+And then you can see here the sort
+of trend and speed up in the graph.
+
+39:33
+So we ran three GPU runs
+and you see here.
+
+39:36
+It's sort of very similar.
+
+39:38
+We got a slight benefit from
+running it from tuning.
+
+39:42
+I'll go back to the slides.
+
+39:59
+And so I just showed
+just the ether run.
+
+40:03
+And so ether run runs, as I showed
+off, it runs all the core services
+
+40:07
+that I showed you in one go.
+
+40:09
+And so we'll use that to achieve
+the maximum performance on the GPU.
+
+40:15
+And we also included ether
+validate as part of this.
+
+40:20
+So ether validate is another
+service that we have that
+
+40:23
+allows us to sort of check
+whether the CPU and GPU workloads
+
+40:27
+match in terms of their output.
+
+40:30
+And EtherRun, of course, I
+mentioned EtherRun uses Tune,
+
+40:38
+EtherTune, which is sort of
+a loop of submission and profile.
+
+40:41
+So that means it uses, it
+itself is a service that wraps
+
+40:45
+to other services to sort
+of fine-tune the workload.
+
+40:54
+So that's nice.
+
+40:58
+There's three other services
+that I didn't get into and we
+
+41:01
+won't talk about in this hands-on.
+
+41:03
+But I'll briefly
+talk about them here.
+
+41:05
+One is ether cluster.
+
+41:08
+So if you're running ether
+with the CSP environment, so if
+
+41:13
+you're running with Amazon, Google
+workloads, then you'll use ether
+
+41:20
+cluster to automatically create
+the cluster in those environments.
+
+41:26
+And then what will happen
+is ether cluster is also
+
+41:29
+integrated into ether run.
+
+41:31
+So we will spin that cluster
+up, and then at the beginning
+
+41:35
+of ether run, we'll run our
+tests on that cluster, and then
+
+41:39
+we'll tear it down when we're done.
+
+41:43
+And then, so that's typical
+of, you know, when you run
+
+41:47
+data workloads on CSPs is that
+you usually spin up the resources
+
+41:51
+just for the job, and then you tear
+them down when you're finished.
+
+41:57
+In EtherQualify, there's a
+model we call QualX that gives
+
+42:04
+us the recommendation and
+the recommended configs.
+
+42:07
+So you can actually fine-tune
+that model as part of Ether based
+
+42:11
+on your environment and workloads.
+
+42:14
+And so you can use
+EtherTrain to do that.
+
+42:16
+And then we have another service
+called EtherDiagnose.
+
+42:20
+So sometimes,
+
+42:21
+Sometimes on the GPU we see
+workloads that don't perform
+
+42:24
+as well and so EtherDiagnose
+can produce a report that
+
+42:29
+identifies very specifically
+which parts of the workload either
+
+42:34
+weren't running on GPU or ran
+slowly on GPU and that report is
+
+42:39
+a report you can use in conjunction
+with our team to sort of figure
+
+42:43
+out why things didn't operate.
+
+42:48
+And with that, I'll hand
+off for part three.
+
+42:56
+Thank you, Naveen.
+
+43:02
+In this part, we will continue
+with an advanced functionality
+
+43:05
+in either for further tuning
+Spark configs with machine
+
+43:10
+learning and AI models.
+
+43:12
+In the previous part, we saw
+that either profile, it already
+
+43:16
+recommends optimized Spark
+configs, and by default, it
+
+43:20
+uses rule-based tuning.
+
+43:22
+What we mean by that is internally
+it uses formulas to calculate
+
+43:26
+config values, and those are based
+on the job profiling metrics that
+
+43:32
+are extracted from the event log.
+
+43:35
+They should generally give
+good performance, but some of
+
+43:37
+the configs, particularly related
+to task parallelism, those are more
+
+43:42
+critical to performance, and those
+you can tune further by enabling
+
+43:47
+the machine learning-based tuning.
+
+43:51
+And behind the scenes it uses
+ML models and they can predict
+
+43:57
+speed up based on like a lot
+more, compared to the formula
+
+44:02
+based calculation, it can
+use a lot more metrics that
+
+44:07
+can be used as features and it can
+model complex relationships between
+
+44:11
+the performance and the metrics
+by learning from the empirical
+
+44:15
+data that it was trained on.
+
+44:20
+We will switch over to the demo
+notebook to see how to use it.
+
+44:29
+For this part, we will use the
+third notebook for either TuneML.
+
+44:37
+And one side note, as a
+prerequisite, these notebooks
+
+44:40
+are meant to be done in the order.
+
+44:42
+So it assumes that we have
+already done the notebook
+
+44:46
+one for the NDS CPU and then
+the previous one for the either.
+
+44:50
+So at this stage, we assume that
+either is already set up and there
+
+44:55
+are already these two jobs that
+were done in the previous notebook.
+
+44:59
+So they are already in the
+either system database.
+
+45:04
+And as I mentioned, it's not
+enabled by default.
+
+45:08
+Let's quickly see that by
+peeking at the config.
+
+45:13
+And it should show something
+like there is currently
+
+45:16
+no selected tuner.
+
+45:19
+It's basically the
+default rule-based one.
+
+45:21
+And this is the one which
+enables the TuneML as the machine
+
+45:27
+learning-based config tuning.
+
+45:33
+And we can once again check
+that it's there in the configs.
+
+45:39
+In this particular example,
+there is one model path
+
+45:43
+that is specified.
+
+45:44
+There are already built-in models
+that should work by default,
+
+45:50
+but this is if you want to use any
+custom models for the environment.
+
+45:58
+And now we can start using
+either with TuneML.
+
+46:03
+We can open up the either
+UI and Spark History Server
+
+46:10
+UI just to keep track of the
+progress on the side.
+
+46:18
+Looking at the either report
+list, we see the two sets
+
+46:23
+of jobs we ran before.
+
+46:26
+One for the NDS Query 4,
+that was the first one,
+
+46:29
+and then the Query 75.
+
+46:31
+So we'll start with the earlier
+job, the NDS Query 4.
+
+46:36
+And so we'll once again pick
+that either job from the either
+
+46:42
+database, the SQLite database.
+
+46:45
+And that's this one, as we
+can see, it's the same ID.
+
+46:49
+And this time, when we run
+profile, before we do that,
+
+46:55
+I think that it should change.
+
+46:57
+So let's, so currently before
+running it, if we look at the
+
+47:03
+query four, so these configs that
+were obtained, they were earlier
+
+47:08
+from the rule-based config tuning.
+
+47:10
+In that particular case,
+in the last iteration, it
+
+47:12
+was recommending to
+
+47:15
+Adjust, for example, the
+max partition bytes from
+
+47:17
+900 MB to 1.6 GB.
+
+47:22
+And shuffle partitions
+went from 400 to 1.
+
+47:26
+This time when we run it...
+
+47:30
+This time when we run
+either profile, it's the
+
+47:33
+same command as earlier,
+it's just behind the scenes.
+
+47:37
+This time it should use TuneML
+and we can see that from the
+
+47:42
+console output towards the
+end that there are some log
+
+47:45
+messages related to TuneML.
+
+47:48
+You can see that these
+are the predictions.
+
+47:50
+This time it recommends max
+partition bytes of 3.6 GB.
+
+47:54
+Shuffle partition stays the same.
+
+47:56
+And this is the same thing which
+should be reflected in the, we can
+
+48:01
+also see the same thing in the UI.
+
+48:04
+It should be actually
+automated in place.
+
+48:08
+No, let's see,
+let's update it once.
+
+48:13
+I think sometimes you have to
+select the job again to do that.
+
+48:17
+Oh, it went here.
+
+48:18
+Yeah, so in the next turn,
+it's recommending to use this
+
+48:23
+change, which comes from TuneML.
+
+48:28
+And we can go ahead and do
+a rerun using either submit
+
+48:30
+for that same job.
+
+48:48
+It should take about
+half a minute to run.
+
+48:51
+We can track the progress
+of the job in the Spark
+
+48:54
+history server link.
+
+48:57
+This is just for if you
+are interested in how the
+
+49:00
+job is progressing.
+
+49:04
+Sometimes it takes
+some time to open up.
+
+49:15
+It looks like the job
+already finished.
+
+49:24
+And we can profile that run
+to see if we got any speedup.
+
+49:47
+We come back to the
+either reporting UI.
+
+50:01
+So this was our very last
+run, which we ran with
+
+50:07
+this config change.
+
+50:10
+Well, surprise, there was a
+tiny, tiny bit of speed up.
+
+50:15
+And usually that does happen.
+
+50:16
+I mean, it did change the
+max partition bytes, which
+
+50:21
+determines the task sizes
+that we will see next.
+
+50:24
+Yeah, so it uses larger batch
+sizes and got better performance.
+
+50:32
+And there is another similar
+example for the other job
+
+50:37
+that was run before.
+
+50:40
+We can keep it running
+in the background.
+
+50:42
+It's more of an exercise.
+
+50:43
+It should give very similar output.
+
+50:47
+So as usual, we pick the either
+job and then run either profile.
+
+50:54
+TuneML is already enabled.
+
+50:58
+We would come back and do a
+rerun with either submit and
+
+51:05
+then we would run profiling again.
+
+51:14
+One side note, at the end of
+this notebook, this is kind
+
+51:17
+of important for the next notebook,
+which uses, I think, a different
+
+51:21
+instance of Park History Server.
+
+51:23
+So please be sure to, like, once
+you're done, like, to end this.
+
+51:28
+Should I run it now?
+
+52:08
+Okay, so a quick recap of
+the demo notebook.
+
+52:11
+So we simply enabled TuneML
+for config tuning with
+
+52:16
+these either configs.
+
+52:18
+And after that, we ran either
+profile in exactly the same
+
+52:23
+way as earlier, and we got
+the TuneML optimized configs.
+
+52:29
+And afterwards, we saw the
+recommended configs.
+
+52:34
+We also saw them in the either UI.
+
+52:38
+Yeah, so pretty
+straightforward to use.
+
+52:42
+Now, getting back to understanding
+some of the under-the-hood modeling
+
+52:46
+details, we first try to understand
+some important configs that
+
+52:51
+are meant for, that can help with
+performance, which are primarily
+
+52:55
+related to task parallelism.
+
+52:57
+And we'll also try to look
+at some of the job profiling
+
+53:03
+metrics that can be used for
+guiding the config tuning.
+
+53:08
+And so parallelism and these type
+of configs are very important
+
+53:13
+for performance tuning.
+
+53:15
+In any distributed computing
+framework like Spark, the data and
+
+53:19
+computation are split into tasks
+that are parallelly run across the
+
+53:24
+different workers of the cluster.
+
+53:26
+And so basically, these configs
+decide how much data and compute
+
+53:30
+is being handled by each task.
+
+53:33
+And in this particular case,
+in a Spark GPU cluster, these
+
+53:37
+are handled by the GPU tasks.
+
+53:40
+And the key insight is, as with
+GPUs, in order to take advantage
+
+53:46
+of the massive parallelism,
+you want to have bigger and bigger
+
+53:51
+so-called batch sizes or tasks.
+
+53:53
+But at the same time, you
+don't want to exceed too much,
+
+53:56
+and then it would lead to
+spill metrics, which essentially
+
+53:59
+leads to slowdown.
+
+54:01
+And so in Spark, there are two
+particular configs that are
+
+54:07
+used for controlling parallelism.
+
+54:09
+One is the max partition bytes, as
+it's called in short, and that is
+
+54:15
+used when reading files, and that's
+the data size per partition that's
+
+54:19
+used for splitting the files.
+
+54:21
+And there is another
+config, shufflePartitions.
+
+54:26
+That is the number of partitions
+or shuffle tasks that is used
+
+54:29
+for operations like joins
+and group by aggregates.
+
+54:37
+While these conflicts are good,
+but they may not directly indicate,
+
+54:41
+depending on the job, the amount of
+load that is handled by the tasks
+
+54:46
+or GPUs that can be different.
+
+54:48
+For example, depending on
+the number of columns we are
+
+54:52
+reading from the data set
+or for that particular job.
+
+54:57
+Or which compression we are
+using and things like that.
+
+55:00
+The actual amount of, and maybe
+even there are some filtering
+
+55:03
+operations going on, so the actual
+amount of data or the load is,
+
+55:09
+and that can be quite different.
+
+55:11
+So some of these internal metrics
+that are recorded in the event
+
+55:15
+logs, those can give a more better
+estimate of what is the load.
+
+55:20
+And, for example, there are input
+bytes that is closely tuned,
+
+55:29
+that is closely impacted by how
+you set the max partition bytes.
+
+55:32
+It's almost proportional.
+
+55:33
+And similarly, this kind of the
+shuffle partitions inversely
+
+55:38
+affects the amount of shuffle
+read bytes and shuffle writes.
+
+55:44
+Yeah, and memory spill, that
+also indicates if your shuffle
+
+55:48
+tasks are too large.
+
+55:50
+And the goal of the tuning is
+basically to move the matrix closer
+
+55:54
+to the limits for that particular
+GPU to get the maximum performance.
+
+55:58
+And so the model indeed
+works pretty much aligned
+
+56:04
+with this intuition.
+
+56:07
+The prediction task for the
+model is to output speedup given
+
+56:12
+the current particular job matrix
+and suggested config changes.
+
+56:18
+So the model can be used almost
+like an oracle that, suppose
+
+56:22
+we want to evaluate that if
+we were to change the max partition
+
+56:25
+bytes config by 20% and let's
+say the current input bytes that's
+
+56:30
+at 1.5 gigs, so it can help predict
+speedup that what would happen
+
+56:35
+if we did this This config change.
+
+56:37
+Now, this is then used as a tool to
+search configs around the current
+
+56:42
+values, so that, and we pick the
+one which has the maximum predicted
+
+56:46
+speedup according to the model.
+
+56:48
+And if you are optimizing for a few
+configs, we can do a simple grid
+
+56:54
+search, brute force or something
+similar, but when we have many
+
+56:58
+configs, we want to do something,
+we can do something like a,
+
+57:02
+we can use general hyperparameter
+optimization techniques.
+
+57:07
+And under the hood, the
+model training data is also
+
+57:11
+collected similarly.
+
+57:13
+So here, we run a bunch of
+example jobs and with different
+
+57:19
+config values, and we measure
+the actual speedups that are
+
+57:22
+used as ground truth, as levels
+for training the model.
+
+57:28
+And in this particular case, as
+you can imagine, we are using the
+
+57:32
+same NDS dataset, which has about
+100 queries, 100-plus queries.
+
+57:38
+And each time, we run it with
+different config values.
+
+57:42
+In this particular case, we
+ran with five different values
+
+57:47
+of max partition bytes and
+shuffle partitions.
+
+57:50
+So there are like 25 different
+combinations, five times five.
+
+57:54
+And for the training purposes,
+the way we construct the examples
+
+58:00
+are, if you pick one particular
+job and take two different
+
+58:04
+configs out of these 25, we can
+use one of the, we consider one of
+
+58:10
+these configs as the current run.
+
+58:12
+Or the previous run, and then
+the second config we consider
+
+58:16
+it as the next run.
+
+58:19
+And since we have the
+actual speedups, we can
+
+58:25
+use that as the label.
+
+58:27
+And the features are going
+to be based on the profiling
+
+58:30
+metrics, like input bytes
+read, shuffle bytes read, those
+
+58:34
+type of things we saw earlier.
+
+58:36
+And in addition, we also
+look at how much is the
+
+58:39
+config we are changing.
+
+58:43
+And in terms of modeling
+algorithm, currently we
+
+58:46
+are using XGboost, which is
+particularly suited for small data
+
+58:50
+sets and dense feature vectors.
+
+58:53
+But in future, we'll see next
+that, yeah, we are also considering
+
+58:57
+Deep Neural Networks.
+
+58:59
+Part of the reason we are
+also using XGboost is this
+
+59:03
+model itself is closely related
+to an existing either-QualX model.
+
+59:10
+We saw some references to
+that earlier in the slides,
+
+59:13
+and this was presented in
+the previous year's GTC.
+
+59:19
+That model is used for predicting
+speedup given the CPU job matrix,
+
+59:24
+that how much speedup can be gained
+if you were to run it on GPU.
+
+59:28
+So this QNML model, it
+kind of extends that.
+
+59:31
+This time it can predict
+speedup for GPU model with
+
+59:34
+additional features based
+on the config changes.
+
+59:39
+The accuracy in terms of AUC,
+which is like a ranking accuracy,
+
+59:44
+it's currently, I mean, it's
+good, it's around 90%, which
+
+59:48
+roughly indicates that 90%
+of the time, the configs should
+
+59:51
+lead to some speedup, and this was
+based on, like, even though we...
+
+59:59
+We collected the data
+for about 100 jobs.
+
+01:00:01
+We trained only on about 90 of them
+and have a test holdout of 10 jobs.
+
+01:00:06
+So, yeah, but there is definitely
+there is room to improve the
+
+01:00:11
+accuracy further, which brings
+to which brings to we can
+
+01:00:18
+conclude this part with some
+of the ongoing work.
+
+01:00:21
+So the main direction is we
+want to, we are actively adding
+
+01:00:26
+support for tuning more of
+such configs for parallelism and
+
+01:00:31
+GPUs, like GPU batch size bytes.
+
+01:00:34
+There is an internal thing like
+how many, even for the same Spark
+
+01:00:38
+task, like how many concurrent
+GPU tasks we are running.
+
+01:00:41
+And then there is also settings
+related to multi-threaded shuffle.
+
+01:00:57
+Sorry about that and so we were
+
+01:01:06
+Yeah, so that's One Direction
+and in addition we are actively
+
+01:01:10
+working towards Deep Neural
+Network models and the advantage
+
+01:01:14
+of, the primary advantage
+or motivation is that they
+
+01:01:17
+can be fine-tuned, so for example
+the original model was trained in
+
+01:01:21
+one environment and it can be used
+
+01:01:23
+With a lesser amount of data
+on other environments.
+
+01:01:27
+And we can also continually train
+it, even as new jobs are incoming.
+
+01:01:34
+These models are easier to
+train them, to continually
+
+01:01:37
+train and update them.
+
+01:01:39
+And as we grow in terms of number
+of configs, one of the things
+
+01:01:43
+is we want to use reinforcement
+learning techniques for efficiently
+
+01:01:49
+exploring the configs that
+instead of, like, we want to
+
+01:01:53
+explore fewer configs, but at the
+same time try to predict better.
+
+01:01:57
+So that's in that direction.
+
+01:02:02
+That concludes this part, and
+I'll hand it over to Rishi
+
+01:02:06
+for the next part.
+
+01:02:12
+Okay, so I'm gonna switch
+gears a little bit to talk
+
+01:02:15
+about Ether Assistant, which
+is a separate tool.
+
+01:02:19
+It is still part of the Ether
+family, but it's focused
+
+01:02:23
+on this narrow problem of
+user-defined functions.
+
+01:02:27
+So I'm gonna start out by
+giving some motivation, some
+
+01:02:30
+background, and then we'll
+go to the notebook for a demo.
+
+01:02:35
+So just to start off,
+Naveen already mentioned
+
+01:02:38
+with the background about
+
+01:02:40
+The RAPIDS Accelerator, or
+the Spark QDF Accelerator,
+
+01:02:44
+it primarily accelerates SQL
+and data frame code.
+
+01:02:49
+But obviously, it's very common
+to have user-defined functions
+
+01:02:53
+in your Spark jobs.
+
+01:02:55
+You know, they're easy to write,
+oftentimes they encapsulate some
+
+01:02:58
+business logic, sometimes they're
+around for legacy reasons, etc.
+
+01:03:03
+So, I have like a simple example
+on the slide, for instance.
+
+01:03:07
+This is just assigning some risk
+measurements based on credit score.
+
+01:03:13
+And I'm just showing this
+because it'll be sort of a
+
+01:03:15
+running example that we'll...
+
+01:03:17
+Play with in the notebook.
+
+01:03:21
+And the problem with UDFs
+is that they are essentially
+
+01:03:25
+a black box to the query optimizer.
+
+01:03:28
+They can contain arbitrary
+code and even in standard
+
+01:03:32
+CPU Spark, that means that
+the Spark Catalyst Optimizer
+
+01:03:37
+can't do any tricks to simplify
+or push down that expression
+
+01:03:42
+since essentially it can't
+understand any of the computation
+
+01:03:45
+that's going on in the function.
+
+01:03:49
+Now, there's also a similar
+problem with the Spark QDF plugin.
+
+01:03:56
+Because the UDF is written
+inherently row by row, the
+
+01:04:02
+plugin has to fall all the
+way back to the CPU.
+
+01:04:06
+So your job might look like
+this, where you are reading
+
+01:04:09
+some data onto the GPU from
+disk, you're chugging along,
+
+01:04:14
+doing SQL preprocessing, and
+then you hit the UDF,
+
+01:04:20
+And essentially, you have
+to ship all the data back
+
+01:04:23
+over PCIe to the CPU.
+
+01:04:26
+You have to convert from
+those columnar batches back
+
+01:04:29
+to row-by-row formats.
+
+01:04:32
+You have to run the UDF, and then
+you have to reverse that process
+
+01:04:36
+to finish the job on the GPU.
+
+01:04:40
+So there's two major
+problems with this.
+
+01:04:42
+The obvious one that I just
+described is that there can
+
+01:04:46
+be a huge data transfer overhead.
+
+01:04:49
+You essentially have to
+do this round trip.
+
+01:04:52
+between the GPU and the CPU, as
+well as do this data conversion
+
+01:04:55
+from Columnar to Row.
+
+01:04:57
+And the other problem is that you
+potentially lose out on speedups,
+
+01:05:02
+especially if the UDF itself is
+doing a decent amount of compute.
+
+01:05:07
+We're losing out on speedups
+if we could have expressed
+
+01:05:11
+what the UDF is doing using
+GPU Columnar primitives.
+
+01:05:18
+So Ether Assistant
+tries to address this.
+
+01:05:21
+It's a agentic developer tool that
+is designed to rewrite UDFs into
+
+01:05:28
+a GPU accelerated format that is
+supported by the Spark Accelerator.
+
+01:05:37
+So there's two ways to
+rewrite your UDFs.
+
+01:05:40
+The first one, probably the most
+obvious one, would be just rewrite
+
+01:05:45
+your UDF in SQL if it's possible.
+
+01:05:47
+So for instance, our credit score,
+credit risk UDF on the screen
+
+01:05:52
+can be represented as a pretty
+simple SQL case when query, which
+
+01:05:59
+the plugin then can understand.
+
+01:06:01
+It can map it to a physical
+plan that runs on the GPU.
+
+01:06:05
+And this works and is performant
+for most of fairly simple
+
+01:06:09
+UDFs, but oftentimes UDFs aren't
+so simple, so the second approach
+
+01:06:16
+is to rewrite your UDF using
+cuDF columnar operations directly.
+
+01:06:23
+You know, earlier in the
+presentation we mentioned how
+
+01:06:26
+the Spark plugin is built on top of
+these JNI bindings into cuDF, C++.
+
+01:06:33
+We also provide an interface,
+a Java interface, called the
+
+01:06:40
+RAPIDS UDF interface, that
+allows you to rewrite your
+
+01:06:44
+UDF using those cuDF APIs.
+
+01:06:47
+And cuDF also has a Java
+API, which you can
+
+01:06:52
+Use to access all of those
+libcuDF kernels under the hood.
+
+01:06:56
+So here's an example.
+
+01:06:57
+So for instance, on the left we
+have like a row by row UDF that
+
+01:07:03
+is essentially just calling into
+this Java library, URL encoder,
+
+01:07:07
+to URL encode some strings.
+
+01:07:14
+Right, so it's taking in a single
+string and it's going to run
+
+01:07:17
+row by row in the initial version.
+
+01:07:20
+And what we can do is we can
+extend this RAPIDS UDF interface,
+
+01:07:24
+and essentially you just override
+a single method called evaluate
+
+01:07:28
+columnar, which is analogous
+to the apply method on the left.
+
+01:07:32
+And the plugin will recognize
+that you're extending this
+
+01:07:37
+interface and it will hand the
+UDF columnar batches on the GPU.
+
+01:07:41
+So there's no data transfer.
+
+01:07:43
+And you can call into these QDF
+APIs now that you have QDF columns,
+
+01:07:51
+and you can work with QDF APIs to
+implement the same functionality.
+
+01:07:54
+And QDF happens to have a
+built-in URL encode function,
+
+01:07:59
+which you can just call directly.
+
+01:08:01
+And so these two UDFs are
+functionally equivalent, and
+
+01:08:07
+the right one will just avoid
+all of that transfer overhead
+
+01:08:10
+and process all of those rows.
+
+01:08:12
+In parallel using QDS.
+
+01:08:16
+So instead of having this
+fallback that we showed earlier,
+
+01:08:21
+essentially with one of these
+two approaches, we can keep
+
+01:08:25
+all of that data on the GPU
+by rewriting our UDF and obviously
+
+01:08:30
+make the job a lot more performant.
+
+01:08:35
+So, writing the QDF GPU code
+can be hard, especially if
+
+01:08:40
+your UDF is fairly complex,
+and so is validating that
+
+01:08:44
+the rewritten code is correct and
+actually matches your original UDF.
+
+01:08:51
+So Ether Assistant provides
+these workflows composed of
+
+01:08:56
+three independent steps using LLMs
+to validate and rewrite your UDF.
+
+01:09:02
+So we have three steps.
+
+01:09:03
+The first is test generation.
+
+01:09:05
+So the LLM will generate a unit
+test for your existing CPU UDF.
+
+01:09:11
+The second step is conversion.
+
+01:09:13
+We'll convert the UDF to either
+SQL or QDF, depending on which
+
+01:09:18
+target you select.
+
+01:09:19
+And this will use the unit tests
+from step one for verification.
+
+01:09:24
+And then the third
+step is benchmarking.
+
+01:09:26
+So we'll have the LLM generate
+a synthetic data set and then
+
+01:09:31
+benchmark both the original and
+the converted UDF implementations
+
+01:09:36
+to measure if we got any speedup.
+
+01:09:39
+And so each phase is its own
+iterative feedback loop that
+
+01:09:44
+verifies that the results
+are correct before proceeding
+
+01:09:47
+to the next phase.
+
+01:09:49
+So with that background, we can
+proceed to the notebook demo.
+
+01:09:53
+So I'll switch over.
+
+01:10:11
+Okay, yeah, so here's
+the fourth notebook.
+
+01:10:14
+So for the purposes of the
+course, we're just going to
+
+01:10:18
+be using a mock LLM server, which
+is going to provide the responses.
+
+01:10:23
+So in the first cell, we're
+just going to start that up.
+
+01:10:28
+And next, we can take a look
+at those commands that we
+
+01:10:31
+showed, the three commands
+that I showed earlier.
+
+01:10:34
+So note that, you know, Ether
+Assistant has a separate CLI.
+
+01:10:40
+That is going to be also bundled
+with the same Ether installation
+
+01:10:45
+via NGC, but it is a distinct CLI.
+
+01:10:50
+So we can run the help command
+and we can take a look at some
+
+01:10:52
+of the commands that are available.
+
+01:10:55
+So you can see the three that
+I mentioned in the slide.
+
+01:10:58
+Generating a test, converting
+the UDF and benchmarking and then
+
+01:11:01
+we have two additional commands.
+
+01:11:03
+The first is ping just to
+check your LLM connectivity
+
+01:11:07
+and the second is run all which is
+similar to ether run where it just
+
+01:11:10
+runs those three steps in sequence.
+
+01:11:14
+So first, we're going to
+just test the connectivity
+
+01:11:17
+to our mock LLM server.
+
+01:11:19
+So Ether Assistant requires a LLM
+config for all of its commands.
+
+01:11:25
+And essentially, all this
+will define is the API URL.
+
+01:11:29
+So if you guys have an internal
+LLM in your company, or if
+
+01:11:33
+you guys have sort of API access,
+that's where you would define
+
+01:11:38
+an API URL to connect to an LLM.
+
+01:11:41
+So essentially, it's
+just a YAML file.
+
+01:11:44
+Here's an example that we're
+gonna use for the purposes of
+
+01:11:47
+this demo to connect to just this
+local mock server that we have.
+
+01:11:52
+But in reality, this
+could be OpenAI, API,
+
+01:11:55
+or Anthropic, et cetera.
+
+01:11:58
+So we're gonna start with
+the ping command.
+
+01:11:59
+This is just gonna send a
+really simple request to that
+
+01:12:05
+mock server, in this case,
+passing in the LLM config,
+
+01:12:09
+and we get back our results.
+
+01:12:11
+Hopefully it's
+working for everyone.
+
+01:12:14
+So after that step, we're
+gonna proceed to the first
+
+01:12:18
+phase in the workflow, which
+is generating a unit test.
+
+01:12:22
+So this command essentially
+just requires your UDF and
+
+01:12:26
+the config we showed earlier.
+
+01:12:28
+So we're gonna use that same credit
+risk score UDF as an example.
+
+01:12:35
+As you can see here, it's
+in UDF, and this is just a
+
+01:12:37
+Scala file that we're going to
+
+01:12:39
+Pass in to Ether Assistant and
+let it run its iterative feedback
+
+01:12:45
+loop and we'll let this spin up.
+
+01:12:54
+So while this runs, yeah, as I
+mentioned, each of these commands
+
+01:12:58
+is its own sort of feedback loop.
+
+01:13:01
+So all we're doing is essentially
+asking the LLM to generate
+
+01:13:05
+a unit test in a very specific
+template that we have, and
+
+01:13:09
+then we run that unit test,
+and we verify that all of those
+
+01:13:13
+outputs are correct, and if any
+errors occur, we feed that back to
+
+01:13:16
+the LLM to correct the unit test.
+
+01:13:19
+And then finally, we have sort of
+a judge phase to ensure that...
+
+01:13:24
+Unit tests comprehensive, it
+covers edge cases, et cetera.
+
+01:13:28
+So we'll let that run for a moment.
+
+01:13:32
+So it's proceeding, it's generating
+the unit test via LLM, and
+
+01:13:37
+now it's going to run that
+as a mini Spark job, which
+
+01:13:41
+is going to run your input
+UDF against those test cases.
+
+01:13:47
+Okay, yeah, so we got our output,
+
+01:13:51
+and essentially the assistant just
+spits out a cache directory where
+
+01:13:56
+it stored all of those outputs,
+and then we can see that we
+
+01:13:59
+get this unit test path, Which is.
+
+01:14:02
+Just a mini Spark job that
+will test the UDF.
+
+01:14:07
+So we can take a look
+at those outputs.
+
+01:14:10
+This is just a bash command
+that will extract that path
+
+01:14:12
+from the previous cell.
+
+01:14:14
+And we're going to export it
+into an environment variable
+
+01:14:17
+for the next steps.
+
+01:14:19
+We can take a look
+at the unit test.
+
+01:14:21
+So this is what the LLM generated.
+
+01:14:24
+It's just a bunch of different test
+cases for our credit score UDF.
+
+01:14:30
+And kind of brushing over
+the details, essentially what
+
+01:14:34
+this is doing is just registering
+it, executing that UDF, and
+
+01:14:37
+then verifying the UDF results
+with a bunch of assertions.
+
+01:14:43
+And just to be extra sure, we
+can run the unit test ourselves
+
+01:14:48
+to ensure that it passes.
+
+01:14:50
+So just running this mini PySpark
+job, passing in that file.
+
+01:15:04
+Yeah, and you can see this
+actually runs the UDF, and
+
+01:15:07
+we get all the assertions passing.
+
+01:15:11
+So in the next step, now that
+we have a unit test, we're
+
+01:15:13
+going to run this conversion step.
+
+01:15:16
+Very similar, we're just gonna
+pass in that same input file,
+
+01:15:20
+the LLM config, and then now the
+unit test that we just generated.
+
+01:15:24
+And we're just gonna spin
+up that feedback loop.
+
+01:15:28
+And let it run. So in this
+case, I'm going to show a
+
+01:15:32
+conversion to QDF.
+
+01:15:33
+So this will show using the
+QDF Java APIs to implement
+
+01:15:39
+this risk score UDF.
+
+01:15:43
+So we'll let that run.
+
+01:15:49
+And while that runs just as
+an additional detail, part
+
+01:15:52
+of what the internal CLI does is
+it has a, you know, vector database
+
+01:15:58
+for all of the QDF Java docs.
+
+01:16:00
+So we're also providing essentially
+like a documentation search
+
+01:16:04
+tool to the LLM internally so that
+it can fetch and use those APIs.
+
+01:16:37
+Okay, so we got our outputs
+and we can see that this time
+
+01:16:42
+we have a new test that we
+call a comparison test as
+
+01:16:47
+well as the converted, the path
+to the converted rapid GDF and we
+
+01:16:54
+can take a look at those outputs.
+
+01:16:58
+Exporting those
+variables as before.
+
+01:17:00
+And here is the conversion.
+
+01:17:02
+So you can see that in the
+original apply method, we
+
+01:17:05
+have the original CPU UDF.
+
+01:17:08
+And then here is the GPU UDF.
+
+01:17:10
+It does look a bit large because
+of some of this boilerplate
+
+01:17:13
+with managing GPU resources.
+
+01:17:16
+But essentially it's using
+these QDF comparison APIs, for
+
+01:17:22
+instance, greater or equal to, to
+implement the same functionality.
+
+01:17:27
+So one other detail is that
+this, we mentioned that this
+
+01:17:33
+workflow uses the unit test
+from the first step.
+
+01:17:36
+And essentially all it does is it
+takes that unit test and injects
+
+01:17:40
+these additional lines, which run
+the new converted UDF on the exact
+
+01:17:45
+same dataset, and then assert that
+both of the outputs from both the
+
+01:17:51
+CPU and the GPU UDF are identical.
+
+01:17:55
+Okay, so we can finally proceed
+to the third phase, which
+
+01:17:58
+is the benchmarks.
+
+01:18:00
+And we're basically just gonna
+pass all of the outputs from
+
+01:18:03
+the previous two steps, the unit
+test, as well as the jar, which
+
+01:18:07
+contains the compiled GPU UDF.
+
+01:18:11
+So we're going to spin that up.
+
+01:18:13
+In this case, we just specify
+the number of rows that we
+
+01:18:17
+want to benchmark.
+
+01:18:19
+The two UDFs on, and essentially
+the LLM will just create a
+
+01:18:23
+synthetic data generation script.
+
+01:18:25
+We're going to validate that
+that matches the unit test
+
+01:18:28
+schema, and then we're just going
+to run it, generate a bunch of
+
+01:18:32
+rows, and then run both the GPU and
+CPU UDFs on that generated data.
+
+01:19:07
+So if I use a normal LLM,
+how is this different than
+
+01:19:13
+this converting a SQL, like all the
+Scala-based UDF to a SQL-based one?
+
+01:19:21
+I can do it in the normal
+LLM itself, right?
+
+01:19:25
+Yeah, so I mean, this is using
+your configured LLM, first of all.
+
+01:19:31
+Just what the system provides
+is this deterministic workflow.
+
+01:19:35
+So we can't proceed to the
+next phase until we verify
+
+01:19:39
+that the output's correct, right?
+
+01:19:41
+It's mainly just to provide more
+rigidity and ensure that the
+
+01:19:47
+output's running an actual Spark
+job, following specific templates.
+
+01:19:53
+But yeah, of course you could
+use an LLM just like in your
+
+01:19:57
+IDE, but the point of the CLI is
+
+01:20:01
+To include all the prompts that we
+have, include the search tools that
+
+01:20:05
+we have, and kind of run this set
+of templates and workflow to just
+
+01:20:12
+provide more robustness to the LLM.
+
+01:20:15
+So you mentioned about the results.
+
+01:20:18
+Would it validate results?
+
+01:20:20
+I think the normal
+LLMs won't do that.
+
+01:20:22
+It's just convert and then work.
+
+01:20:26
+Would it validate the result
+based on the catalog or can it be
+
+01:20:30
+integrated with the data catalog?
+
+01:20:32
+Yeah, so I mentioned that
+it is actually running, you
+
+01:20:35
+know, the unit test as a mini
+Spark job to ensure that the
+
+01:20:39
+outputs are correct.
+
+01:20:40
+It is using a generated data
+set from the first step, but
+
+01:20:44
+you could write your own unit test
+and provide it to the second step.
+
+01:20:47
+For instance, that runs
+on like a small set of,
+
+01:20:51
+you know, I don't know,
+sample of files, or it uses like,
+
+01:20:56
+A data set that you already
+have an existing unit test
+
+01:21:00
+and provide that to the second
+step as validation.
+
+01:21:03
+But all of these steps are
+running actual Spark jobs as like
+
+01:21:07
+iterative feedback for the LLM.
+
+01:21:09
+Thank you. Yeah, good question.
+
+01:21:14
+Okay, yeah, so going back to
+our benchmarks, we can see that
+
+01:21:18
+the benchmark's completed and we
+get this N10 speedup of about 2x.
+
+01:21:24
+And essentially just what
+this benchmark job is doing
+
+01:21:27
+is it's generating that big
+data set and it's running just
+
+01:21:31
+an end-to-end Spark job that is
+basically just read from disk, run
+
+01:21:36
+the UDF, and then write to disk.
+
+01:21:38
+And so this speedup is measuring
+that end-to-end time.
+
+01:21:43
+And that itself results in
+a 2x speedup on the GPU.
+
+01:21:47
+We also provide some
+additional metrics.
+
+01:21:49
+So obviously if we compare the
+end-to-end Spark job times,
+
+01:21:52
+that includes IO, so it could
+be discounting the speedup
+
+01:21:57
+of the UDF itself somewhat.
+
+01:22:00
+So using the Spark history
+server, we can also try to isolate
+
+01:22:04
+the op time of just the UDF,
+excluding the reads and writes.
+
+01:22:08
+And that is the estimated
+
+01:22:12
+Estimated wall clock speedup here.
+
+01:22:14
+So essentially we have an
+estimate of both the GPU and
+
+01:22:19
+the CPU UDF op times and we
+can compare those excluding the IO
+
+01:22:24
+to get an estimate of the speedup
+of just the computation in the UDF.
+
+01:22:29
+So that actually is like around
+a 9x speedup, but the full job
+
+01:22:32
+is only around 2x because of IO.
+
+01:22:38
+And we can stop the server,
+and that is all I had to
+
+01:22:43
+show in the notebook.
+
+01:22:43
+I'll go back to the slides.
+
+01:22:49
+Yeah, so just to recap what we ran.
+
+01:22:51
+So we had the CLI intro, we
+had tested the ping command
+
+01:22:57
+and the test connectivity.
+
+01:23:00
+We ran gen test, which is
+generating this unit test.
+
+01:23:05
+We ran convert UDF with QDF
+as the target, passing in
+
+01:23:09
+that unit test, then got out
+the conversion results.
+
+01:23:13
+And then finally we ran the
+benchmarks to see the performance
+
+01:23:18
+benefit of the GPU UDF.
+
+01:23:20
+All right, the last thing
+I wanted to show is an
+
+01:23:25
+alternative to the CLI.
+
+01:23:27
+So many of you may have
+internal IDEs such as Cursor,
+
+01:23:32
+Cloud Code, et cetera.
+
+01:23:35
+And a lot of those are
+compatible with skills.
+
+01:23:40
+Yeah, I'll play that
+video in a second.
+
+01:23:53
+And I'll just show a demo
+of me using Cloud Code with
+
+01:23:58
+those skills to perform the
+same three workflows as before.
+
+01:24:04
+So, hopefully that shows up.
+
+01:24:07
+So yeah, first, we just copy the...
+
+01:24:10
+Skills over into the skill
+directory, and I'm just gonna
+
+01:24:14
+first ask it to explain the
+same UDF that we just showed,
+
+01:24:18
+this is the credit score UDF.
+
+01:24:20
+So we provide three skills.
+
+01:24:22
+The first is gen test, which
+is mimicking the CLI.
+
+01:24:27
+So you can see that the
+skill gets loaded.
+
+01:24:29
+And I'm just gonna fast forward
+here while Claude essentially
+
+01:24:33
+follows the exact same iterative
+workflow that we specify in the
+
+01:24:38
+CLI, except it's now interactive.
+
+01:24:40
+So it's generating that unit test,
+it's now running it, the actual
+
+01:24:46
+job, and then we get some output.
+
+01:24:49
+And then next I'm gonna ask it to
+convert this to QDF, and it will
+
+01:24:54
+automatically load the convert to
+QDF skill And then start the same.
+
+01:24:59
+And you can see that we also
+have an MCP server that exposes
+
+01:25:08
+that same QDF search tool
+that I mentioned earlier that
+
+01:25:11
+we have in the CLI.
+
+01:25:26
+And so we get our output and
+finally we'll ask it to benchmark
+
+01:25:30
+the two implementations.
+
+01:25:33
+And while that goes, the major
+part of the skill is we provide
+
+01:25:37
+essentially a full project
+template with all of the template
+
+01:25:42
+files and the benchmark scripts,
+the unit test framework, or
+
+01:25:47
+the LLM to then basically
+fill in in order to run this.
+
+01:25:50
+So you can see it's like editing
+a preexisting file, and that
+
+01:25:53
+is part of the skill.
+
+01:25:54
+So that's sort of the main
+benefit of having the skills.
+
+01:25:57
+You have sort of a structured
+build environment and it can be
+
+01:26:01
+consistent across runs, et cetera.
+
+01:26:05
+So yeah, we're going to run
+the data generation script
+
+01:26:09
+and it's gonna chug for a bit.
+
+01:26:15
+And yeah, we get this output
+and we get some speed up and
+
+01:26:20
+I just ask it to explain what
+all files are in the project.
+
+01:26:23
+So as I mentioned, these are
+basically all files that we
+
+01:26:27
+provide as part of the skill
+that the LLM sort of completes.
+
+01:26:41
+So yeah, that is the conclusion
+of this part and the full course.
+
+01:26:47
+So we can take any questions now
+and discuss anything you guys want.
+

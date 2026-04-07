@@ -1,0 +1,2400 @@
+Session: https://www.nvidia.com/en-us/on-demand/session/gtc26-s81563/
+
+Transcript Powered by AI
+
+Unlock Fast, Cost-Effective Interactive Analytics on Massive Data Lakehouses
+
+
+00:10
+Okay, so I'd like to follow
+up on some of the topics that
+
+00:12
+Todd and Josh mentioned earlier.
+
+00:15
+With a real focus on data
+lakehouses and how we apply
+
+00:18
+Presto GPU to efficiently
+query and analyze that data.
+
+00:24
+So the intro I'll go over more
+quickly and then jump over into
+
+00:28
+some of the performance we've been
+seeing in detail with this engine.
+
+00:33
+I'm gonna hand it over to
+Zoltan to talk about some
+
+00:35
+of the key bottlenecks that
+his team helped solve to make
+
+00:40
+these results possible around
+data shuffling and data ingest.
+
+00:43
+And then we've got a little
+tutorial to help folks get started.
+
+00:45
+So if you've got a GPU instance,
+you can get your hands on
+
+00:49
+Presto GPU today and start
+kicking the tires.
+
+00:53
+All right, so you may have
+seen this slide a moment ago,
+
+00:55
+but users and agents are...
+
+01:02
+Demand access to intelligence based
+on data more than ever before.
+
+01:07
+And also users and agents
+are working together in new
+
+01:09
+ways where if you want, you know,
+agents write more queries than
+
+01:13
+users these days, I would wager.
+
+01:15
+I certainly haven't written any SQL
+since models could do it for me.
+
+01:19
+There's a huge amount of structured
+and semi-structured data out
+
+01:22
+there, Parquet, Org, CSV, JSON data
+
+01:29
+in a data lake, and you can have
+a relational database set up that
+
+01:33
+knows where each file is and what
+is in them, what the schema is,
+
+01:37
+and then a query engine is built
+on top of that to ask specific
+
+01:42
+questions of the data and return
+that data to the user or the agent.
+
+01:47
+That process needs to be as
+low latency and as low cost
+
+01:50
+as it possibly can be to support
+AI applications today and
+
+01:54
+also a deep history of business
+intelligence and other applications
+
+01:58
+based on this data.
+
+02:00
+So I'm not gonna say more about
+the unstructured piece today.
+
+02:02
+Today we're really focused
+on processing structured data
+
+02:06
+within the query engine that's
+needed to make that data available
+
+02:10
+to users and agents.
+
+02:12
+So I wanna introduce Presto a
+little bit for folks who haven't
+
+02:16
+used it directly or worked with it.
+
+02:19
+So Presto was open sourced in 2013
+and really grew shortly after that.
+
+02:26
+And it's a great tool for
+interactive analytics and it runs
+
+02:30
+Distributed, most query
+engines are single node.
+
+02:33
+There aren't many
+distributed ones out there.
+
+02:34
+So if you've got a problem
+that needs a lot of nodes,
+
+02:37
+Presto, Spark, those are the
+best tools for that.
+
+02:40
+So this is an example of Presto
+running a TPCH-derived workflow
+
+02:46
+at the one terabyte scale, SF1K.
+
+02:49
+Taking, you know, almost 2,500
+seconds and then with software
+
+02:54
+changes in the last five years down
+to 500 seconds and with bringing in
+
+02:58
+hardware accelerators getting down
+to under a minute for the same job.
+
+03:03
+So the combination of software and
+hardware accelerators has made a
+
+03:07
+huge difference for what the Presto
+user experience is like and how
+
+03:13
+the Presto front end serves data.
+
+03:17
+And yeah, so this roadmap kind
+of starts off with eight nodes
+
+03:21
+in AWS and then continues to a full
+node of A100, an older DGX box,
+
+03:30
+and then finishes with a half node
+of B200, which is of the latest
+
+03:34
+Blackwell variety from NVIDIA.
+
+03:39
+So what's happening with
+these workers though?
+
+03:42
+So Presto Java is a Java stack,
+but Presto C++ moves from
+
+03:47
+Java to C++ and really leverages
+Velox under the hood.
+
+03:51
+So Velox is an open source
+execution engine that plugs
+
+03:54
+into a lot of different tools.
+
+03:57
+It doesn't have a front end of its
+own, and it is a part of the Presto
+
+04:00
+ecosystem through Presto C++.
+
+04:03
+And it provides a really great
+execution engine as well as CPU
+
+04:06
+operators to work on columnar data.
+
+04:08
+Rather than doing operation one
+row at a time, it can do one
+
+04:12
+column at a time, which is a very
+powerful change for efficiency.
+
+04:16
+And it contains all of its own
+CPU algorithms written in C++
+
+04:20
+and has been a great step forward.
+
+04:22
+A lot of folks in the Presto
+community view it as Presto 2.0.
+
+04:26
+Now we saw the progress with
+Presto C++ and saw a great
+
+04:30
+opportunity to pull in a hardware
+accelerator to that story.
+
+04:33
+So we keep the execution
+layer from VELOX.
+
+04:37
+But then we port over a bunch of
+new operators that are GPU aware to
+
+04:41
+tie into all the algorithms in QDF.
+
+04:43
+So we don't have to make
+a lot of new QDF for this
+
+04:45
+integration to work.
+
+04:46
+We just have to make the bridge
+between Presto and Velox to
+
+04:51
+the GPU implementations.
+
+04:54
+All right, so let's talk a
+little bit about the performance
+
+04:57
+we've been observing with
+this tool as we're building it out.
+
+05:01
+And we've seen extremely
+encouraging results as we
+
+05:05
+get started here.
+
+05:05
+So the blue bars show query
+execution of TPCH-derived
+
+05:12
+benchmarks at the one terabyte and
+three terabyte scale factors, and
+
+05:17
+stacking up to the total runtime.
+
+05:19
+And the comparison here was
+with an eight-node CPU cluster
+
+05:22
+Let's start with...
+
+05:24
+Each node has a two
+socket Grace CPU.
+
+05:28
+So that's the comparison.
+
+05:29
+And then the first green bar
+is with four B200 GPUs dropping
+
+05:35
+us down 30 times faster speed.
+
+05:39
+So huge reduction in latency.
+
+05:41
+And this is with a hot cache
+Parquet data source.
+
+05:45
+So we're not using an in-memory
+format, really what you'd
+
+05:47
+have in a data lake.
+
+05:48
+If you've got a bucket of Parquet
+files anywhere, that's the input
+
+05:51
+that we wanna really fly with.
+
+05:54
+And then on the 3K side, it's
+a great story as well.
+
+05:57
+Here we're using the full
+eight GPUs versus the CPU
+
+06:01
+cluster and delivering a great
+speed up as well.
+
+06:05
+So there's some pieces that
+this data that shows some
+
+06:11
+work in progress right now.
+
+06:13
+If you look at, you know, Velox
+development has been really focused
+
+06:15
+on float types instead of decimal.
+
+06:17
+Decimal support is on the
+way, and we'll be able to
+
+06:19
+recast this soon, but our results
+show pretty similar trajectory.
+
+06:26
+And a big part of where the
+benefit, oh yeah, another
+
+06:30
+thing to note is that the
+
+06:31
+The Presto Coordinator is something
+we care about a lot as well.
+
+06:35
+The query plans that come out of
+Presto are really, those are the
+
+06:39
+plans that we have to work with.
+
+06:40
+So if we get bad plans, it's
+hard to execute well.
+
+06:44
+We get great plans,
+we're gonna run great.
+
+06:47
+And the CPU side kind of suffers
+from some of the same problems.
+
+06:50
+But with improvements to the
+Presto Coordinator, and today
+
+06:54
+with some alternate SQL, we have
+the rest of the work in flight.
+
+06:56
+We know how to make that better.
+
+06:58
+So the Presto ecosystem,
+
+07:00
+It's a great one to work with
+and Zoltan is going to share
+
+07:04
+more about the work that IBM
+has done to make Presto move
+
+07:08
+fast and be responsive to pulling
+in GPU as a native execution mode.
+
+07:14
+All right, so in the remaining
+part of these green bars, what
+
+07:19
+is the GPU spending time doing?
+
+07:22
+So this is a pie chart that
+shows you what are the actual
+
+07:26
+operators running during these
+queries at SF-100 and SF-1K.
+
+07:30
+And you can see the big blue
+part, parquet data source.
+
+07:33
+This is table scan.
+
+07:34
+Table scan is huge.
+
+07:36
+When you work with...
+
+07:38
+With data lake data, with parquet
+files, moving that data onto
+
+07:41
+the node, decompressing, decoding
+it, is a huge part of the piece.
+
+07:44
+And the rest of this stuff,
+QDF can do pretty efficiently,
+
+07:47
+and it's not as big of a driver.
+
+07:51
+So this 1K, this is kind of
+a single GPU benchmark, and
+
+07:58
+you can see that...
+
+08:00
+Performance snapshot, you
+can see that hash join,
+
+08:03
+filter, and partitioning
+are the dominant non-IO pieces.
+
+08:09
+But when you think about tuning
+Presto GPU, what we've found
+
+08:11
+over the past few months is
+really all on the IO side.
+
+08:15
+And these are some of the
+improvements that we got
+
+08:18
+just studying this workload,
+once we had it running in
+
+08:21
+a multi-GPU context, stably.
+
+08:24
+And we found that the
+encodings of the Parquet
+
+08:27
+files has a huge signal.
+
+08:29
+So the Delta binary packed
+encoding came out with Parquet,
+
+08:33
+probably, I don't know.
+
+08:35
+Five years ago now.
+
+08:37
+And it makes a huge difference
+on GPU execution.
+
+08:41
+We've got great decoders for
+Delta Binary Pact and wherever
+
+08:44
+you've got integer physical
+types, it's a great way to make
+
+08:47
+your data lag scream fast on GPU.
+
+08:51
+And then the other big thing we
+learned about was NUMA pinning.
+
+08:53
+So on these DGX boxes, you've
+got one CPU that's connected
+
+08:59
+close to four of the GPUs.
+
+09:01
+And as long as that CPU's in
+charge of all the copying activity,
+
+09:04
+And all the, you know, launching,
+interacting with the CUDA
+
+09:08
+runtime for those GPUs, it
+gives you a big improvement.
+
+09:12
+Now, Velux is not NUMA aware
+today, so the CPU side doesn't
+
+09:15
+really benefit from that.
+
+09:17
+And the encoding side is a
+little bit more of a wash, but
+
+09:19
+on the GPU, these both matter a lot
+and really help drive the bottom
+
+09:23
+line and drive the latency lower.
+
+09:27
+So performance is great, but
+let's talk a little bit about
+
+09:30
+the cost projections that
+we're seeing today.
+
+09:33
+So the y-axis here, this is
+cost per run for doing the
+
+09:37
+full set of 22 queries.
+
+09:39
+Then the x-axis is a few different
+configurations and scale factors.
+
+09:43
+Starting with SF1 on 16 CPUs,
+then 8, and then 4, you can see
+
+09:49
+the cost, the size of the blue bar
+drops because the cost is dropping,
+
+09:53
+even as the runtime goes up,
+the way that this cluster scales,
+
+09:58
+you know, you double the size,
+you don't cut the runtime in half.
+
+10:01
+When you're talking about
+really price performance and
+
+10:03
+really focusing on it, it
+tends to be smaller clusters,
+
+10:07
+less capable hardware that
+gives you the best story that
+
+10:10
+you'd want to actually roll
+out at scale for your analytics.
+
+10:16
+As someone running benchmarks, it's
+a little bit more frustrating to
+
+10:19
+work on the less capable hardware,
+but that's where the TCO story is.
+
+10:24
+So you can see it dropping
+down as you go from 16 to
+
+10:27
+eight to four CPUs, that's going
+from eight to four to two nodes.
+
+10:34
+And then on the GPU side at
+1K, we have data here on four
+
+10:37
+GPUs and one GPU, and even though
+the one GPU doubles the runtime,
+
+10:43
+the TCO, the cost of operating
+that drops a fair bit as well.
+
+10:51
+And that's where we end up
+at kind of the best price
+
+10:55
+performance for the cluster
+we were using for this study.
+
+10:59
+Then at 3K, you see some of
+the same trends again, running
+
+11:03
+at 16 and 8 CPUs, 8 wins on cost,
+loses on runtime by a fair bit.
+
+11:10
+And then with GPUs, we were
+able to run at 8, 4, and 3,
+
+11:14
+and then 3 gives us the best
+price performance here.
+
+11:17
+And this is pointing at around
+a 10x benefit using Presto
+
+11:21
+GPU versus Presto CPU, which is
+some of the really strong signals
+
+11:27
+you need to go adopt this in your
+organization for your analytics.
+
+11:31
+And you can see some more
+details about the cost estimates
+
+11:34
+used here for generic CPU
+nodes and the DGX B200.
+
+11:38
+And yeah, the DGX B200 with
+the eight GPUs there is a
+
+11:43
+really special machine for
+how dense the compute is.
+
+11:47
+And Zoltan is going to get
+into that in just a minute.
+
+11:50
+But first, I just want to say
+this has been the result of a huge
+
+11:53
+collaboration with IBM and NVIDIA,
+and we've been working together as
+
+11:57
+one team for the last year on this.
+
+11:59
+And it's great to have the
+shared commitment to open source.
+
+12:03
+Everything we've built here is
+in open source repositories.
+
+12:07
+You can see our PRs.
+
+12:08
+You can see us argue.
+
+12:09
+You can see us hash it out
+and merge it and get it done.
+
+12:13
+And the benchmarking suites
+are all open source as well.
+
+12:16
+There'll be some links at the end.
+
+12:18
+But it's been a great work
+by the team really pulling
+
+12:22
+together to make all this possible.
+
+12:26
+So the last thing I'll say is
+if you want to come meet with
+
+12:29
+me and Zoltan, if you want to come
+over to the Connect with Experts,
+
+12:32
+you'll be my honored guest.
+
+12:34
+We're going to have two sessions
+tomorrow and the next day
+
+12:36
+if you want to learn more about
+how the problems you have could
+
+12:41
+be solved by some of these tools.
+
+12:43
+We'd love to talk
+with you about that.
+
+12:45
+Okay, so with that, I'm going
+to hand it over to Zoltan.
+
+12:49
+Thank you, Greg.
+
+12:51
+So I'm gonna talk about
+data shuffle and why it's
+
+12:54
+so important in this system.
+
+12:55
+So imagine you have these
+multi-GPU systems.
+
+12:59
+Each GPU did some computation,
+and now they wanna exchange the
+
+13:03
+result of this computation, right?
+
+13:05
+That's when people
+talk about shuffle.
+
+13:07
+That's what they mean about what
+they really wanna do, right?
+
+13:10
+And then I'm gonna talk about
+cloud performance, basically,
+
+13:14
+and then I'm gonna show you
+how you can try this at home.
+
+13:18
+So, how it works normally on
+CPUs is that you run Presto VLOX
+
+13:26
+workers and they calculate some
+data and they want to send it over
+
+13:30
+the network to some other node.
+
+13:32
+Typically, you know, you run an
+8-node cluster, 10-node cluster.
+
+13:36
+And what happens is that they
+kind of make them bite-sized,
+
+13:40
+they figure out the virus
+serialization for this, they
+
+13:44
+send it over on TCP to the
+other node, and the other node can
+
+13:47
+continue processing this, right?
+
+13:49
+The problem with this is
+that if you look at the
+
+13:52
+normal Linux kernel...
+
+13:53
+It just doesn't have the
+bandwidth, right?
+
+13:56
+Once you're talking about,
+you know, these systems, we
+
+13:58
+said 12 gigabytes a second there,
+that's around 100 gigabit, right?
+
+14:03
+Once you really start turning up
+the bandwidth to multi-hundred
+
+14:07
+gigabit, the Linux kernel
+just can't deal with this, right?
+
+14:12
+Especially on TCP, you have,
+because of how the TCP protocol
+
+14:15
+works, you have some minimal
+latency that you need to,
+
+14:19
+you just, you can't really
+do anything with it, right?
+
+14:22
+On the other hand, on these
+GPU systems, we have NVLink,
+
+14:27
+which gives you this really,
+really, really fast...
+
+14:31
+Interconnect between GPUs, right?
+
+14:33
+And when we talk about NVLink,
+you know, typical networking
+
+14:36
+people, they talk about gigabits,
+but for NVLink, this is meaningless
+
+14:40
+because you're talking about
+so many gigabytes that you
+
+14:42
+just talk about gigabytes, right?
+
+14:44
+So as you can see, NVLink
+5, 1800 gigabytes a second
+
+14:48
+bi-directional bandwidth.
+
+14:49
+That means I can use 900 gigabytes
+a second to move between GPU to GPU
+
+14:54
+on the Blackwell systems, right?
+
+14:57
+That's just an enormous amount
+of bandwidth that you would
+
+14:59
+not be able to get when you
+just go out of the network, right?
+
+15:03
+So our first benchmark was,
+okay, how can we actually
+
+15:07
+take advantage of this, right?
+
+15:11
+How can we take advantage of
+the multiple topologies, right?
+
+15:13
+What if you don't have...
+
+15:16
+The RTX 6000 Pro doesn't have
+NVLink, you just have PCI,
+
+15:20
+but you still want to take
+advantage of it, right?
+
+15:22
+Or what if I have these two GPU
+boxes, like the A100 or B200,
+
+15:28
+like physically separate boxes, and
+I have some special interconnect
+
+15:33
+between InfiniBand or I have
+Rocky, which is RDMA or Ethernet.
+
+15:37
+How can I use all of this, right?
+
+15:39
+And the answer to this is UCX.
+
+15:42
+UCX gives us an option to
+always get the optimal path,
+
+15:46
+no matter what we do, no matter
+what we have, UCX goes, figures out
+
+15:51
+the physical topology and selects
+the optimal transport, right?
+
+15:54
+So if we have NVLink,
+we can use NVLink.
+
+15:57
+If we don't have NVLink,
+we're gonna use the best
+
+15:59
+transport, right?
+
+16:00
+And if you don't have anything,
+then yes, it's gonna fall
+
+16:02
+back to TCP and you're gonna
+get this worst case, you're
+
+16:05
+gonna get Presto's best performance
+with UCX kind of, right?
+
+16:11
+In Presto, when you talk about
+data exchange, so imagine,
+
+16:15
+for example, that a GPU reads
+some data from storage, right?
+
+16:19
+And then it wants to spread it out.
+
+16:21
+It has eight GPUs, right?
+
+16:22
+But you want to spread it out.
+
+16:23
+So what happens is that you need
+an exchange, you need to kind
+
+16:27
+of give bits of this information
+to the other GPUs, right?
+
+16:31
+So this is the partitioned
+exchange that we talked about.
+
+16:36
+Broadcast is when I want to have
+the same data on all my GPUs.
+
+16:40
+And merge exchange is a bit
+of a special exchange.
+
+16:43
+It's basically, I want to
+exchange these pieces of bits,
+
+16:46
+but I want them in a particular
+order with the sorting key, right?
+
+16:50
+And the really beautiful thing
+about this is this really
+
+16:57
+At this point, by now, it's
+a drop-in replacement.
+
+17:00
+You don't need to change
+any config option.
+
+17:02
+And you get this immediate
+speed-up when you're running GPUs.
+
+17:07
+And for this effect,
+just to show you,
+
+17:10
+If you look at the middle chart,
+this orange chart, is we're running
+
+17:14
+on GPUs, but we're not able to take
+advantage of all the power, right?
+
+17:20
+And then, you know, the worst
+thing that you can do to your
+
+17:23
+GPUs is that they are idle.
+
+17:25
+Because basically what happens,
+you have the data on the GPU and
+
+17:29
+it's waiting to send it to another
+GPU, but you're paying for it.
+
+17:34
+So you don't want to pay for
+something that you're not
+
+17:37
+actively using because that
+memory on the GPU is used up.
+
+17:42
+You need to wait until it's sent
+somewhere or you're receiving
+
+17:45
+data before you can process.
+
+17:46
+You need to wait to get the data.
+
+17:49
+That's just basically dead
+money at that point.
+
+17:53
+The faster you go, the better.
+
+17:55
+And you can see that we managed
+to drop this down on
+
+17:59
+Even the Ampere series.
+
+18:01
+So we really like to use the
+Ampere series because it's
+
+18:05
+ubiquitously available.
+
+18:06
+It's just there.
+
+18:07
+It's old, so it's cheap, right?
+
+18:09
+As Jensen said in the keynote,
+probably the spot pricing
+
+18:12
+keeps going up for Ampere
+now because there's nothing
+
+18:14
+else available probably.
+
+18:16
+But really, the A100 is something
+that, you know, some people
+
+18:19
+might call landfill, and they
+just, you know, they have,
+
+18:23
+it's over five years old from
+a business perspective, it's fully
+
+18:26
+written to zero cost, so, yes.
+
+18:29
+And now, with the UCX exchange,
+Presto can take advantage
+
+18:34
+of whatever hardware you have,
+whatever high bandwidth connection
+
+18:39
+you have across your GPUs.
+
+18:44
+And then let me talk about,
+you know, a lot of people
+
+18:46
+say you look at, they look at the
+results, you know, they say, oh,
+
+18:49
+you're running on-prem, you have
+some really fast storage system,
+
+18:53
+but I'm running on cloud, right?
+
+18:55
+And we have a lot of customers
+who actually run on AWS or
+
+18:58
+Azure or GCP, so we want to
+give them an option, right?
+
+19:03
+Sorry about that.
+
+19:05
+So what normally happens when you
+read data from S3 is you must read
+
+19:11
+it to host memory first, right?
+
+19:13
+And then from host memory, you
+need to copy it to GPU memory.
+
+19:16
+So you already do a copy.
+
+19:18
+Plus, the thing about S3 is that
+yes, S3 itself is infinitely
+
+19:23
+scalable, but if you have
+one VM who wants to download
+
+19:26
+data from S3, that one VM
+will have a bandwidth limit, right?
+
+19:32
+And this bandwidth limit is not
+something that even AWS officially
+
+19:35
+acknowledges, for example.
+
+19:39
+So what you could do instead, what
+we've been playing with, is that
+
+19:44
+you could spin up CPU instances.
+
+19:47
+They go to S3 in parallel.
+
+19:50
+And then those instances could
+write to your GPU memory directly.
+
+19:55
+This means that on the GPU
+side, you're skipping all
+
+19:59
+of the host memory copy.
+
+20:03
+And you can take advantage
+of the bandwidth offered by
+
+20:05
+both S3 and by your GPU.
+
+20:08
+Because to give you an example, on
+the B300, the largest instance that
+
+20:13
+AWS has, they give you 800 gigabit
+per GPU, and it has eight GPUs.
+
+20:19
+So you get like 6.4 terabits a
+second of bandwidth to fill up.
+
+20:24
+But from S3 on a single
+instance, you'll never be
+
+20:26
+able to do that, right?
+
+20:28
+So with this distributed cache
+option, you would have the
+
+20:33
+option to actually, because
+you're feeding the GPU directly,
+
+20:37
+you would have the option
+to fill up this 800 gigabit, right?
+
+20:41
+Or on smaller instances, the
+new RTX 6000 instances, they
+
+20:46
+have a 400 gigabit network card.
+
+20:50
+So you can just feed
+that in directly.
+
+20:55
+The other thing that we've been
+iterating over on this client
+
+21:01
+instance is can I reuse the data
+that I already read from S3, right?
+
+21:07
+And normally, you know, when
+you're reading from disk, you know,
+
+21:12
+the previous benchmark that Greg
+was showing, others were showing,
+
+21:15
+you know, lots of people talk
+about hot runs from OS page cache.
+
+21:19
+That's basically, you have the data
+on disk, you read it to memory,
+
+21:23
+and then your application doesn't
+know that it's cached, it thinks
+
+21:26
+it's on disk, but it's actually
+reading from memory, right?
+
+21:30
+Now, VLogs' async data
+cache is different.
+
+21:33
+VLogs' data cache actually actively
+puts things in memory, right?
+
+21:37
+So when you read a buy stream from
+an object storage or from disk,
+
+21:41
+It doesn't know that the async
+data cache is irrelevant,
+
+21:45
+it doesn't care where you
+got your data from or where it's
+
+21:48
+going, it's just a storage for it.
+
+21:51
+So what it does is that when
+you read the data from S3,
+
+21:56
+it's going to store it there,
+like an OS page cache.
+
+21:59
+So when your next query
+hits that input...
+
+22:02
+You'll be able to fetch it
+directly from memory.
+
+22:06
+And as you can see on the very red
+chart, that's like 2,700 seconds.
+
+22:12
+That's without any cache.
+
+22:14
+If you just want to read
+from S3 with our original
+
+22:18
+implementation that was
+in VLOX maybe four months ago,
+
+22:23
+actually, that's the performance
+you would get on clouds.
+
+22:28
+And then as we kept iterating,
+we've added a patch that basically
+
+22:33
+lets you use the cache for
+when you want to run the GPU
+
+22:40
+operations for table scan.
+
+22:43
+And then basically what you
+can see here is that now you
+
+22:46
+can use it, so the call time
+is still the call time.
+
+22:49
+But now your hot time is reusing.
+
+22:51
+So when you run query two
+or query three or you run
+
+22:54
+a query later on that actually
+needs some data that you already
+
+22:58
+read from object storage, it's not
+gonna reread it from object storage
+
+23:02
+because it knows it's there, right?
+
+23:05
+So that's the serial cache.
+
+23:07
+And then as we kept iterating on
+it, what we did is, originally
+
+23:11
+we fetched, we were not too
+clever about what we did, right?
+
+23:16
+We just fetched the bits
+individually from S3, and
+
+23:20
+in a later iteration, we
+knew, when you read a Parquet file,
+
+23:23
+you kinda know what you're gonna
+read from your storage already,
+
+23:27
+because from the metadata you
+can guess this, or you don't need
+
+23:30
+to guess, you actually just read
+the metadata and you make a list.
+
+23:35
+So, as you can see, this parallel
+cache was already there that
+
+23:38
+we made this list and we kind
+of loaded it from parallel on S3.
+
+23:45
+And then with the latest, latest
+stuff, there are open PRs on
+
+23:50
+it and it needs some code changes.
+
+23:52
+What we do is we look at this
+list, what we're going to
+
+23:55
+read in the future, and we're
+going to figure out if we can
+
+23:58
+actually push them down together.
+
+24:02
+So instead, imagine I want
+to read a megabyte here
+
+24:04
+and a megabyte here.
+
+24:06
+If they're close enough, maybe
+I could combine them to a
+
+24:09
+single 2-megabyte request
+or a 4-megabyte request.
+
+24:12
+So you cut down the
+number of requests.
+
+24:14
+It's still high enough to
+drive parallelism to S3, but
+
+24:19
+smaller requests add you smaller
+metadata overhead, so it gives
+
+24:22
+you this speedup.
+
+24:24
+And for Q1, I know actually
+for Q1, I debugged it a lot so
+
+24:27
+I can tell you the exact numbers.
+
+24:29
+Just coalescing the reads
+drops your request number
+
+24:34
+from 700 to around 200.
+
+24:37
+But you can still do them parallel.
+
+24:39
+And because you're making less
+requests and you're making
+
+24:43
+larger requests, you actually
+see that improvement that
+
+24:46
+we can, they're actually pretty
+close together, right?
+
+24:50
+That 20 second you see there for
+the hot run, that's basically
+
+24:53
+saturating the PCI Express
+bus on the RTX 6000.
+
+24:57
+So I don't think we can do
+much better than that, right?
+
+25:00
+I've measured their line team.
+
+25:03
+To 22 seconds, so it has this
+kind, but I don't think that
+
+25:06
+gets better, right?
+
+25:07
+At that point, we're almost
+saturating the full piece sidebar.
+
+25:12
+So this is all
+upstream, all in VLOX.
+
+25:15
+You can see actually all the
+patches going in and the last
+
+25:19
+one is an open PR.
+
+25:22
+Now, going back, if we combine this
+in memory cache, we externalize
+
+25:29
+it and we have all these VMs
+doing exactly this caching
+
+25:34
+code, what do we get, right?
+
+25:36
+So the biggest advantage is
+obviously that even my code
+
+25:39
+read should be able to get
+to my warm read, right?
+
+25:43
+So in an ideal case, when you
+run the query code, you would
+
+25:46
+see the exact same performance
+as you get from a warm run, right?
+
+25:51
+Now, you don't have, we don't
+show you data on it because
+
+25:54
+it's work in progress, right?
+
+25:58
+The other advantage is that
+now your cache size
+
+26:02
+It can be arbitrary, right?
+
+26:04
+If you have 10 terabytes of
+data, you're never gonna get
+
+26:07
+to VM with enough memory, right?
+
+26:09
+The B300 really big machines
+on AWS, they have four
+
+26:12
+terabytes of memory.
+
+26:13
+So if you don't fit in that
+memory, what do you do, right?
+
+26:17
+It might be prudent to externalize
+it into this distributed cache.
+
+26:21
+Again, depending on your workload
+and the TCO you wanna hit
+
+26:24
+with this workload, right?
+
+26:27
+I think it's really exciting
+when you think about it, that
+
+26:31
+you could have a single box
+with eight GPUs and you have
+
+26:34
+terabits of raw IO hitting this
+single box with eight GPUs, right?
+
+26:41
+I think that's really, really a lot
+of bandwidth that goes into this.
+
+26:49
+And now let's talk about how
+you can try this.
+
+26:54
+So basically, we have this
+VLOGS testing repository.
+
+26:59
+This is exactly what we
+use across teams.
+
+27:01
+So we run the exact same benchmark
+suite at NVIDIA and at IBM.
+
+27:05
+This way, when we measure
+something, we know we're measuring
+
+27:08
+exactly the same thing.
+
+27:09
+Although because our labs
+are different, our hardware
+
+27:11
+is different, our storage
+is different, but our testing
+
+27:16
+methodology must be the same.
+
+27:19
+So you need Docker, you need
+Docker Compose, obviously you need
+
+27:22
+them with the GPU, and then what
+you're gonna do is you're gonna
+
+27:26
+fetch out these three repositories,
+you're gonna fetch out the VLogs,
+
+27:30
+Presto, and VLogs testing, right?
+
+27:32
+Now you see we're referencing
+here some special branches
+
+27:37
+called IBM Research Preview.
+
+27:38
+This is the branch we're
+iterating on together until
+
+27:41
+everything's upstream.
+
+27:43
+Because there's larger chunks,
+we're modifying larger chunks
+
+27:46
+of VLOGs and Presto that,
+you know, might not be ready
+
+27:49
+for inclusion yet upstream
+or we need to iterate with
+
+27:52
+the upstream team to, you know,
+have a consensus on the design
+
+27:56
+and make everyone happy, you know,
+open source is hard work like that.
+
+28:01
+Until then, these are the branches.
+
+28:03
+Once the delta between these
+and upstream, we're hoping
+
+28:07
+to push down to very minimal
+over the coming months.
+
+28:09
+Right now, there's
+some larger delta.
+
+28:15
+And this last issue, issue
+270 for VLOGS testing, this
+
+28:21
+captures exactly the setup
+that was used to produce the
+
+28:25
+numbers in the presentation
+earlier, and the setup.
+
+28:30
+So what do you need to do, right?
+
+28:31
+So you clone these three wrappers,
+and you're gonna go into VLogs
+
+28:36
+testing Presto scripts.
+
+28:38
+And the first thing you need
+to do is we need to build
+
+28:41
+a dependency image.
+
+28:43
+This is because to
+actually build VLogs,
+
+28:45
+We need a lot of libraries, and I'm
+not talking about just QDF and UCX.
+
+28:50
+We have a lot of dependencies
+from Thrift to some of the
+
+28:55
+meta-dependencies in VLogs.
+
+28:58
+And what this does, it builds
+a dependency that has all
+
+29:01
+of these libraries installed.
+
+29:03
+So now you can build actually
+the Presto worker in this
+
+29:08
+dependency image, right?
+
+29:10
+And then what you need to do is you
+need to tell it where to actually
+
+29:12
+put the data that it's gonna
+generate, and then you're gonna
+
+29:15
+hit the data generation, right?
+
+29:17
+So this data generation is
+actually gonna do a lot more stuff.
+
+29:21
+This is gonna actually generate
+the data on disk, is gonna...
+
+29:25
+It's going to run a Presto
+instance, a Presto Java instance,
+
+29:29
+and it's going to run statistics
+on this data, meaning it's going
+
+29:32
+to look at the individual data
+tables that it generated and it's
+
+29:36
+going to get column data, you know,
+because then the query scheduler
+
+29:40
+can make better decisions, right?
+
+29:43
+And then at the end of the
+day, you should have this
+
+29:46
+directory structure.
+
+29:47
+This is scale factor one,
+meaning it's a gigabyte of data.
+
+29:52
+And then you should be able to
+then start your Presto node.
+
+29:57
+Right, this is not a cluster,
+but it could be used to start
+
+29:59
+the cluster, right?
+
+30:00
+On an eight GPU node, we do
+it exactly the same way.
+
+30:02
+You just say eight workers, right?
+
+30:05
+And then you run the benchmark.
+
+30:07
+And then you run the benchmark,
+at the very end of the benchmark
+
+30:09
+run, you would get this table
+that actually looks at what's
+
+30:14
+my loop form runtime, what
+is my warm runtime, how many
+
+30:18
+iterations did I get, what's
+the geometric mean on this query.
+
+30:22
+So this is the table that we
+then process when we wanna
+
+30:26
+make nice charts like the
+previous chart, for example, right?
+
+30:30
+And on Presto UI, you would see
+
+30:34
+They're running queries and they're
+statistics executions, right?
+
+30:38
+So this should work out of the
+box for everybody, right, if
+
+30:41
+you have the prerequisites set up.
+
+30:44
+Now, as I said, on the right
+side, you see that if you
+
+30:49
+want to try this out, you
+can get all of this open source.
+
+30:52
+If you want to get this more
+in a commercial setting,
+
+30:55
+then you can sign up for
+our private tech preview.
+
+30:59
+This is currently on a sign-up
+basis for What's Next.data,
+
+31:04
+where we give you a commercially
+supported version of this,
+
+31:07
+with some caveats, as you
+can see this on AWS.
+
+31:10
+This is single node with multi-GPU,
+and it's gonna be available
+
+31:14
+in the June timeframe, right?
+
+31:16
+And we're targeting the general
+availability of GPU support
+
+31:19
+on WatsonX.data in the second
+half of this year, commercially.
+
+31:24
+But if you want to try this,
+either try it at home, as
+
+31:28
+we just described, or sign
+up for the tech preview.
+
+31:31
+I think it's really a new era
+of data processing, where you
+
+31:35
+can take previously something that
+took you half an hour, an hour,
+
+31:38
+And now, you know, throughout
+the year, we're going to make
+
+31:40
+it faster and faster.
+
+31:42
+And you'll be able to run
+this, and your agent's going
+
+31:45
+to run this in the end in seconds.
+
+31:49
+Thank you very much.
+
+31:56
+We have time for a
+couple of questions.
+
+31:58
+This is being recorded,
+so raise your hand.
+
+32:00
+I'll bring over the mic.
+
+32:02
+Speak loudly into your mic.
+
+32:06
+All right, I have
+great presentation.
+
+32:08
+I have two questions.
+
+32:10
+Number one, which portion of
+Presto stack runs on Nvidia CPU?
+
+32:16
+That's number one. Number two
+is, do you see all workloads
+
+32:21
+getting accelerated or there's
+some subset of workloads that
+
+32:24
+benefit and then you have
+some intelligent layer to kind
+
+32:26
+of decide that and accelerate them?
+
+32:32
+Yeah, maybe we can go back
+to the CPU question to the
+
+32:35
+diagram of the kind of software
+stack at the beginning.
+
+32:40
+So the orange and blue...
+
+32:44
+Layers are basically CPU host
+code, C++, with, and I think
+
+32:49
+the Presto worker doesn't
+have any Java at all, right?
+
+32:52
+Yeah, just C++.
+
+32:53
+Presto C++ worker.
+
+32:55
+So when we run it on Grace,
+the whole stack would run
+
+33:00
+like this middle chart here.
+
+33:02
+That'd be all on
+Grace or all on Vera.
+
+33:04
+We don't have numbers on Vera yet,
+but when we get access to it, we're
+
+33:08
+really curious to see what we see.
+
+33:11
+Even the Velox CUDIF operators,
+they use host code to trigger
+
+33:15
+all the GPU work through the
+CUDA runtime, like what kernels
+
+33:19
+are you going to launch.
+
+33:20
+That's still all host code.
+
+33:21
+CUDIF has a lot of host
+code in it as well.
+
+33:23
+So you need to have a
+
+33:26
+It helps to have a good CPU
+to orchestrate all the work
+
+33:29
+that's happening on GPU.
+
+33:30
+Normally, we'll run with four
+threads, four drivers on the
+
+33:34
+host side that are in charge
+of launching all the GPU work.
+
+33:37
+That tends to be kind of a
+sweet spot, two to four per GPU.
+
+33:40
+So the host side is really
+important as well.
+
+33:42
+So you're saying which parts
+are running on the AWS CPU?
+
+33:52
+This you can run on anything.
+
+33:53
+The CPU part, you can run on
+x86 or ARM or whatever, right?
+
+33:59
+The pure CPU part, it doesn't care.
+
+34:02
+As long as you can compile C++,
+you could run it on, right?
+
+34:06
+And for the second question,
+I guess, the second question
+
+34:09
+was whether what can be accelerated
+with everything on GPU, yes.
+
+34:13
+I think yes. I've not
+seen a workload that
+
+34:16
+would not benefit from
+GPU acceleration so far, right?
+
+34:21
+Now, whether this is 10x or 200x
+or 1,000x, that's different, right?
+
+34:26
+But everything benefits from
+running on a GPU when it comes
+
+34:29
+to data processing.
+
+34:31
+Yeah, thank you for
+that presentation.
+
+34:34
+One question I have is just on the
+lib, could you have side of things?
+
+34:39
+What sort of new development can
+we expect or that were part of this
+
+34:45
+work, if any, or in the next year
+coming up, what should we expect?
+
+34:50
+Yeah, that's great.
+
+34:51
+So speaking of CUDAF and work
+that directly contributed to this
+
+34:55
+and kind of what's coming next,
+
+34:58
+Yeah, so, you know, QDF has
+been already used in Polars
+
+35:01
+and Pandas and Spark, and
+we had all the primitives
+
+35:04
+that we needed to build this.
+
+35:05
+The big thing we didn't have is
+this Bellocs QDF operators space.
+
+35:10
+Those all had to be written.
+
+35:12
+And, you know, they were written
+in partnership, like Zoltan's
+
+35:17
+team that did a lot of work
+on the operator side as well.
+
+35:21
+Yeah, also to the question
+about what workloads might
+
+35:24
+not work well or be hard to
+run, user-defined functions
+
+35:27
+are part of the long tail of
+data processing that are difficult.
+
+35:31
+And one of the big features we're
+working on right now is better
+
+35:33
+JIT compiled kernels for that.
+
+35:35
+And if you can get a user-defined
+function that basically looks
+
+35:38
+like C++ code, or maybe a
+regex pattern, or some of these
+
+35:42
+other, you know, kind of standards,
+
+35:45
+Velox has its own UDF engine
+that we want to tie into.
+
+35:48
+So being able to JIT compile
+all of that to run well on the
+
+35:51
+GPU is a big part of what the next
+step in this project looks like.
+
+35:55
+Because once you start working
+on standard benchmarks, the
+
+35:58
+operator set you need is not
+that big to run it, and it's
+
+36:00
+nowhere near the size of the
+data processing world out there.
+
+36:04
+So JIT is a big part of the bridge
+to the rest of the long tail.
+
+36:08
+And maybe just, you know, one more
+example to this question, you know,
+
+36:12
+since QDF is inherently single GPU
+or built around single GPUs, when
+
+36:17
+we started doing the shuffle, one
+of the things we realized is that
+
+36:21
+if you're doing Parquet reading
+and shuffle at the same time, then
+
+36:24
+we get horrible performance, right?
+
+36:26
+And it took us a couple of
+months to figure out what to
+
+36:30
+change in QDF and in other NVIDIA
+libraries that QDF depends on.
+
+36:34
+To actually, you know, make
+them play nice together, right?
+
+36:38
+Because if we get that issues that
+you would not notice on a single
+
+36:41
+GPU, but when you actually combine
+it with other stuff running on your
+
+36:45
+GPU, it becomes noticeable, right?
+
+36:47
+And the QDF team and the NVIDIA
+team has been excellent at,
+
+36:50
+you know, fixing this up through
+the stack, right?
+
+36:53
+Because some of these changes
+actually, you know, go through
+
+36:56
+multiple libraries.
+
+36:57
+That QDF uses a library, that
+it uses another library in
+
+36:59
+the NVIDIA ecosystem, right?
+
+37:04
+That's all we have time for today.
+
+37:06
+Let's thank our
+speakers, Gautam and Greg.
+
+37:10
+Thank you.
+

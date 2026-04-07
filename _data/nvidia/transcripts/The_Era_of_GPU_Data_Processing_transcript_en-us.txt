@@ -1,0 +1,2433 @@
+Session: https://www.nvidia.com/en-us/on-demand/session/gtc26-s81769/
+
+Transcript Powered by AI
+
+The Era of GPU Data Processing: From SQL to Search and Back Again
+
+
+00:15
+Right, are we live?
+
+00:18
+Awesome, all right, thank
+you, you know, go ahead.
+
+00:23
+Awesome, this is the first
+time that Todd and I have
+
+00:26
+ever done a talk on stage together.
+
+00:28
+I was inspired by Todd, and
+most of RAPIDS was based on
+
+00:34
+Todd's early work on GPU databases,
+so it's an honor and a pleasure
+
+00:37
+of mine to finally do this.
+
+00:41
+Josh Patterson created RAPIDS,
+as well as CEO of Voltron
+
+00:45
+data, and Voltron data built this
+engine called Theseus, which we
+
+00:50
+will talk more about in the talk.
+
+00:52
+It's a very large-scale, efficient
+GPU query engine.
+
+00:55
+Hi, everyone. Todd Mostak, and
+it's an honor to be on stage with
+
+00:59
+the one and only Josh Patterson,
+founder of RAPIDS, Voltron.
+
+01:03
+So, yeah, we've been both in
+this space for a long time,
+
+01:07
+for me, over a decade.
+
+01:09
+I founded MapD out of grad
+school back in 2013.
+
+01:12
+It stood for Massively
+Parallel Database.
+
+01:15
+It was one of the first GPU
+accelerated databases and also
+
+01:17
+had a visual analytics platform.
+
+01:19
+That became OmniSci, became
+Heavy AI, same company.
+
+01:22
+And then recently we joined
+NVIDIA last summer.
+
+01:25
+So thrilled to be here and
+helping lead the charge to
+
+01:28
+accelerate data processing on GPUs.
+
+01:35
+So we'll kick off here with
+kind of a motivational slide.
+
+01:39
+And you heard this if you
+were listening to Jensen's
+
+01:41
+keynote this morning.
+
+01:43
+There's this idea that, of course,
+historically, there were a variety
+
+01:47
+of consumers of data, mostly human
+users, who were either consuming
+
+01:52
+kind of reports or dashboards,
+either static or interactive.
+
+01:55
+There were some data
+mining use cases.
+
+01:57
+Of course, there were data
+science use cases.
+
+01:59
+But now we have something new
+on the block, and that's agents.
+
+02:02
+So you have these data analytic
+agent workflows, and I think we're
+
+02:07
+just starting to see this with
+things like Texas SQL, but this
+
+02:10
+is going to become a really big
+thing over the coming years that's
+
+02:13
+going to put tremendous pressure on
+the data infrastructure that needs
+
+02:16
+to feed these agents with data to
+give them context and ground truth.
+
+02:20
+And so whether it's on the
+structured side where you
+
+02:23
+have structured documents,
+parquet, CSVs, JSON, feeding
+
+02:26
+into relational databases being
+pulled with the data's being pulled
+
+02:31
+with the query engine, or it's
+on the unstructured side of kind
+
+02:34
+of docs, images, video being pulled
+into vector databases, embedded and
+
+02:39
+pulled into vector databases, and
+then you have vector search on top.
+
+02:43
+If you can't do that performantly,
+that's going to become a
+
+02:46
+bottleneck, preventing either if
+there's a human in the loop asking
+
+02:50
+questions of the data of the agent,
+it's going to make that agent slow
+
+02:54
+and it's going to make insights
+slower, or if you have an agent
+
+02:57
+that's actually just mining for
+data, it could be a long-running
+
+02:59
+agent that could run overnight,
+it's also going to slow it down
+
+03:02
+and it's going to make costs go
+up because you're bottlenecking on
+
+03:06
+Something that will make the
+whole pipeline go slower.
+
+03:11
+So we need data access with
+low latency, low costs, and
+
+03:15
+with massive scalability.
+
+03:18
+So one of the things that I love is
+kind of grounding all this in data.
+
+03:22
+And so there was a chart where they
+showcase ML system flops over time.
+
+03:29
+And right around 2014, you
+see this spike where systems
+
+03:33
+move to GPUs, they start using
+a lot more compute, they start
+
+03:36
+using a lot more data.
+
+03:37
+And if you look close enough,
+you actually see this like
+
+03:40
+second uptick around 2020 as we
+start to advance into more complex
+
+03:46
+neural networks and AI models
+and then if you take that you
+
+03:50
+take the queries per hour per CPU
+socket it's a very specific thing
+
+03:56
+and you overlay it it basically
+was a continuation of that first
+
+03:59
+line and so life before GPUs for AI
+
+04:05
+was all CPU-based, and that's
+where TPC-H winners have
+
+04:09
+been historically.
+
+04:10
+And so what you're
+seeing is this gap.
+
+04:12
+If you need to process data and
+then train this data, you're
+
+04:16
+training on a lot more hardware
+and on a lot larger data sets
+
+04:20
+than you can process meaningfully.
+
+04:24
+And to show the cases in a
+slightly different way, we look
+
+04:27
+at TPC-H performance over time.
+
+04:29
+This is the historical winner,
+and their price per query
+
+04:36
+metric, KQ, pH, H. And you
+look at that over the last five
+
+04:42
+years, what you see is stagnation.
+
+04:45
+It really hasn't changed at
+most scale factors at all.
+
+04:50
+And if you look at a specific
+database, like SQL Server,
+
+04:53
+you'll see that you see these
+modest gains every two years.
+
+04:57
+And this basically
+refreshes of CPU cycles.
+
+05:00
+And so 20%, 15%, you're not seeing
+these kind of mega gains that we
+
+05:04
+used to see in database performance
+because Moore's Law is ending.
+
+05:12
+And that's where I kind of
+think, I'd say there's a few
+
+05:15
+approaches to this problem.
+
+05:17
+One is you probably heard
+from the keynote this morning,
+
+05:19
+we talked more about Vera, which is
+our new agentic CPU architecture.
+
+05:24
+Obviously very good for agentic
+use cases where you need sandboxes
+
+05:28
+and things where you can compile
+code and do all this kind of stuff.
+
+05:32
+But also it's very good, some
+of the same attributes that
+
+05:35
+make it good for kind of AI
+sandbox use cases make it good for
+
+05:39
+data analytics and data processing.
+
+05:41
+Vera has a massive amount of memory
+bandwidth, I think 1.2 terabytes a
+
+05:48
+second, has a ton of cross-section
+bandwidth so you don't get
+
+05:51
+that new locality you often do
+with other multi-socket machines,
+
+05:56
+and it has a ton of bandwidth
+per core, so legacy systems that
+
+06:00
+may not be able to fully saturate
+aren't fully multi-threaded.
+
+06:03
+It can get up to, was it 14
+gigabytes a second per core,
+
+06:07
+which is kind of unheard of.
+
+06:09
+That's actually 3x, kind of
+the x86 ARM standard.
+
+06:13
+And it's also 2x more power
+efficient, which means, and
+
+06:16
+a data center also, that more power
+can go to GPUs if you have them.
+
+06:20
+So this makes for really good
+
+06:22
+This is really good for data
+analytics use cases.
+
+06:25
+And we've been working
+with partners to see,
+
+06:28
+hey, take your database.
+
+06:29
+You don't have to do any
+recompiling or anything as long
+
+06:31
+as you can run on ARM and basically
+see the benefits immediately.
+
+06:35
+And these are early engineering
+samples, so the results could
+
+06:38
+change or get better.
+
+06:39
+But Starburst, for example,
+Starburst is the main vendor
+
+06:43
+behind kind of leading open
+data Lakehouse Trino, which
+
+06:46
+is a cousin of Presto, which
+was spoken about this morning.
+
+06:50
+They actually ran on Vera
+and found 2.7x for x86 and
+
+06:58
+I think 3.1x for Epic Zen
+5 Turin in terms of CPU efficiency.
+
+07:04
+And it dramatically dropped
+their TPC-DS times.
+
+07:06
+These are TPC-DS 1TB.
+
+07:08
+I believe this is the full suite.
+
+07:11
+So you see you get between
+2.5x and 3x improvements.
+
+07:15
+So that's amazing. You do flip
+a switch and you get instantly
+
+07:18
+better performance and better
+
+07:20
+You know, also
+performance per watt.
+
+07:24
+Here is Redpanda on Vera.
+
+07:27
+Redpanda is a Kafka company.
+
+07:29
+And so think about PubSub,
+how you send data from one
+
+07:33
+system to the other.
+
+07:33
+They're seeing 5.5x better p99
+latency on Vera versus AMD.
+
+07:41
+And basically, a 73% higher
+
+07:46
+You know, TCO and throughput
+for Vera over AMD as well.
+
+07:49
+One of the really interesting
+things about the bottom chart
+
+07:52
+is typically as the number
+of threads grow, you don't see this
+
+07:58
+kind of increasing performance,
+which you see with the Vera.
+
+08:00
+So actually, the more
+threads you use on Vera,
+
+08:03
+it's actually more performant
+versus what we see with x86.
+
+08:09
+And so I don't think anyone
+here thought that Todd and
+
+08:13
+I would talk about a CPU as
+we kick off our talk, but
+
+08:17
+Vera is pretty impressive.
+
+08:20
+Yeah, and last but not least,
+I don't know if I ever thought
+
+08:23
+I would be talking about Kinetica,
+which actually happened to
+
+08:25
+be our biggest competitor
+when we were MapD heavy.
+
+08:29
+But great company, great software.
+
+08:31
+And they also found, again,
+this 2.5 to 3x improvement
+
+08:35
+over AMD, Epic for kind of in
+memory, I think this was on their
+
+08:39
+CIDI benchmark, in memory SQL.
+
+08:42
+So again, significant benefits
+across the board with very little
+
+08:45
+effort on behalf of the partner.
+
+08:51
+So we're quickly, before we
+talk about structured data
+
+08:54
+processing, we want to talk
+about search or unstructured data.
+
+08:59
+So the unstructured data system
+is massive, right?
+
+09:02
+So 80 to 90% of an enterprise's
+data is actually unstructured.
+
+09:07
+However, only 10% of that data
+
+09:11
+Give or take, it depends
+on the organization, is
+
+09:13
+actually being indexed properly
+and used downstream.
+
+09:18
+And so we've been pushing on
+this, and obviously there's
+
+09:20
+a variety of vector databases,
+but we have something, a library
+
+09:23
+called QVS, which Jensen talked
+about this morning.
+
+09:26
+And QVS can sit under a wide
+variety, basically most of
+
+09:30
+the open vector databases
+in the ecosystem, whether it's
+
+09:33
+Milvus, Elasticsearch, OpenSearch.
+
+09:36
+Going into the cloud workflows,
+we've done a lot of stuff with AWS
+
+09:38
+OpenSearch and seen them speed us,
+particularly on the indexing side,
+
+09:44
+up to the storage vendors, and then
+up to the end customers, people
+
+09:50
+like RBC and Uber, who have tons of
+documents that they have to index.
+
+09:55
+And so what you get with QVS,
+and it's exciting, is not
+
+09:59
+only, of course, it can speed
+up search, it can actually
+
+10:02
+speed up the pre-processing of your
+data, so the things like actually
+
+10:06
+reducing the dimensionality of the
+data, doing pre-clustering, which
+
+10:10
+will lead to better indexing, it
+can lead to much faster indexing,
+
+10:14
+and you'll see in the next
+slide, over 10x in many cases on a
+
+10:18
+And it can lead to faster
+online search, so for things
+
+10:22
+like RAG or recommender systems,
+as well as kind of data mining
+
+10:26
+or deep search where you have
+to do bulk search and you
+
+10:30
+might even use it for things like
+clustering downstream analytics.
+
+10:33
+QVS can accelerate all of these
+workflows and it's drag and drop
+
+10:37
+into your favorite vector database.
+
+10:40
+And the fruits of this are
+pretty significant.
+
+10:43
+And this just shows as you
+fix for, you know, indexing
+
+10:46
+time depends on the level
+of accuracy that you need.
+
+10:49
+But comparing common HNSW
+lib with Kagura, which is
+
+10:54
+a GPU optimized kind of graph.
+
+10:56
+Algorithm for indexing vectors.
+
+10:59
+As you fix the accuracy rate,
+actually the benefits go up
+
+11:04
+all the way up to about 13x.
+
+11:05
+And this is actually on a
+cheaper instance.
+
+11:07
+You can see $1.54 versus $1.21.
+
+11:10
+So significant benefits.
+
+11:14
+So now we've gotten through Vera.
+
+11:17
+We've talked about vector search.
+
+11:19
+Here are the things that I
+love to talk about.
+
+11:20
+Big data.
+
+11:22
+This chart, if you basically
+think about the complexity
+
+11:26
+of data processing, somewhere
+between n log n and n squared, and
+
+11:30
+so let's just say n 1.3 time log
+n, and you then scale this based
+
+11:37
+on where users spin their queries.
+
+11:40
+So 90% of users, they are below
+one terabyte in data set size.
+
+11:45
+And that's that kind of first
+wedge, and you add in the
+
+11:48
+1 to 3 and the 3 to 10, that's
+really only representing about
+
+11:52
+10 to 15 percent of compute.
+
+11:54
+With the rest of the compute
+is spent is when these problems
+
+11:57
+are larger than 10 terabytes,
+and even if 1 in 200 problems
+
+12:02
+were larger than 100 terabytes,
+that would still eat up almost
+
+12:06
+half of a cluster's resources.
+
+12:08
+And so while most people
+do not have very very
+
+12:12
+large-scale problems,
+
+12:13
+Large-scale problems require a
+lot of compute today to solve.
+
+12:18
+I love this quote from Airbnb.
+
+12:20
+They said that very few
+large queries could take
+
+12:22
+a majority of resources.
+
+12:24
+2% of their queries basically eat
+up 92% of their cluster resources.
+
+12:33
+And so this is the impetus for us
+to think about QDF differently.
+
+12:38
+QDF started off as basically
+a data frame library.
+
+12:42
+It was this pandas-like experience,
+and then we said instead of
+
+12:44
+being pandas-like, let's be
+pandas, so you had pandas-QDF.
+
+12:47
+And then we had Dask QDF,
+Spark RAPIDS, and we slowly
+
+12:51
+started iterating and having these
+drop-in replacements for these
+
+12:55
+data science libraries with QDF.
+
+12:57
+What if we started building
+a set of libraries that were
+
+13:01
+still QDF, but more targeted
+to large-scale data systems, going
+
+13:05
+after databases, data lakes, etc.?
+
+13:08
+And that's what we've done.
+
+13:10
+We've taken QDF, and now
+we're plugging it into DuckDB,
+
+13:13
+Presto, Trino, Spark, and
+we're going to cascade this
+
+13:17
+through the whole ecosystem.
+
+13:19
+As well as a bunch of other
+libraries that fall under
+
+13:21
+the KUDEF umbrella.
+
+13:22
+And so things about memory
+management, being able to
+
+13:25
+read from different file systems
+very effectively, distributed
+
+13:28
+communications libraries for
+asynchronous communications,
+
+13:32
+prefetching data, all these
+things are going to get pushed
+
+13:35
+into this KUDEF umbrella to help
+people build data systems faster.
+
+13:39
+So we know that GPUs can
+accelerate data processing.
+
+13:42
+Now we're going to accelerate
+the development cycles of the
+
+13:45
+developers so they can build these
+large-scale systems even faster.
+
+13:51
+And so the first case in point of
+that is the partnership that we've
+
+13:54
+done with IBM to accelerate VELOX,
+which is an open source query
+
+14:00
+engine out of out of Meta that
+can be used to accelerate Presto,
+
+14:03
+Spark or even Greenfield engines.
+
+14:05
+And you probably saw this in
+Jensen's keynote this morning.
+
+14:08
+And I don't want to steal
+too much of a thunder, but
+
+14:10
+I also give a quick.
+
+14:12
+quick advertisement for the
+talk right after this in this
+
+14:14
+room it's going to be greg
+and zoltan here greg from nvidia
+
+14:18
+from my team and zoltan from ibm
+there you go who've been driving
+
+14:21
+this this effort to uh build
+out presto on on gpu and so you
+
+14:26
+saw the the the keynote the example
+was nestle early customer of this
+
+14:30
+seeing they they've dropped their
+
+14:33
+There are times to run a really
+gnarly query that hits like
+
+14:36
+44 tables and has 200-something
+steps from 15 minutes to 5 minutes.
+
+14:41
+It's an orders-to-cash query
+with 83% cost savings and they're
+
+14:45
+just getting started, right?
+
+14:46
+They want to actually move more
+and more of their workloads onto
+
+14:49
+Presto, GPU, and Watson X data.
+
+14:52
+And so Presto, you may have
+heard of it, again, arose
+
+14:56
+out of Meta, a very popular
+open source engine, also related
+
+14:59
+to Trino, fully Apache too.
+
+15:04
+It was open sourced in 2013,
+but then more recently there's
+
+15:09
+been work in the last five
+or six years to add the Velux
+
+15:13
+vectorized execution engine,
+so turn the workers from Java
+
+15:16
+workers to C++ workers, the
+coordinator is still Java.
+
+15:20
+And then more recently, in
+the last year, year and a
+
+15:22
+half, we've been working closely
+with IBM to accelerate the
+
+15:27
+core of Velux using QDF, and
+so it becomes GPU-accelerated.
+
+15:31
+And we've seen immense speed-ups
+in this, and it's pretty exciting,
+
+15:34
+so we'll talk through that
+in a minute, and again, you'll
+
+15:36
+get more detail in the talk
+right after this.
+
+15:39
+So, you know, if you take Presto
+Java is not a very fast engine.
+
+15:43
+This is one terabyte, so not
+even a big scale.
+
+15:47
+Yeah, 2,500 seconds, which may
+be like 40 minutes or something.
+
+15:50
+The with Velox T++ drops to
+498 seconds, so 5x.
+
+15:55
+We have it running on an 8xA100
+system and actually Nestlé
+
+15:59
+is using A100 systems, which
+goes to show you that these
+
+16:02
+GPUs continue to have life.
+
+16:03
+They do have NVLink domain
+between the eight GPUs on
+
+16:06
+a DGX class machine.
+
+16:08
+And then finally, we've been doing
+some work as part of what we call
+
+16:11
+Operation Clean Sweep, OCS, inside
+NVIDIA to get kind of the best
+
+16:15
+performance and win the benchmarks.
+
+16:17
+So now we're at 23 seconds,
+and I think this will continue
+
+16:21
+to drop on a half DGX with B200s.
+
+16:23
+And we'll talk more about
+that in a little bit.
+
+16:26
+And then finally, we just
+hit this last week, but we
+
+16:30
+got to TPC-H 30 terabytes on
+an 830, which is a pretty sizable
+
+16:35
+kind of work loop, on 8 NVL nodes,
+so 8 of the 18 NVL72 GB200 nodes.
+
+16:42
+We got to under 500 seconds, but
+we're going to keep pushing this.
+
+16:44
+Our eventual goal is to get sub-150
+seconds and beat kind of the world
+
+16:48
+record Exasol on the full rack.
+
+16:51
+We're also attaching this to
+IDM Spectrum storage, and we'll
+
+16:54
+talk about this in a little bit.
+
+16:55
+So we have over 5 terabytes
+a second of bandwidth off
+
+16:58
+the storage, 10 petabytes.
+
+17:00
+It's pretty exciting. And then
+feeding in, we have NVLink across
+
+17:03
+the whole domain for shuffle.
+
+17:04
+So this is why it's so performant.
+
+17:07
+So again, don't leave the room, or
+maybe you have to leave the room
+
+17:10
+and then check back in, I don't
+know how this thing works this
+
+17:13
+year, but Greg, Zoltan, they have
+a great talk after this, really
+
+17:17
+excited about them, and Greg, thank
+you for all your pushing on Velux.
+
+17:23
+DuckDB.
+
+17:24
+Hannes, the creator of DuckDB,
+is landing in a few minutes.
+
+17:30
+He will be here tomorrow
+at Bobby and Professor
+
+17:33
+Zhengyao's talk on DuckDB.
+
+17:36
+But I wanted to give a quick
+overview of DuckDB.
+
+17:40
+DuckDB, we're seeing it kind
+of all over the place.
+
+17:42
+A lot of ISVs are embedding
+DuckDB into their system.
+
+17:45
+We see deepseek having DeepPond,
+which is their distributed petabyte
+
+17:48
+scale way of doing analytics
+with DuckDB as the core engine.
+
+17:53
+Vast Data recently announced
+their GPU acceleration of
+
+17:56
+DuckDB in concert with us.
+
+17:58
+Snowflake, Databricks all
+use DuckDB in their system.
+
+18:01
+And as you can see, DuckDB
+has kind of been one of the
+
+18:04
+leaders on ClickBench, is wildly
+growing as an open source database.
+
+18:09
+And we've been working on
+GPU acceleration of this.
+
+18:12
+Earlier this year, we had number
+one on the hot run with DuckDB.
+
+18:18
+Now, at GTC, we have number
+one and number two.
+
+18:22
+So one on a GH200 and on a P5
+instance on AWS, and number
+
+18:30
+one on the combined run as well.
+
+18:33
+And so basically a 7x TCO
+with DuckDB on ClickBench.
+
+18:39
+We also have some really
+exciting TPC-H numbers.
+
+18:43
+If you're a TPC-H nerd, like
+I am, you follow the TPC-H
+
+18:46
+leaderboard and you know all
+the numbers by heart.
+
+18:48
+We can't make official comparisons
+because that's illegal, but
+
+18:51
+if you know what the best time
+ever was for a power run, you will
+
+18:54
+know that 21 seconds is below that.
+
+18:57
+And so 21 seconds, TPC-H, scale
+factor 1K, on a single GB300.
+
+19:04
+One GPU, 21 seconds, one terabyte.
+
+19:07
+We're really excited about that.
+
+19:09
+The Transwarp team out of
+China and ISV, on TPC-DS,
+
+19:17
+150 gigabytes, on a single
+GB300 GPU as well, I'm getting
+
+19:22
+26x faster than DuckDB, being
+able to do the full TPC-DS sweep.
+
+19:28
+And so we're seeing a lot of
+people adopting DuckDB and QDF and
+
+19:32
+pairing them in new and innovative
+ways to accelerate databases.
+
+19:36
+And we have a lot more
+to talk about tomorrow
+
+19:38
+at Bobby and Jingyao's
+talk on accelerating DuckDB.
+
+19:45
+All right, so a few more
+things in this section.
+
+19:48
+So Heavy AI, obviously, was
+the founder and CEO of Heavy
+
+19:51
+AI, now part of NVIDIA.
+
+19:53
+So we will actually be open
+sourcing our full platform
+
+19:57
+late this spring, or late
+towards summer, late Q2.
+
+20:01
+And so that includes the
+full core database with
+
+20:05
+LLVM compilation engine.
+
+20:08
+Automatic memory caching has
+a Vulkan in-process rendering
+
+20:13
+engine, because we always
+did a lot of interactive visual
+
+20:15
+analytics, you may have seen
+it in some past UTC keynotes.
+
+20:19
+Really good for geospatial
+and time series data, but
+
+20:21
+also fast on kind of core
+OLAP query workloads as well.
+
+20:25
+And yeah, we're excited about
+this, so it'll be the back end,
+
+20:29
+the front end, you can use it just
+as a database or the full stack.
+
+20:32
+And, you know, a lot of our
+customers and partners still
+
+20:35
+continue to use this every
+day in prod, so they're excited
+
+20:38
+about it being open source.
+
+20:41
+Finally, breaking
+the memory barrier.
+
+20:46
+We didn't rehearse this, so
+we're basically doing this live.
+
+20:49
+I thought you were going to
+share the TCH 30 terabyte numbers
+
+20:52
+after this, but... Oh, sorry.
+
+20:53
+No, no, that's good.
+
+20:55
+He basically teed me up.
+
+20:58
+Loading from Theseus. Theseus
+was our engine in Voltron data.
+
+21:02
+It's a really scalable, efficient
+engine, and typically, people
+
+21:06
+think about GPUs and GPU memory.
+
+21:08
+You can limit a problem to
+the size of GPU memory.
+
+21:11
+Well, we were able to do TPC-H
+100 terabytes on two DGX A100
+
+21:17
+640 gigabyte servers, and this
+was with 200 gigabit Infiniband
+
+21:21
+NICs, so I think 200 gigabytes
+per node, and GPU direct storage.
+
+21:28
+We learned some really, really
+important things from doing this.
+
+21:31
+One, we can do TPC-H 100 terabytes
+on 1.25 terabytes of GPU memory.
+
+21:36
+Nearly, you know, ADX the,
+or over ADX the amount of
+
+21:41
+data through a very, very efficient
+hierarchical memory management.
+
+21:47
+The other thing that we realized
+is GDS is extremely powerful.
+
+21:50
+GPU direct storage, RDMA,
+remote direct memory access.
+
+21:54
+And so we could take data from
+storage, move it directly to the
+
+21:57
+GPU faster than we could actually
+get data from system memory.
+
+22:01
+This was a feature of the
+HTX system, and because of
+
+22:04
+the topology of the system,
+
+22:07
+GDS really accelerates what we can
+do, and it accelerates the scale.
+
+22:11
+So you think about system
+memory as this limited thing.
+
+22:15
+On a cluster, maybe you
+might have 15 to 20 terabytes
+
+22:18
+of system memory.
+
+22:19
+I now have petabytes of storage,
+and if I can access storage
+
+22:23
+as fast as I can access system
+memory, that's interesting.
+
+22:26
+If I can access this petabytes
+faster than system memory,
+
+22:30
+it really opens up the door
+for petabyte scale problems
+
+22:33
+because your limit now is
+the size of your storage system.
+
+22:35
+So this is why we're really
+excited about really fast
+
+22:38
+storage systems and converging
+east-west and north-south networks
+
+22:43
+together with GPU direct storage.
+
+22:49
+And so a few more
+lessons from Theseus.
+
+22:52
+Asynchronous communication.
+
+22:54
+The more things that we can
+overlap, having things that
+
+22:56
+are doing compute while we're
+moving data around in the
+
+22:59
+background was really beneficial.
+
+23:01
+And so having this one big mega
+monolithic executor, we realized
+
+23:04
+it was really hard to do that.
+
+23:06
+So what we did was we had a
+bunch of little executors.
+
+23:09
+So it's kind of like an agent
+swarm, but for database compute.
+
+23:13
+So we had compute executors
+that just did compute.
+
+23:16
+We had memory executors that
+were just moving things up
+
+23:17
+and down the memory hierarchy.
+
+23:19
+We had some executors that
+were just preloading data,
+
+23:21
+ergo taking it from a compressed,
+encoded format and transferring
+
+23:24
+it to another format.
+
+23:26
+And then a networking executor
+moving things around.
+
+23:29
+This, plus GPU direct
+storage, really allowed
+
+23:31
+us to scale to really,
+really, really large problems.
+
+23:34
+Next slide.
+
+23:36
+Because of this,
+
+23:38
+Now with Todd here and all of
+his GPU database experience
+
+23:41
+and me back here with all
+of my experience continuation,
+
+23:45
+we are building a new reference
+design for large-scale computing.
+
+23:50
+And so we built this
+really massive cluster.
+
+23:53
+And what we did is we built
+it on one fabric.
+
+23:56
+So the north-south, the
+east-west, they're one fabric
+
+23:58
+connected to storage so
+we can really maximize the
+
+24:01
+IO of all these different types.
+
+24:03
+And so there's a lot of
+nomenclature here, but essentially
+
+24:05
+we have one rack of GB200, we have
+nine DGX B300s, we have 10 RTX Pro
+
+24:09
+6000 nodes, and 20 RTX 4500 nodes.
+
+24:18
+If you want to know more details
+about this cluster, I could
+
+24:19
+talk for days about it, so
+please find me in the conference
+
+24:23
+and I'll be happy to share more.
+
+24:28
+Yeah, and so why, like, so this
+cluster will have a variety of
+
+24:31
+different hardware, like we said,
+we'll have 4,500 clusters, 6,000,
+
+24:34
+HTX B300, but we're particularly
+excited about the GB200NVL72
+
+24:41
+rack that we will have in this
+cluster, and I spoke a little bit
+
+24:44
+about it, I alluded to it with the
+TPC-H 30TB benchmarks, which we're
+
+24:48
+only running on a portion of it.
+
+24:49
+So far.
+
+24:50
+But the exciting thing about
+why would you use something
+
+24:53
+like an NVL72, which you would
+conventionally think is an AI
+
+24:55
+supercomputer, for data analytics?
+
+24:58
+Well, there's a few reasons.
+
+24:59
+One is if you keep your data within
+one rack, right, and I think 99.9%
+
+25:05
+of problems should be able to fit
+within a rack, and if that's not
+
+25:08
+big enough, you can go to the GB300
+or you can wait for Vera Rubin,
+
+25:11
+which will have even more memory.
+
+25:13
+Then you can actually do all your
+east-west traffic, so you can
+
+25:17
+do all the traffic in between GPUs,
+the shuffle, which as you scale out
+
+25:21
+becomes increasingly a bottleneck
+in typical analytic systems.
+
+25:26
+You can do that over NVLink.
+
+25:27
+And so, what is it?
+
+25:28
+It's 1.8 terabytes?
+
+25:32
+Between each of the GPUs, and
+they'll be faster, obviously,
+
+25:35
+in the next generation NVLink
+that will be on Ruben.
+
+25:39
+So you can do all
+your shuffle there.
+
+25:41
+And then your north-south
+you can use for storage.
+
+25:43
+And in fact, you can repurpose
+the... So you have two north-south
+
+25:47
+NICs, typically, so Bluefield.
+
+25:49
+Then you have four
+CX7s, CX8 for GB300.
+
+25:52
+You can actually repurpose those
+to actually make it all north-south
+
+25:56
+and hit your fast storage, i.e.
+
+25:59
+the IBM Spectrum-scale
+storage that we have.
+
+26:01
+So we're looking at pulling
+3, 4, 5 terabytes a second
+
+26:04
+off the storage rack.
+
+26:06
+And then you can separate your
+concerns so that you don't have
+
+26:08
+to worry about overlap about...
+
+26:10
+IO for shuffle, overlapping
+IO for pulling from storage,
+
+26:14
+which is also exciting.
+
+26:15
+So just to echo what you said
+about NVLink, basically 7X
+
+26:18
+the performance for GPU to
+GPU shuffling, and then you
+
+26:21
+have a completely free east-west
+and north-south network for IO.
+
+26:25
+And so, as you all
+know, IO is king.
+
+26:28
+When we first started with this
+cluster, the orange bars were what
+
+26:33
+a traditional system would have,
+just only using north-south for IO.
+
+26:39
+And so we swapped the I.O.
+
+26:41
+network to the east-west,
+and we got decently better
+
+26:45
+performance, but it wasn't
+enough to really write home about.
+
+26:51
+And we couldn't get both
+the north-south and the
+
+26:52
+east-west working together
+because it's actually a
+
+26:54
+really hard networking challenge.
+
+26:56
+And so if you were at first like,
+you know, Josh, I don't really know
+
+27:00
+about this whole east-west I.O.
+
+27:03
+Next slide.
+
+27:07
+Working with our partners,
+what we realized is there
+
+27:08
+was a NUMA problem.
+
+27:10
+When you have a NIC on one NUMA
+talking to system memory on the
+
+27:13
+other NUMA, you're bounce buffering
+in this very weird way on a GP200,
+
+27:17
+and it actually reminded one of our
+networking architectures of some
+
+27:21
+of the problems that GDS overcomes.
+
+27:23
+So then we worked with folks
+at IBM on Spectrum Storage.
+
+27:26
+We use their GP Direct Storage
+version on a system that doesn't
+
+27:30
+have GP Direct Storage because
+there's no PCIe switch,
+
+27:33
+And what it did is it basically
+gave NUMA locality to the NIC and
+
+27:37
+where the data was being dumped.
+
+27:38
+And so now you see that blue bar
+just shoot up really, really high.
+
+27:43
+And so now we're getting
+roughly 3.2 terabytes per
+
+27:49
+second on a full rack.
+
+27:51
+And if we then add back in
+the north-south, which is
+
+27:54
+our next stage of engineering,
+
+27:56
+We'll be pushing four terabytes
+per second on a single rack.
+
+28:01
+And so if you go back, 1.25
+terabytes could do 100 terabyte
+
+28:04
+problems, and a GB200 has
+288 gigabytes per GPU, roughly
+
+28:09
+a terabyte per server.
+
+28:12
+There's 18, that's 18 terabytes.
+
+28:13
+We do 18 times 100 terabytes,
+so two petabyte queries.
+
+28:19
+If you have queries bigger
+than two petabytes, well,
+
+28:22
+then we have a Vera Rubin
+system, which will have 144 GPUs.
+
+28:25
+And so now we can now push that
+basically to five petabytes.
+
+28:29
+If you have a problem bigger
+than five petabytes, please
+
+28:31
+come and see me, and we will
+help you work out a solution.
+
+28:34
+And if anyone's familiar with
+like the CPU clusters that
+
+28:37
+you need to run query workloads,
+even in the hundreds of terabytes,
+
+28:39
+usually you're talking like
+hundreds of nodes, right?
+
+28:42
+And so the fact that you can
+do this all in one rack with
+
+28:44
+a lot less power, with a lot
+less overhead of administering it,
+
+28:48
+it's pretty significant, I think.
+
+28:50
+So that's it. We're super
+excited and we're gonna open
+
+28:52
+it up for questions.
+
+29:01
+The session is being recorded,
+so I would ask you to raise your
+
+29:05
+hand, I'll bring over the mic, and
+speak your question into the mic.
+
+29:09
+My question was on
+application compatibility.
+
+29:12
+Can we take workloads that are
+written for multiple stacks
+
+29:16
+and will it run as is?
+
+29:18
+I mean, do they have to make any
+changes to get these benefits?
+
+29:23
+That's a great question.
+
+29:24
+Historically, the
+answer would be yes.
+
+29:27
+There's two things that
+are changing this.
+
+29:30
+LLMs and things like substrate,
+these portability layers.
+
+29:36
+And so one of the things that we're
+seeing is this great decoupling
+
+29:38
+of APIs and their compute engines.
+
+29:40
+And so through things like DBT
+and SQL Glot, and there's a bunch
+
+29:45
+of libraries now where I can take
+Spark SQL and run it on DuckDB.
+
+29:49
+I can take the DuckDB API and
+run it on Presto or Trino.
+
+29:52
+And so you're seeing this
+already, plus with how LLMs
+
+29:55
+are very quickly rewriting
+code to target different engines.
+
+29:59
+One of the things that, you
+know, Todd and I believe very
+
+30:01
+heavily and we're investing
+in at NVIDIA is building this
+
+30:04
+kind of agentic router where
+basically we can take queries.
+
+30:08
+Optimize the query and then
+route it to the right engine
+
+30:10
+that it needs to run on.
+
+30:12
+We're still in the very early days
+of this, but the goal is, in the
+
+30:16
+very near future, people don't even
+have to rewrite queries at all.
+
+30:19
+They can just take Java queries
+and run them on these really
+
+30:22
+high-end GPU clusters in a
+fraction of the time and not have
+
+30:28
+to worry about rewriting a query
+from one language to the other.
+
+30:31
+Very great question. This
+question is about the contribution
+
+30:35
+for each factor that
+
+30:37
+Can you rank them from the
+importance of the most important
+
+30:40
+to at least, for example,
+the network bandwidth, memory
+
+30:45
+bandwidth, and the compute
+power versus, let's say, the,
+
+30:51
+I would say, 70, for example?
+
+30:55
+That's a great question.
+
+30:57
+I think that's something we're
+actively trying to figure it out.
+
+30:59
+You guys did a lot of testing.
+
+31:00
+Well, Sean? We did a lot
+of testing on this.
+
+31:02
+Let me start off.
+
+31:06
+If you're in memory, like
+heavy AI was, or DuckDB or
+
+31:11
+some of these other systems,
+you have different trade-offs.
+
+31:13
+I think interconnect bandwidth
+matters a lot more for
+
+31:15
+in-memory systems.
+
+31:17
+Memory bandwidth, yeah.
+
+31:18
+Memory bandwidth and interconnect
+bandwidth between the CPU
+
+31:20
+and GPU if you want to spill.
+
+31:22
+When you get into distributed
+systems, your IO bandwidth
+
+31:25
+matters a ton, as well as
+your GPU-to-GPU communication,
+
+31:28
+having NVLink and NVSwitch.
+
+31:31
+In both cases, what you notice
+is we didn't say that the
+
+31:33
+GPU flops matter.
+
+31:36
+And largely, I think the
+best system I've ever seen
+
+31:39
+only could hit about 30%
+to 40% GPU utilization from
+
+31:41
+a compute standpoint, but
+could hit 100% utilization
+
+31:44
+of the memory bandwidth.
+
+31:45
+And so memory bandwidth and I.O.
+
+31:48
+bandwidth are typically king.
+
+31:49
+It depends on where and what
+type of problem you have.
+
+31:52
+Is it an in-memory problem?
+
+31:53
+Is it your in-memory bandwidth?
+
+31:55
+If it's a data lake problem,
+is it your aggregate I.O.
+
+31:59
+bandwidth, or some of the
+larger dictating factors?
+
+32:05
+Speak into it.
+
+32:07
+Sure, sure.
+
+32:09
+So, my follow-up question is about
+the parallelization or parallelism.
+
+32:15
+Do you think that because you're
+not utilizing GPU in a, say,
+
+32:20
+full potential, does that mean it's
+not because of the parallelization?
+
+32:26
+It's bottleneck or
+it's something else?
+
+32:29
+We're memory bandwidth
+limited, to be honest.
+
+32:31
+Compute has literally of a GPU,
+because of the compute complexity
+
+32:36
+of deep learning, we've kind
+of ramped up compute faster than
+
+32:39
+we can ramp up memory bandwidth.
+
+32:41
+And as you all know, memory
+is really expensive right
+
+32:44
+now in the world.
+
+32:47
+And so we're trying to do
+a lot more things to switch
+
+32:49
+the problem from a memory-bound
+problem to a compute-bound problem.
+
+32:52
+And this is why we have things like
+the decompression engine on the
+
+32:55
+GPU and other things, because if
+I can move compressed data all the
+
+32:59
+way to the GPU and then decompress
+it on the fly and do decompression
+
+33:05
+with other kernels, I can actually
+switch a memory-bound problem
+
+33:08
+to more of a compute-bound problem.
+
+33:10
+And we're actually trying to
+shift more of this to make
+
+33:12
+it computationally harder,
+which is the inverse of what
+
+33:15
+you would do with a CPU system.
+
+33:16
+With a CPU system, you want to
+make it as little computation
+
+33:19
+as possible and as much
+bandwidth problem.
+
+33:22
+And so what we're really doing
+is not that we are not maximizing
+
+33:25
+the system's potential.
+
+33:27
+We're peaking its memory bandwidth.
+
+33:29
+We just have to figure out ways
+algorithmically to use more
+
+33:34
+compute, which in a lot of ways
+
+33:38
+Maybe even duplicating
+work would be better.
+
+33:40
+So there's a lot of things that
+we discuss actively about that.
+
+33:45
+But first is, let's get these
+systems out to market.
+
+33:47
+Let's show the 10X improvement.
+
+33:49
+And then how do we get from
+that 40% utilization to 100?
+
+33:52
+And double that
+performance to a 20x?
+
+33:55
+That's more work.
+
+33:56
+But that's what Jensen talks
+about, about co-innovation
+
+33:59
+and constantly improving.
+
+34:01
+We'll get there, it's just,
+it's a hard problem.
+
+34:04
+Just one thing to add to that.
+
+34:05
+It does also depend
+on your workload.
+
+34:07
+So join heavy workloads, so
+the more compute intensive.
+
+34:10
+TPC-DS has a lot of things
+that you have to do to get data
+
+34:13
+into memory, obviously that's good.
+
+34:16
+So TPC-DS, often engines do
+better than that than even TPC-H
+
+34:19
+because it's just more complex.
+
+34:21
+Also things like heavy, we did
+a lot of geospatial queries,
+
+34:23
+so you can't actually become
+compute bound for those.
+
+34:25
+But I think Josh is generally
+right in that it's a memory
+
+34:28
+bound problem that we want to turn
+into a compute bound problem, and
+
+34:31
+that's an area of active research.
+
+34:33
+And maybe one more question
+before we've got to call it.
+
+34:37
+We have one minute
+and 30 seconds, so.
+
+34:42
+I think there was one, Sid, I
+think there was here or there.
+
+34:45
+Oh, you're passing your question?
+
+34:46
+Okay.
+
+34:48
+I just have a very,
+very basic question.
+
+34:50
+What is GDS?
+
+34:52
+GPU Direct Storage.
+
+34:54
+GPU Direct Storage, I see.
+
+34:56
+It came out in 2018.
+
+34:58
+Chris Lam and I
+launched it back then.
+
+35:02
+It is extremely, it was extremely
+difficult to use early on.
+
+35:09
+The networking folks have made
+it extremely easy to use now.
+
+35:13
+So we're starting to see a lot more
+GDS systems pop up in the market.
+
+35:17
+Almost all the major storage
+providers have GPU direct storage
+
+35:19
+based storage solutions as well.
+
+35:23
+GDS went from this very
+nascent thing to becoming
+
+35:26
+increasingly intensive and
+important, especially as we start
+
+35:29
+doing more distributed inference.
+
+35:30
+So when you have your KB cache and
+you're moving it back and forth.
+
+35:33
+So in the GDS, when you are
+copying content from the disk,
+
+35:37
+is it going to get copied
+into system memory first before
+
+35:40
+it gets into the GPU's memory?
+
+35:44
+So it's actually with GPU
+direct storage, you're actually
+
+35:49
+going directly from the
+storage to the GPU.
+
+35:53
+And so you're bypassing system
+memory completely, and that's
+
+35:56
+why a presence of a PCIe switch
+is really important.
+
+35:59
+With GDS, you can still copy
+directly to system memory.
+
+36:02
+And so you actually get,
+in some cases, even more
+
+36:05
+IO bandwidth, because you
+can put data in multiple places.
+
+36:09
+And that's where prefetching
+really starts to matter.
+
+36:11
+Let's thank our
+speakers, Todd and Josh.
+

@@ -1,0 +1,181 @@
+/**
+ * takeaways.css
+ *
+ * Styles for GTC session takeaway posts.
+ *
+ * Sections:
+ *  1. Session abstract  — collapsible <details> block below each session title.
+ *                         Hidden by default; expands on click. Uses a CSS
+ *                         ::before pseudo-element to inject an opening curly
+ *                         quote before the abstract text.
+ *
+ *  2. Takeaway tags     — <takeaway-tag name="X"> custom elements rendered as
+ *                         coloured pill badges. Label text is injected via
+ *                         ::before so the HTML stays empty. To add a new tag:
+ *                           a) add a line here with a unique name + colour
+ *                           b) add the matching ::before content label
+ *                           c) document it in .github/skills/extract-nvidia-takeaways/SKILL.md
+ *
+ *  3. Takeaway card layout  — legacy .takeaway div-based layout (kept for
+ *                             older posts; new posts use the table layout below)
+ *
+ *  4. Takeaway table layout — current layout. Each takeaway is two <tr> rows:
+ *                               row 1: .tk-head (title) + .tk-time (timestamp)
+ *                               row 2: .tk-content (tags + .tk-body text)
+ *                             Rows share a grey header / white body colour split.
+ */
+
+/* ── 1. Session abstract ────────────────────────────────────────────────── */
+details.session-abstract {
+  margin: 0.4em 0 1em 0;
+}
+
+details.session-abstract summary {
+  font-size: 0.75em;
+  font-weight: 600;
+  color: #9ca3af;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+details.session-abstract summary::-webkit-details-marker {
+  display: none;
+}
+
+details.session-abstract summary::after {
+  content: " ▾";
+}
+
+details.session-abstract[open] summary::after {
+  content: " ▴";
+}
+
+details.session-abstract p {
+  font-size: 0.85em;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0.4em 0 0 0;
+}
+
+details.session-abstract p::before {
+  content: "\201C";
+  font-size: 2em;
+  line-height: 0;
+  vertical-align: -0.4em;
+  margin-right: 0.1em;
+  color: #d1d5db;
+  font-family: Georgia, serif;
+}
+
+/* ── 2. Takeaway category tags ─────────────────────────────────────────── */
+takeaway-tag {
+  display: inline-block;
+  font-size: 0.62em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.1em 0.45em;
+  border-radius: 999px;
+  color: #fff;
+  vertical-align: middle;
+  margin-right: 0.2em;
+  margin-bottom: 0.1em;
+  white-space: nowrap;
+  line-height: 1.6;
+}
+
+takeaway-tag[name="benchmark"]  { background-color: #7c3aed; } takeaway-tag[name="benchmark"]::before  { content: "Benchmark"; }
+takeaway-tag[name="memory-bw"]  { background-color: #2563eb; } takeaway-tag[name="memory-bw"]::before  { content: "Memory BW"; }
+takeaway-tag[name="memory-cap"] { background-color: #0891b2; } takeaway-tag[name="memory-cap"]::before { content: "Memory Cap"; }
+takeaway-tag[name="tco"]        { background-color: #16a34a; } takeaway-tag[name="tco"]::before        { content: "TCO"; }
+takeaway-tag[name="comm"]       { background-color: #ea580c; } takeaway-tag[name="comm"]::before       { content: "Communication"; }
+takeaway-tag[name="storage"]    { background-color: #d97706; } takeaway-tag[name="storage"]::before    { content: "Storage I/O"; }
+takeaway-tag[name="design"]       { background-color: #0f766e; } takeaway-tag[name="design"]::before       { content: "Design"; }
+takeaway-tag[name="pain"]       { background-color: #dc2626; } takeaway-tag[name="pain"]::before       { content: "Pain Point"; }
+takeaway-tag[name="oss"]        { background-color: #6b7280; } takeaway-tag[name="oss"]::before        { content: "Open Source"; }
+takeaway-tag[name="algo"]       { background-color: #c026d3; } takeaway-tag[name="algo"]::before       { content: "Algorithm"; }
+
+/* ── 3. Takeaway card layout (legacy) ──────────────────────────────────── */
+.takeaways {
+  margin: 0.75em 0 1.5em 0;
+}
+
+.takeaway {
+  padding: 0.5em 0 0.5em 0;
+  margin-bottom: 1em;
+}
+
+.takeaway-header {
+  font-weight: 700;
+  margin-bottom: 0.25em;
+  line-height: 1.4;
+}
+
+.takeaway-time {
+  font-size: 0.8em;
+  color: #6b7280;
+  font-weight: 400;
+  margin-left: 0.4em;
+}
+
+.takeaway-tags {
+  margin-bottom: 0.35em;
+}
+
+.takeaway-body {
+  font-size: 0.95em;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── 4. Takeaway table layout (current) ────────────────────────────────── */
+.takeaway-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75em 0 1.5em 0;
+}
+
+.takeaway-table td {
+  padding: 0;
+  vertical-align: top;
+}
+
+.takeaway-table .tk-head {
+  font-size: 0.96em;
+  font-weight: 700;
+  line-height: 1.3;
+  padding: 0.45em 0.6em;
+  background: #e5e7eb;
+  color: #111827;
+  border-left: 3px solid #6b7280;
+  border-radius: 4px 0 0 0;
+}
+
+.takeaway-table .tk-time {
+  font-size: 0.74em;
+  color: #6b7280;
+  text-align: right;
+  white-space: nowrap;
+  padding: 0.45em 0.6em;
+  background: #e5e7eb;
+  vertical-align: middle;
+  border-radius: 0 4px 0 0;
+}
+
+.takeaway-table .tk-content {
+  padding: 0.4em 0.6em 0.8em 0.6em;
+  background: #ffffff;
+}
+
+.takeaway-table .tk-content .tk-body {
+  display: inline;
+  font-size: 0.92em;
+  line-height: 1.6;
+}
+
+.takeaway-table .tk-sep td {
+  padding-top: 0.6em;
+}

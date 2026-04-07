@@ -1,0 +1,2477 @@
+Session: https://www.nvidia.com/en-us/on-demand/session/gtc26-s81870/
+
+Transcript Powered by AI
+
+Achieving 8x Lower Cost Analytics with GPU-Accelerated DuckDB
+
+
+00:05
+All right, thank you very much,
+Kara, for the introduction.
+
+00:09
+It's super exciting here to be here
+to talk about Sirius and how we
+
+00:15
+use GPU to accelerate DuckDB by ADX
+in terms of performance per dollar.
+
+00:21
+So my name is Xiangyao, and
+so the other speaker, Bobby,
+
+00:26
+so we'll talk about this together.
+
+00:29
+And we also have a guest speaker.
+
+00:32
+Hannah Muehlisen, who is the
+creator of DuckDB, and he
+
+00:36
+has some really exciting news
+to announce in the middle
+
+00:38
+of this talk, so stay for that.
+
+00:43
+So here's the agenda for this talk.
+
+00:45
+I will first give you
+an introduction, like
+
+00:47
+why DuckDB, and why GPU,
+why GPU database, and why now.
+
+00:52
+Why this is a great time to
+do this kind of work today.
+
+00:56
+And then I will talk about
+the architecture and design
+
+00:58
+principles of Sirius.
+
+01:00
+We'll give you a demo of Sirius,
+like show you how it works.
+
+01:04
+After that Hannes will make
+the exciting announcement
+
+01:07
+and after that Bobby will take
+over to explain some details of
+
+01:12
+the Sirius architecture and design.
+
+01:16
+Okay, so DuckDB, right?
+
+01:19
+So DuckDB is this embedded
+database that appeared in
+
+01:23
+the last ten years.
+
+01:24
+Like, it's amazing, in-process
+database that has great
+
+01:28
+performance, and is completely
+open source under MIT license.
+
+01:32
+So we have seen tremendous
+growth and adoption of DuckDB
+
+01:36
+in the past ten years.
+
+01:38
+And DuckDB has been widely
+adopted, used by data engineers,
+
+01:42
+scientists, researchers, and also
+industry companies, independent
+
+01:47
+software vendors.
+
+01:48
+So here the slide shows only
+a few companies, but there
+
+01:52
+are like hundreds, thousands,
+or even more users of DuckDB,
+
+01:55
+like in almost all companies today.
+
+01:59
+DuckDB has great performance.
+
+02:00
+At the bottom of the slide,
+I'm showing the...
+
+02:03
+The performance ranking on
+ClickBench, and you can see DuckDB
+
+02:06
+is on the top view of the list.
+
+02:11
+All right, so at the same
+time, we also see, okay, if
+
+02:15
+DuckDB, DuckDB is great, so
+can we use GPU to accelerate it?
+
+02:19
+And traditionally, GPU were
+not fantastic in accelerating
+
+02:25
+data analytics, so there were
+some challenges in GPU in
+
+02:28
+the past, but we see that we are at
+an inflection point today, and it's
+
+02:35
+becoming more and more promising to
+use GPU for this kind of workloads.
+
+02:40
+So first, GPU is no longer a
+pure accelerator, it's becoming
+
+02:45
+more and more of a general-purpose
+computing platform.
+
+02:48
+And data analytics is actually
+one of the first few applications
+
+02:53
+that are a great fit for
+GPU architecture.
+
+02:56
+Like data analytics is all about,
+like I'm talking about structured
+
+02:59
+data, it's all about tables.
+
+03:01
+And you're performing
+similar operations for
+
+03:03
+every row in that table.
+
+03:04
+So that is actually perfectly
+parallelizable and it can
+
+03:08
+run really efficiently on GPU.
+
+03:11
+So, however, there has been a few
+challenges that stops the wider
+
+03:16
+adoption of GPU data analytics.
+
+03:19
+So, for example, GPU memory
+has been limited in size in
+
+03:22
+the past, and the interconnection
+between CPU and GPU has always
+
+03:26
+been a bottleneck in these systems.
+
+03:28
+And finally, building a database
+is a lot of engineering work, and
+
+03:32
+if we have to restart that whole
+process on GPU, that's going to
+
+03:36
+be a lot of engineering complexity.
+
+03:39
+But in recent years, the hardware
+and software trends are kind
+
+03:42
+of changing this landscape.
+
+03:45
+For example, in the first
+challenge, GPU memory
+
+03:47
+capacity, we're seeing
+HBM memory size to be increasing
+
+03:51
+tremendously over the years.
+
+03:53
+The latest one has 288
+gigabytes of GPU memory.
+
+03:58
+And the CPU-GPU interconnect is
+also getting much faster, like
+
+04:02
+the PCIe was not super fast, but
+with NVLink-C2C, we're not talking
+
+04:08
+about a terabyte or two terabytes
+per second of bandwidth between
+
+04:13
+CPU and GPU, which is even faster
+than your CPU memory bandwidth.
+
+04:17
+And finally, in terms of the
+engineering complexity, we
+
+04:21
+are seeing two software trends.
+
+04:23
+The first one is database
+systems are becoming more
+
+04:27
+and more composable.
+
+04:28
+So when you design a database
+today, you don't have to write
+
+04:32
+everything from scratch.
+
+04:33
+You can just change the module
+that you want to change.
+
+04:36
+For example, you just change
+the execution engine to a
+
+04:40
+GPU engine, but you don't
+need to change the rest of the
+
+04:42
+system, which makes it much easier.
+
+04:45
+And even better, now we have more
+and more mature GPU libraries.
+
+04:51
+So they have already, like
+CUDA X, they implemented a
+
+04:54
+lot of features for us.
+
+04:58
+So when you build a database,
+you don't need to rebuild
+
+05:01
+the operators, like a join,
+aggregation, they are all
+
+05:04
+already implemented.
+
+05:07
+So here is the architecture
+of Sirius, the GPU-native
+
+05:10
+SQL engine that we are building.
+
+05:15
+If you look at the architecture,
+as I said, Sirius is this
+
+05:19
+layer that's inside an existing
+architecture stack.
+
+05:25
+On the top, we have DuckDB, which
+is our primary support engine.
+
+05:30
+Then we take the
+logical plan of DuckDB.
+
+05:32
+We don't change the
+internal of DuckDB.
+
+05:35
+With the logical plan, we send
+that to GPU for execution.
+
+05:38
+And that is where Sirius sits.
+
+05:40
+And below Sirius layer,
+there are different libraries
+
+05:44
+developed by NVIDIA like
+CUDA, CUDAx, that supports
+
+05:48
+different operators like join,
+aggregation, memory management,
+
+05:52
+malloc, nixel for data exchange
+across different nodes, and
+
+05:57
+cuCascade for buffer management.
+
+06:00
+So Sirius leveraged all of
+these libraries and leveraged
+
+06:04
+the existing database frontends.
+
+06:06
+So for single node, DuckDB
+is our primary focus today.
+
+06:11
+We have some support for Doris, and
+maybe more support in the future.
+
+06:16
+And the architecture allows us
+to support even more database
+
+06:19
+systems on the roadmap.
+
+06:22
+So, yeah, so DuckDB, Sirius can,
+through this architecture, it can
+
+06:28
+achieve 9x speedup in terms of cost
+efficiency, and we will show you
+
+06:33
+a lot more results in later slides.
+
+06:37
+So, this is one popular benchmark
+called ClickBench.
+
+06:43
+And we made an announcement
+last year in December that
+
+06:46
+we became the world number
+one in ClickBench, and we optimized
+
+06:50
+performance even more since then.
+
+06:52
+So, the results you see here
+is the latest numbers we...
+
+06:57
+In terms of Hot Run, Sirius
+is actually on two different
+
+07:01
+hardware platforms, number
+one and number two.
+
+07:04
+And the combined run, which
+is combining both Hot Run
+
+07:08
+and Code Run, we also got
+number one recently.
+
+07:12
+And this is on GH200 hardware,
+which is actually much cheaper
+
+07:17
+than the hardware that the
+CPU databases use.
+
+07:21
+They are, like the CPU database,
+they actually, they use one
+
+07:24
+of the, probably the most
+expensive instance on AWS today.
+
+07:27
+So GH200 is actually pretty cheap.
+
+07:30
+LambdaLabs is only $2 per hour.
+
+07:33
+It's actually much cheaper.
+
+07:35
+So it's fast and cheap.
+
+07:39
+Yeah, so in terms of the design
+of Sirius, we follow a few
+
+07:42
+major principles, right?
+
+07:43
+The first one is, we want Sirius
+to be GPU-native execution.
+
+07:47
+So GPU is the primary execution
+engine, and it's GPU-first.
+
+07:53
+We do not retrofit
+existing CPU design.
+
+07:56
+And we made a decision that
+Sirius is not going to have hybrid
+
+08:01
+execution across CPU and GPU.
+
+08:03
+So GPU only, but if the query
+doesn't work, because maybe
+
+08:07
+some feature is not supported, then
+we fall back completely to DuckDB.
+
+08:11
+So we try to query on GPU,
+if it doesn't work, we run
+
+08:14
+it completely in DuckDB in CPU.
+
+08:16
+So that decision simplifies
+the design space substantially,
+
+08:21
+so it's not as complex.
+
+08:24
+The second design
+principle is called
+
+08:25
+MICE, Modular, Interoperable,
+Composable, and Extensible.
+
+08:31
+And so we want, as I said, we want
+this to be a drop-in solution.
+
+08:35
+You can take Sirius, and if
+you want to use different
+
+08:38
+operator implementation, you
+can add your own, it's easy
+
+08:42
+to try your own operator.
+
+08:44
+If you want a different
+front-end, you can do that.
+
+08:48
+So we make it very easy to
+integrate Sirius into whatever
+
+08:52
+environment or system that you
+are using and optimize it as well.
+
+08:58
+So let me show you a
+demo of how it works.
+
+09:02
+So on this demo, I'm going
+to show you only one query,
+
+09:05
+and we will show you results
+for many, many queries later, but
+
+09:08
+the demo is just TPC-H query nine
+with scale factor one terabyte,
+
+09:13
+and the data is in Parquet format.
+
+09:15
+The CPU instance we're
+using is actually the
+
+09:18
+most expensive instance on AWS.
+
+09:20
+It's like $21 per hour.
+
+09:22
+We run DuckDB there, and on
+GPU, we run DGX station, which
+
+09:27
+is a single GB300 instance.
+
+09:30
+And you can note that the
+data size is actually bigger
+
+09:34
+than the memory size of the GPU.
+
+09:35
+So the system works even if
+the data doesn't fit in GPU.
+
+09:38
+We can automatically figure out
+the data movement between GPU
+
+09:42
+memory and CPU memory stashed SSD.
+
+09:46
+OK, so here's the query.
+
+09:49
+On the left is the DuckDB
+query, TPC-H query 9.
+
+09:53
+If you're familiar, you probably
+can recognize this.
+
+09:56
+And on the right, we are running
+exactly the same query.
+
+10:00
+It's exactly the same.
+
+10:01
+The only difference is here
+we call GPU execution.
+
+10:06
+So in the future, we will
+make it a configuration flag
+
+10:09
+so that these two queries
+look identical in terms of
+
+10:13
+the highlighted color, et cetera.
+
+10:15
+So let's run it.
+
+10:21
+So, yeah, so they start to run.
+
+10:26
+And on the right, you can see,
+okay, the query has already
+
+10:28
+finished on Sirius.
+
+10:30
+It took about 2.5 seconds.
+
+10:32
+If you look at the bottom,
+the real number after the
+
+10:35
+real, it takes about 2.5 seconds.
+
+10:39
+On the left, okay, on the
+left, DuckDB also finished.
+
+10:41
+It takes about 16 seconds.
+
+10:44
+So you can see in this particular
+query, Sirius is about more
+
+10:48
+than six times faster, and
+the results are identical.
+
+10:52
+You can compare these two
+output tables there.
+
+10:53
+They just produce the same result.
+
+11:01
+Okay, so now it's a great honor
+for me to invite Hannes to
+
+11:06
+make a super exciting announcement
+between Sirius and DuckDB.
+
+11:12
+Hello everybody.
+
+11:16
+Of course, I'm not happy that
+they make us look so bad with
+
+11:18
+their performance.
+
+11:21
+But so in case you don't know
+me, my name is Hannes.
+
+11:26
+I, many years ago, I decided
+together with Mark that a
+
+11:29
+new database system was needed.
+
+11:31
+And indeed that has sort of
+seemed to have struck a nerve.
+
+11:36
+It is the fastest growing
+data management system that
+
+11:39
+has been around ever.
+
+11:41
+And it has an
+ecosystem of extensions.
+
+11:44
+So DuckDB
+
+11:46
+Because we can't really solve
+all the problems, we have
+
+11:49
+made it possible for other people
+to build things very deeply in
+
+11:52
+the system that we call extensions.
+
+11:56
+And so Sirius is actually
+one of those extensions.
+
+11:59
+So basically what they have
+done is they built an extension
+
+12:03
+for DuckDB that is able to
+do this GPU sort of execution
+
+12:08
+of queries, making it faster.
+
+12:12
+There's different sort of
+tiers of extensions.
+
+12:14
+There's community extensions,
+which basically, think of it
+
+12:18
+a bit like this pip, where anything
+goes, but we've started actually
+
+12:23
+working recently with NVIDIA,
+and we will be elevating Sirius
+
+12:31
+as a core DuckDB extension, which
+means it's part of the core system.
+
+12:35
+And it will be the sort of
+blessed way of running queries
+
+12:39
+on GPUs with DuckDB.
+
+12:40
+And we're really excited to be
+working together in the future
+
+12:44
+to make this work really smoothly.
+
+12:47
+So that's the announcement.
+
+12:49
+I have one minor
+other announcement.
+
+12:51
+I have a bunch of stickers up here
+if you want to grab them later.
+
+13:02
+Thank you so much, Hannes,
+for the announcements.
+
+13:05
+We are really looking forward
+to the partnership that we
+
+13:08
+will have with DuckDB between
+NVIDIA, Sirius, and DuckDB.
+
+13:13
+Really looking forward.
+
+13:15
+And for the next sessions,
+I'm going to talk a little
+
+13:18
+bit about the technical details
+of Sirius and how we achieved
+
+13:22
+this great performance.
+
+13:23
+We will also talk a little
+bit about more evaluations
+
+13:25
+and more experiments that
+I'm going to show you guys.
+
+13:28
+So, let's start with some of
+the key features of Sirius.
+
+13:34
+I'm not going to go through
+all of these key features,
+
+13:36
+but I want to highlight one
+of them, which is spilling.
+
+13:39
+So, we know that our workload does
+not always fit in the GPU memory.
+
+13:45
+And then often we have to sort of
+like spill between like GPU memory
+
+13:49
+to host or like even to disk.
+
+13:51
+So this is some feature.
+
+13:53
+This is a feature that we
+just recently introduced
+
+13:56
+in Sirius for GDC.
+
+13:58
+And we do spilling through
+a library called QCascade.
+
+14:02
+So QCascade is open-source
+
+14:05
+GPU memory management library for
+data analytics that we introduced.
+
+14:12
+And there will be a
+talk about QCascade.
+
+14:14
+So for those of you who are
+interested in like how to manage
+
+14:18
+GPU memory, how to do spilling,
+there is like a talk at 2 p.m.
+
+14:24
+in this room today to talk like
+more details about QCascade.
+
+14:30
+All right, let's talk a little
+bit about what it's like Sirius
+
+14:33
+designs looks like and how the
+query lifecycle works in Sirius.
+
+14:39
+So we are developing Sirius as
+a library that can be plugged
+
+14:43
+in as a DuckDB extension, right?
+
+14:45
+So we don't make any modifications
+to DuckDB codebase.
+
+14:50
+It's running as an extension.
+
+14:52
+We don't make any modifications
+to like the DuckDB UI itself.
+
+14:55
+So like we are still, you can
+still use like DuckDB command line
+
+14:59
+interface, you can still use DuckDB
+Python API if you want to use it.
+
+15:04
+And we also support like fallback
+execution to DuckDB when there
+
+15:07
+is like features that are
+not supported in Sirius.
+
+15:09
+We just like fall back to DuckDB.
+
+15:11
+So the worst performance that you
+can get is a DuckDB performance,
+
+15:14
+which is pretty damn good.
+
+15:17
+Right, so let's see how it works.
+
+15:19
+So we use DuckDB Query Parser
+and Query Optimizers, which
+
+15:23
+will produce like DuckDB
+logical plan, right?
+
+15:26
+This DuckDB logical plan will
+be consumed by a component
+
+15:30
+in Sirius that does the plan
+conversions, which is essentially
+
+15:33
+like converting this logical
+plan into a physical plan
+
+15:36
+that will be executed on GPUs.
+
+15:39
+After that, we have like a
+task creator, which is like
+
+15:41
+basically based on those plans.
+
+15:43
+It's like creating
+tasks to be executed.
+
+15:47
+These tasks will be submitted
+into our executors.
+
+15:50
+Our executors is built on top
+of libcuDF, which is one of
+
+15:54
+the CUDAx libraries at NVIDIA, to
+implement these database operators.
+
+16:00
+When the data is not being
+executed in the executors,
+
+16:05
+the data is gonna be contained
+or sit in a component called
+
+16:09
+the data repository.
+
+16:10
+So this is basically a container
+of data when the data is
+
+16:14
+not in processing.
+
+16:17
+This is a component that we
+implement using a library
+
+16:19
+called QCascade, and we also have
+another executors, which is like
+
+16:25
+we call it the downgrade executors,
+which is like we'll be the
+
+16:29
+executors who manage the spilling.
+
+16:30
+So downgrade executors can
+basically identify data in
+
+16:34
+the data repositories of like which
+data they want to spill and so on,
+
+16:38
+and also build on top of QCascade.
+
+16:41
+If you notice here, we do have
+separate executors between
+
+16:44
+downgrade executors and our
+actually compute executors.
+
+16:47
+We do this so that we can do
+the spilling asynchronously
+
+16:50
+to the executions.
+
+16:52
+That's pretty important in
+GPUs, because in GPUs the
+
+16:54
+execution is very fast, so
+we don't want the spilling
+
+16:57
+to bottleneck the execution.
+
+17:02
+All right, let's see how the
+plan conversion works, right?
+
+17:05
+We have this like DuckDB,
+let's say like logical plan.
+
+17:09
+Typically in DuckDB, we convert
+this logical plan into a pipeline.
+
+17:14
+Let's just call it
+the DuckDB pipeline.
+
+17:16
+For Sirius, we're gonna
+like convert it again into
+
+17:19
+something that I will call
+like a Sirius pipeline.
+
+17:23
+The main difference between
+DuckDB Pipeline and Sirius
+
+17:25
+Pipeline is that in Sirius,
+we introduce some new operators.
+
+17:29
+Like if you can see here, there's
+like a partition operators,
+
+17:31
+concatenation operators.
+
+17:34
+And some of these operators like
+are needed for, it's gonna help
+
+17:37
+for like when we want to expand
+to like multi-GPUs, for example.
+
+17:40
+If you're like single-node
+multi-GPUs or like
+
+17:42
+multi-node multi-GPUs
+for distributed executions.
+
+17:46
+And also this will help with
+like spilling and out-of-core
+
+17:50
+execution as well.
+
+17:51
+Because, like,
+
+17:52
+We now no longer have to sort
+of like fit in the whole hash
+
+17:56
+table inside a GPU memory.
+
+17:57
+We can actually just like fit in
+like a partition of a hash table
+
+18:00
+in the GPU memory, for example.
+
+18:03
+So most of our sort of like
+plan modifications is to support
+
+18:07
+spilling on GPUs.
+
+18:10
+And let's see how the
+spilling actually works.
+
+18:13
+So after we break down the
+query into what we call Sirius
+
+18:16
+Pipelines, this is like the
+Sirius Pipelines, the thing
+
+18:19
+that we're going to do next
+is that we're going to insert a
+
+18:22
+component called a data repository
+in between these pipelines.
+
+18:26
+In this example, we have
+four pipelines and we insert
+
+18:29
+four data repositories in
+between these pipelines.
+
+18:32
+The data repository is exactly
+connecting the pipelines, so like
+
+18:36
+the output of one pipeline will
+be pushed into the repository and
+
+18:41
+then the subsequent pipeline will
+take its input from the repository.
+
+18:47
+So inside a repository, it's
+just like a collection of data.
+
+18:50
+This is a collection of data that's
+sitting in between the pipeline.
+
+18:54
+We call it a data batch.
+
+18:55
+This is like our sort of like
+unit of operations in Sirius.
+
+19:01
+In DuckDB, they call it like
+data channel, for example.
+
+19:03
+Here, we just, you know, in
+order to avoid confusions,
+
+19:06
+we call it the data batch.
+
+19:09
+And a data batch itself can have
+like different representations.
+
+19:14
+So, for example, a data batch
+can be a GPU, sort of like
+
+19:18
+resident data batch.
+
+19:19
+In this case, like it will
+be a wrapper around QDF table
+
+19:23
+because like we are using
+QDF operators, right?
+
+19:26
+But it can also be a data
+that's like sitting on the
+
+19:30
+host, like pin memory, for example.
+
+19:32
+In this case, we make it as
+a wrapper of like a fixed
+
+19:35
+size allocations in the pin memory.
+
+19:39
+And there is a converter between
+the data representations,
+
+19:45
+and all of these are
+implemented inside QCascade.
+
+19:48
+So if you guys want to use
+these features, you can use
+
+19:50
+the library of QCascade to
+implement it yourself.
+
+19:53
+And one of the favorite things
+that I like about QCascade
+
+19:58
+is that you can also define your
+own custom data representations.
+
+20:03
+For example, for Sirius, we
+want to have like a DuckDB data
+
+20:08
+representation, for example, which
+is a wrapper around DuckDB data
+
+20:12
+channel, because we have to sort of
+like return the results to DuckDB.
+
+20:15
+So we implement like DuckDB
+data representations, and
+
+20:18
+we can also implement a custom
+converter between our custom
+
+20:23
+data representations with like
+existing data representation that's
+
+20:26
+already implemented in QCascade.
+
+20:28
+So this is all abstracted
+and customizable, extensible,
+
+20:31
+and yeah, it's great.
+
+20:36
+Another thing is that I will
+highlight again that we have
+
+20:38
+a downgrader or a downgrade
+executors, right?
+
+20:41
+And its job is just looking
+at the data that's sitting
+
+20:44
+in the data repositories,
+and then see which data that has
+
+20:47
+the opportunity to be downgraded.
+
+20:49
+And it will be scanning the
+downgrade targets.
+
+20:51
+And when it's downgraded,
+it just needs to call this
+
+20:53
+converter, in QK's case, to convert
+between these data representations.
+
+21:01
+And how about the
+execution itself, right?
+
+21:04
+The granularity of
+executions will happen
+
+21:07
+in the granularity of a task.
+
+21:09
+A task here in Sirius consists
+of two things, basically.
+
+21:13
+The first is the pipeline
+that it's going to execute.
+
+21:17
+In this example, let's say
+it's a pipeline of filter
+
+21:19
+followed by groupby.
+
+21:20
+So that's the pipeline that
+you are trying to execute.
+
+21:23
+And then the second thing in a task
+is the input to those pipelines.
+
+21:27
+In this example, it's like
+
+21:29
+Most of the pipelines will have an
+input of data batch or some data
+
+21:32
+batch into the pipeline, but some
+operators might also need metadata
+
+21:37
+and so on for its input, so
+the task is basically the pipeline
+
+21:41
+and the input to the pipeline.
+
+21:44
+This task will be queued in a
+component called the TaskScheduler,
+
+21:48
+which will basically queue
+this task and then dispatch
+
+21:51
+it to different GPU executors.
+
+21:54
+In this example, for example,
+we have, let's say, two GPUs,
+
+21:57
+then we can have two GPU executors.
+
+22:01
+Currently Sirius is a single
+node, single GPU engine, so
+
+22:04
+our scheduler right now is
+pretty simple, it's just doing a
+
+22:07
+FIFO, because we only have one GPU.
+
+22:10
+But we make it extensible,
+so in the future if you want
+
+22:12
+to add multiple GPU executors,
+we have this task scheduler
+
+22:15
+that can dispatch things for us.
+
+22:18
+The GPU executor will just execute
+the operators using QDF, right?
+
+22:24
+Another capability that we
+have is that we can retry
+
+22:27
+the task on failures.
+
+22:29
+So, for example, if the task
+is, like, for whatever reasons,
+
+22:33
+it's, like, failing to execute in
+the GPU executors, you can actually
+
+22:36
+retry the task by, like, queuing
+it again in the task scheduler.
+
+22:45
+And aside from that, we are also
+doing some explorations ourselves
+
+22:49
+with how Sirius would look
+like in a distributed architecture.
+
+22:53
+Our initial explorations is
+like we use this distributed
+
+22:58
+engine called Doris.
+
+23:01
+So here I'm just like comparing
+to two of like what is like
+
+23:04
+the query lifecycle in Doris
+looks like and query lifecycle
+
+23:06
+in Sirius looks like.
+
+23:07
+This is like still a very early
+stage, but it's in our roadmap.
+
+23:11
+In Doris itself, they have like
+a coordinator which produce
+
+23:16
+like Doris internal query plan.
+
+23:17
+It will be divided into query plan
+fragments that will be executed by
+
+23:22
+this like Doris worker, which can
+exchange data between one another
+
+23:25
+using the RPC as their protocol.
+
+23:29
+For Sirius, we take the same
+approach as we did with DuckDB.
+
+23:33
+We intercept Dory's internal
+query plan fragments, and then
+
+23:38
+we have, like, a Sirius backend
+that is currently written on Rust
+
+23:41
+that will convert this, like, plan
+fragments into substrate format and
+
+23:46
+then running Sirius Compute Layer.
+
+23:48
+Sirius Compute Layer here is
+actually running Sirius on DuckDB
+
+23:51
+extensions using DuckDB substrate
+This is a great extension to sort
+
+23:55
+of like consume the substrate plan
+and then executing it on Sirius.
+
+23:59
+If you want to do an exchange
+between different compute
+
+24:01
+nodes, we are using another
+CUDAx library, another NVIDIA
+
+24:06
+library called Nixle, that
+can be used for data exchange.
+
+24:12
+Now, let's see some exciting
+evaluations, exciting numbers here.
+
+24:19
+So the first number here
+is of a TPC-H of scale
+
+24:22
+factor one terabytes.
+
+24:25
+I'm running here on a DGX stations.
+
+24:27
+By the way, we just announced
+yesterday that like DGX stations
+
+24:30
+now like you can order DGX station.
+
+24:32
+Now I'm going to show you
+like how to make your data
+
+24:36
+analytics great with the DGX
+stations that you can buy.
+
+24:40
+The data is on the Parquet
+Format, and we accelerate
+
+24:43
+DuckDB here by 5x.
+
+24:46
+If you notice as well, we
+achieve great speedup across
+
+24:49
+all queries, and then the sum of
+our performance here is 21 seconds.
+
+24:55
+I will not spoil anything,
+but if you are following the
+
+24:57
+TPC-H benchmark and so on,
+the TPC-H official record
+
+25:01
+is actually slower than 21 seconds.
+
+25:04
+I'm just going to say that.
+
+25:08
+We also try to run Sirius
+across different scale factors.
+
+25:11
+There's like here, I'm sweeping
+the scale factor from scale
+
+25:13
+factor 10 to scale factor 1,000.
+
+25:17
+We are running here on the
+DGX station as well.
+
+25:19
+And we see a trend here that
+like, the larger the scale
+
+25:22
+factor, we get like better speedup.
+
+25:24
+There is a little bit of
+performance degradation
+
+25:26
+on scale factor 1000 because
+there are spillings going on.
+
+25:31
+Our spilling features are
+still very early.
+
+25:33
+There are a lot of optimizations
+that we can do in our
+
+25:36
+spilling features.
+
+25:36
+I'm pretty confident that
+this number will improve.
+
+25:40
+But the trend that we see is that
+the higher your scale factor,
+
+25:43
+the better the number can be.
+
+25:47
+We also try to run a
+cost-normalized comparison, right?
+
+25:50
+So here, in a scale factor
+of 300, what we do is that
+
+25:54
+we run a DuckDB on a CPU instance
+that has the same on-demand
+
+26:00
+price compared to the GPU instance
+that we are running Sirius on.
+
+26:04
+In this case, I run DuckDB
+on this AWS instance, which
+
+26:08
+costs $2 per hour, and I run Sirius
+on GH200 that costs $2 per hour.
+
+26:14
+The data is on Parquet Format,
+and this is a hot run.
+
+26:17
+And this also shows that Sirius
+accelerates DuckDB by 9x,
+
+26:21
+and we are using the same
+hardware cost, so we achieve
+
+26:24
+9x better TCO as well.
+
+26:28
+Alright, and then for our Doris
+explorations, this is a very,
+
+26:33
+very early stage, but we still have
+some sort of quick experiment to
+
+26:37
+show you guys some of the queries
+that's already working in Doris.
+
+26:41
+We ran it on four node
+clusters of A100.
+
+26:43
+We got 2.4 to 12.5 times speedup.
+
+26:50
+And just to come back, circle
+back on this, Xiangyao already
+
+26:52
+mentioned this a little bit
+in the beginning of the talk.
+
+26:55
+This is our ClickBench
+performance, another benchmark
+
+26:59
+that we are running.
+
+27:01
+We are currently, if you check
+the ClickBench website yourself,
+
+27:04
+Sirius is like sitting on number
+one and number two on the hot run.
+
+27:08
+Number one is like
+running on a GH200.
+
+27:12
+Number two is
+running on H100 on AWS.
+
+27:16
+And we also recently achieved
+the number one on combined runs.
+
+27:19
+So, the combined run is like
+combining the hot run, cold run,
+
+27:23
+data size, and also the load time.
+
+27:26
+And we achieved first recently
+on the GH200 as well.
+
+27:30
+We submitted a really cool
+blog post between NVIDIA
+
+27:33
+and UW-Madison here.
+
+27:34
+If you guys are interested in
+seeing how this can be achieved,
+
+27:39
+please check our blog post.
+
+27:43
+All right, now let's see some
+of like exciting like future
+
+27:46
+timeline of like what will
+we do with Sirius next, right?
+
+27:51
+The timeline here is like
+tentative, but there are like
+
+27:53
+several features that we want
+to improve in Sirius.
+
+27:56
+Like for example right now
+Sirius is running on single
+
+27:58
+node single GPUs.
+
+28:00
+We want to make it to be able
+to run on single node multi
+
+28:02
+GPUs with DuckDB.
+
+28:05
+Currently, we only handle
+spilling to the host memory,
+
+28:08
+but like ideally we want to
+be able to spill to disk as well.
+
+28:13
+We want to be able to support
+a bunch of remote data sources,
+
+28:16
+like S3 Object, and then Apache
+Iceberg, and so on.
+
+28:20
+And as Hannes already announced,
+we want to work together to
+
+28:25
+be like DuckDB core extension.
+
+28:29
+And finally, the multi-node,
+multi-GPUs, which is our
+
+28:32
+explorations that we did
+with Doris, we're going
+
+28:34
+to continue those explorations.
+
+28:39
+And I also, at the end of
+my presentations, I want
+
+28:41
+to thank all of the Sirius
+contributors and partners.
+
+28:46
+Sirius is currently jointly
+developed by NVIDIA and UW-Madison.
+
+28:52
+We have around 10 engineers
+at NVIDIA who are developing
+
+28:56
+Sirius, and we have made great
+progress in the past few months.
+
+28:59
+There are also students
+contributing from UW-Madison
+
+29:02
+and also Xiangyao as well,
+from the university side.
+
+29:06
+And we also recently announced
+partnerships with DuckDB,
+
+29:09
+really looking forward to that.
+
+29:11
+And then we also have some
+industry partners, like for
+
+29:14
+example Fastdata.
+
+29:15
+Here has been like very
+interested with Sirius.
+
+29:18
+They announced like a press
+release like a couple weeks
+
+29:23
+ago announcing how they sort of
+like re-architected their engine to
+
+29:28
+sort of like use Sirius in their...
+
+29:32
+So really looking forward
+and I also want to say that
+
+29:36
+like we welcome contributions
+from everyone whether you
+
+29:41
+are in academia, in industry,
+Sirius is an open source project
+
+29:45
+and we want to build a community
+here together with you guys.
+
+29:47
+So if you guys are interested in
+like Sirius, GPU acceleration,
+
+29:52
+DuckDB, anything those related,
+we want to build a community
+
+29:55
+together with you guys.
+
+29:57
+Just reach out to us, right?
+
+29:59
+And how do you reach out to us?
+
+30:00
+No, I guess the question is.
+
+30:01
+So we have like a project website.
+
+30:04
+Check out our project website.
+
+30:05
+We are open source on github.
+
+30:07
+So you guys can check our github.
+
+30:10
+Can try to run Sirius.
+
+30:11
+If you find issues and stuff,
+feel free to post on Sirius.
+
+30:15
+Our engineers are very responsive
+to those kind of things.
+
+30:19
+And then we also have like
+email if you want to like...
+
+30:22
+Send email to us, and we have
+like a Slack workspace.
+
+30:26
+I guess not a Slack
+channel, Slack workspace.
+
+30:28
+This is a QR code to join our Slack
+workspace, Sirius Slack workspace.
+
+30:34
+And yeah, so you if you want
+to like sort of like say hi
+
+30:38
+like you want to like ask questions
+Feel free to post it in the general
+
+30:41
+channel if you are like a little
+bit shy like me Just feel free
+
+30:45
+to DM me right away And I'm happy
+to answer your question as well
+
+30:49
+or direct you to like anyone who
+can answer your questions But like
+
+30:53
+yeah, we're looking forward like
+
+30:57
+That would be the end of my talk,
+thank you so much for coming,
+
+31:03
+I'm happy to take questions.
+
+31:11
+Thank you for the great talk,
+and do we have questions?
+
+31:19
+Um, once DuckDB, you know,
+formulates a query plan, does
+
+31:24
+Sirius apply any query plan-related
+optimizations, or just takes
+
+31:28
+that and executes as is?
+
+31:29
+Um, yeah, that's like, um,
+a very good question.
+
+31:31
+So, currently we do not change,
+like, the query plan shape
+
+31:36
+itself from DuckDB.
+
+31:37
+We insert new operators, like
+the partitions, concat, like,
+
+31:40
+before the joins and so on,
+but, like, we don't, like, change,
+
+31:43
+like, the query plan shapes of...
+
+31:45
+It's still using the same join
+order with DuckDB and so on.
+
+31:50
+And what we found so far,
+interestingly, is that DuckDB
+
+31:53
+has really, really good optimizers
+that we don't feel like we
+
+31:58
+need to make any changes.
+
+31:59
+We run it, and the performance
+is already great.
+
+32:02
+So please thank DuckDB for the
+great optimizer that I have.
+
+32:06
+I think that's the best
+optimizer that I know out
+
+32:08
+of open source optimizers.
+
+32:10
+I will always say that DuckDB
+has the best optimizers.
+
+32:13
+We have time for more questions.
+
+32:22
+Thanks for the talk, guys.
+
+32:24
+I guess the 21 seconds is
+from hot OS cache memory?
+
+32:29
+It's a hot run.
+
+32:30
+It's from like the host
+memories, but like we put
+
+32:33
+it in the pin memory.
+
+32:35
+So it's like not... OS cache
+is going to be pageable memory.
+
+32:40
+We have like a caching system
+that we implement in Sirius.
+
+32:43
+So when we are running a hot run,
+it can run it from the pin memory.
+
+32:47
+So, Sirius itself handles
+the caching, not the OS?
+
+32:51
+Sirius itself handles the
+caching, not the OS.
+
+32:55
+And the reasons... Yeah, just
+to continue the conversation.
+
+32:58
+The reason we do that is that we
+noticed that even with GB300, when
+
+33:03
+we run it from the pageable memory,
+transfer it from the pin memory
+
+33:07
+compressed to pageable memory, it
+can be 2x faster, the throughput.
+
+33:11
+So, performance is
+number one, right?
+
+33:14
+So, we want to manage the
+caching ourselves.
+
+33:18
+Any more questions?
+
+33:20
+Thank you for your talk.
+
+33:22
+I have a question.
+
+33:23
+When you showed the benchmark,
+did the GB300 increase five times
+
+33:30
+faster and GH200 shows nine times
+faster than... So it means the...
+
+33:40
+The slow motion needs to get
+more bigger performance or...
+
+33:45
+No, so actually what that
+means is that, so in the GB300
+
+33:49
+experiments, I'm running both
+Sirius and DuckDB on the GB300
+
+33:56
+experiments, not this one.
+
+34:01
+No, I'm showing this one first.
+
+34:03
+So in this one, in the DGX station,
+the GB300, I'm running both
+
+34:07
+Sirius and DuckDB on the GB300.
+
+34:11
+So this is actually showing
+how good the great CPU is
+
+34:14
+at NVIDIA because it's achieving
+a very good performance, even
+
+34:18
+the CPU part of a GB300.
+
+34:21
+In this one, I am running it cost
+normalized, and I'm running it on
+
+34:24
+a different instance, like the CPU
+is running on an Intel CPUs here at
+
+34:27
+AWS, and then the GPU is running on
+like NVIDIA GPUs, so this is like
+
+34:31
+running on two different instances.
+
+34:37
+Yeah, the gray CPUs are
+amazing, and fairer CPUs
+
+34:41
+will be even more amazing.
+
+34:42
+And then, yeah, basically, we
+got the last speed up because
+
+34:47
+the gray CPUs are amazing.
+
+34:49
+Go NVIDIA.
+
+34:52
+All right, one more question.
+
+34:59
+So what were the options
+between, besides libcdf?
+
+35:05
+I mean, have you tried
+working with like Triton
+
+35:10
+or, because I think that...
+
+35:13
+The entire core of your extension
+is based on libcuDF, so it both
+
+35:21
+limits you and empowers you, so...
+Okay, that's a very good question.
+
+35:27
+So, yes, it's true that we are
+running our extensions on libcuDF.
+
+35:32
+And libcuDF so far has been great.
+
+35:34
+The best things I think about
+libcuDF is that it provides
+
+35:37
+us with so many features.
+
+35:39
+Like I don't have to think
+about like supporting each
+
+35:41
+different data types or like each
+different like types of like group
+
+35:45
+by or like operators using libcuDF.
+
+35:48
+Can the performance be better?
+
+35:51
+Yes, but like what what I
+see here in Sirius is that
+
+35:55
+like we can we make Sirius
+to be extensible, right?
+
+36:01
+If you are a researcher or
+if you are a user of Sirius,
+
+36:04
+what you can do is that you can
+also introduce your own operator.
+
+36:08
+We made it extensible so that you
+can introduce your own operator
+
+36:11
+that does not have to use libcuDF.
+
+36:13
+You can use your own CUDA
+kernel, for example, to implement
+
+36:17
+some of the operators that you
+think is a bottleneck in libcuDF.
+
+36:20
+And then after that,
+
+36:23
+We can actually take those
+optimizations and tell the
+
+36:25
+libcuDF team, it's like, look
+at this, there is some sort
+
+36:29
+of better optimizations that
+can happen, and then they
+
+36:32
+can streamline it to libcuDF
+as well to make libcuDF better.
+
+36:36
+So Sirius can also be a tool
+to make libcuDF better by
+
+36:41
+identifying those opportunities.
+
+36:42
+But if you prefer your own
+thing, we make it so that
+
+36:46
+it's extensible enough so that
+you can bring your own operator.
+
+36:48
+At least if you want to write
+your own CUDA kernels, for
+
+36:51
+example, you can do that.
+
+36:55
+Right, we have time for one
+short final question.
+
+37:00
+All right.
+
+37:02
+First of all, congratulations
+on the ClickBench result.
+
+37:05
+That was pretty
+remarkable, in my opinion.
+
+37:07
+Thank you.
+
+37:09
+Yeah, it just came out
+of nowhere, I feel.
+
+37:12
+I'm curious if you could talk
+more about your, like, multi-GPU
+
+37:15
+and multi-node roadmap and,
+like, why you chose to use
+
+37:19
+DORS over, like, I don't know,
+Dask, or, like, I've tried
+
+37:25
+out Dask, and I'd like to see if
+you could, like, have any comments
+
+37:29
+on using, like, Dask, and, like,
+why, like, Nixle versus, like, UCX.
+
+37:33
+Okay.
+
+37:35
+Yeah, great questions.
+
+37:36
+So, um...
+
+37:38
+So for Doris, it's actually
+because there are, like, a lot
+
+37:42
+of, like, ISVs, like, a couple ISV
+companies that's, like, reaching
+
+37:46
+out to us, like, some of them
+from China, some of them from the
+
+37:49
+US, and then they are, like, using
+either Doris or StarRocks as their
+
+37:54
+engine because they have, like...
+
+37:57
+They are one of the sort of
+modern distributed engines
+
+38:00
+that has really good performance.
+
+38:03
+So that's why we're starting
+from there, because we got
+
+38:07
+this intention from these
+companies to sort of like,
+
+38:11
+hey, we are using Doris, and we are
+looking to accelerate with GPUs.
+
+38:15
+Doris is like C++ based, which
+is like what I like as well.
+
+38:19
+Regarding the Nixle, this
+is actually something
+
+38:22
+that's like still an ongoing
+explorations, right?
+
+38:25
+We are for like our sort of
+like explorations, right?
+
+38:27
+Now we are currently using Nixles
+because it's pretty easy to use.
+
+38:30
+We don't close our possibilities
+of like if like we identify that
+
+38:33
+like UCXX is better, for example.
+
+38:35
+This is just like an exploration.
+
+38:37
+So it's still like an open
+question, basically.
+
+38:39
+But like for now, for
+like our early prototype,
+
+38:41
+we are using Nixle.
+

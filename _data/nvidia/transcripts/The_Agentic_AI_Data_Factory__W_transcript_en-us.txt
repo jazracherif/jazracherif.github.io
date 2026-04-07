@@ -1,0 +1,951 @@
+Session: https://www.nvidia.com/en-us/on-demand/session/gtc26-ex82286/
+
+Transcript Powered by AI
+
+The Agentic AI Data Factory: Why Agents Need a GPU-Native Data Platform to Create Real Value (Presented by Capgemini)
+
+
+00:06
+Good afternoon, everybody.
+
+00:07
+Thanks for stopping by.
+
+00:09
+I want to talk a little bit
+about some of the things
+
+00:11
+we've been working on for
+the last three years.
+
+00:14
+Before I get into my talk,
+I want to give you a little
+
+00:16
+bit of a context.
+
+00:18
+As we've been trying to automate a
+lot of processes for our clients,
+
+00:23
+One of the things that we
+realized is that there's a
+
+00:25
+lot of swivel chair stuff
+that we need to deal with.
+
+00:29
+So when our agents are working
+with folks or back office folks are
+
+00:32
+working with different processes,
+what they have is multiple screens.
+
+00:38
+And it seems like it's an
+easy thing to actually flip
+
+00:40
+between those screens and
+kind of do what we need to
+
+00:42
+do using agentic systems.
+
+00:44
+But a lot of times those screens
+are not always in the same mode.
+
+00:47
+Some of them are audio, some of
+them are video, some of them are
+
+00:50
+documents and so on and so forth.
+
+00:52
+So there's a real difficulty in
+automating those kinds of processes
+
+00:56
+because the way that we're kind of
+like actually running into things
+
+00:58
+in the real world is we need to
+be able to stitch those together,
+
+01:02
+so I called it multimodal, and
+then we also need to make sure that
+
+01:05
+we're able to take into account
+the motion that actually happens.
+
+01:08
+Sometimes there's actually video.
+
+01:10
+Where the motion actually
+gives you some additional
+
+01:12
+information as well.
+
+01:13
+So that's what I
+would call kinetics.
+
+01:14
+I'll get to that in a bit.
+
+01:16
+But that's really the problem
+we're trying to solve is agentic
+
+01:18
+systems that are meant to
+automate aren't doing a very
+
+01:22
+good job and can't do a really
+good job unless we can actually
+
+01:25
+lay out that timeline very clearly.
+
+01:28
+And actually put together a story
+regardless of what the mode is.
+
+01:32
+It doesn't matter if it's PDF, or
+audio, or video, or whatever it is.
+
+01:35
+You need to be able to put
+together the timeline with
+
+01:38
+a consistent story to be able
+to do a lot of automation stuff.
+
+01:42
+So that's really what
+the background is.
+
+01:45
+So I want to thank a lot of
+folks that have actually worked
+
+01:48
+with us on this solution.
+
+01:49
+So these are the people that
+have worked on it.
+
+01:59
+On, I kind of basically talked
+about this in the preface,
+
+02:04
+none of this stuff should
+be like surprises to any of you.
+
+02:09
+It's just really difficult
+to work with data that's
+
+02:11
+all over the place.
+
+02:14
+Even for structured data, it
+takes quite a bit of effort
+
+02:17
+to actually join them together
+and move them on through different
+
+02:20
+levels of processing.
+
+02:22
+And as we were, I think Jensen
+was talking about this morning,
+
+02:25
+I didn't actually catch the
+talk, but even for structured data,
+
+02:28
+it turns out that we can actually
+use GPUs to speed up things.
+
+02:31
+So what we're basically saying
+is, when you have splintered data,
+
+02:37
+even if it's structured, the GPU
+systems can come to help, but if
+
+02:40
+it's structured and unstructured,
+and you want to account for
+
+02:43
+all that stuff almost in real
+time, then we need to actually
+
+02:47
+sort of rely on GPU technologies.
+
+02:51
+So this is a good view of what
+we're trying to do and essentially
+
+02:56
+the easiest way to think of
+this is it's an uplift of the
+
+03:00
+lake house to be able to deal with
+unstructured data in real time.
+
+03:04
+So the way this actually works.
+
+03:06
+Is on the left side, you could
+have streaming data or batch data.
+
+03:14
+You can have structured data
+or unstructured data.
+
+03:16
+If it's structured data, it lands
+immediately into the Sentinel grid.
+
+03:19
+So in the old days, it
+would be called the bronze
+
+03:23
+layer or whatever.
+
+03:25
+So it drops directly into
+that, which is actually
+
+03:27
+an Iceberg format.
+
+03:28
+So all the storage stuff in our
+schematic is actually Iceberg.
+
+03:34
+Now, it's unstructured data.
+
+03:35
+What I want to do is at the
+time that it actually starts
+
+03:37
+to come in, I'm going to run it
+through some kind of an embedder.
+
+03:40
+So it's not super clear
+what the good embedding
+
+03:44
+solutions are going to be.
+
+03:45
+I assume that we'll have something
+from NVIDIA at some point.
+
+03:48
+But if you really wanna get
+a lot of that data in like
+
+03:53
+a unified vector space, if
+you're actually getting audio,
+
+03:56
+video, and so on and so forth, and
+if you wanna get it into the same
+
+03:59
+meaning space and vector, there's
+not really that many options.
+
+04:02
+Maybe you have ImageBind
+or something like that that
+
+04:04
+actually does that.
+
+04:06
+And if you want to capture
+the motion, the kinetic
+
+04:08
+aspect of it, there's even
+less solutions that you have.
+
+04:11
+So for example, 12Labs does a good
+job of that temporal relationship.
+
+04:16
+I don't think it's gonna be
+that way for long.
+
+04:18
+So the way that we've kind
+of just done that is if it's
+
+04:20
+actually unstructured data,
+we think there's gonna be
+
+04:22
+some kind of a joint embedding
+facility that will run it through.
+
+04:25
+So for example, you have the
+concept of an elephant.
+
+04:28
+It really doesn't matter whether
+it's an image or a PDF or
+
+04:31
+an audio in English or Turkish
+or Indian or whatever it is,
+
+04:35
+it all lands in the same place.
+
+04:37
+And then, basically, what we
+do is take that unstructured
+
+04:41
+data that's embedding versions
+of the unstructured data and
+
+04:45
+join them with the structured
+data using old ECM-like indices,
+
+04:50
+like document management kind of
+indices, and combine them together.
+
+04:55
+Just one step I forgot to
+talk about is when things
+
+04:57
+come in, if they're structured
+data, they'll actually land
+
+04:59
+directly into the Sentinel grid.
+
+05:01
+If they're unstructured data,
+they'll go through the joint
+
+05:03
+embedding facility and then
+go through the Sentinel grid.
+
+05:06
+And then the Concord grid, we're
+actually just joining those
+
+05:09
+structured and unstructured data.
+
+05:10
+And we have like two versions of
+this information that we actually
+
+05:14
+make available, this version
+of the data that we make available.
+
+05:17
+One is basically the signal
+grid, which I'm gonna show
+
+05:18
+you a little bit of.
+
+05:20
+And the signal grid is basically
+an ad hoc environment for doing
+
+05:24
+reporting, multimodal reporting,
+multimodal ML, multimodal
+
+05:28
+BI, and so on and so forth.
+
+05:29
+So it's basically an
+analytical environment.
+
+05:32
+And then, for those of you
+that saw the reInvent talk
+
+05:34
+of mine, we actually also
+have another pad that's going on.
+
+05:39
+Basically, that's called the
+pulse grid, and the pulse grid
+
+05:40
+is actually looking at the KPIs
+of the enterprise, and it's looking
+
+05:43
+at what's happened to the KPIs.
+
+05:46
+And if, for example, close rates
+have fallen by 5%, it basically
+
+05:49
+uses tensor decomposition,
+which is very GPU-friendly to kind
+
+05:52
+of explain what's causing that.
+
+05:54
+So if it's gone down by 5%, it'll
+say, of that 5%, 2% came from this
+
+05:57
+segment, 3% came from this segment,
+blah, blah, blah, blah, blah.
+
+06:00
+So that's the kind of stuff
+that's actually happening there.
+
+06:04
+I also want to point out that
+all the processing that's
+
+06:06
+happening between these different
+stages, Sentinel Grid to Concord
+
+06:09
+Grid to Signal Grid and so
+on and so forth, is actually
+
+06:11
+a combination of NVIDIA technology,
+which is RAPIDS, the RAPIDS
+
+06:17
+library, and also basically Polars.
+
+06:21
+The structured data, we're
+also using Polars to help with
+
+06:23
+some of those processing as well.
+
+06:28
+So essentially, the easiest way to
+think about this is, most of the
+
+06:32
+data is actually in S3 buckets, and
+when I need to bring it into the
+
+06:36
+aperture that I need to bring it
+into, it'll actually work through
+
+06:39
+FSx and EFA to actually bring
+it into like a GPU environment.
+
+06:43
+And the GPU environments
+are actually structured
+
+06:45
+into like in terms of Sentinel
+Grid, Concord Grid, and
+
+06:47
+Signal Grid, and Pulse Grid.
+
+06:50
+And then we can actually interact
+with that, and I'm gonna show
+
+06:52
+you how you interact with
+them in the Signal Grid.
+
+06:54
+But essentially what we're,
+
+07:00
+What I want to show you is
+this one environment where
+
+07:03
+we've actually stitched together
+the data, whether it's audio,
+
+07:07
+video, and so on and so forth.
+
+07:09
+In that environment, for example,
+in the Signal Grid that I'm going
+
+07:12
+to show you today, or at least
+like a very early version of the
+
+07:15
+Signal Grid, I can ask questions
+in any language I want, or I can
+
+07:19
+type out questions in any language
+I want, based on any persona, based
+
+07:25
+on any topic that I want, and it
+actually kind of responds back with
+
+07:27
+the answers that you need to have.
+
+07:31
+One more thing I want
+to talk about here.
+
+07:34
+So one use case that we talked
+about before I go to my demo
+
+07:36
+is that this one problem that
+we worked on is this whole
+
+07:42
+idea if you have like an insurance
+claim and you have basically
+
+07:47
+the customer, and we haven't
+actually worked this out exactly,
+
+07:50
+but we could very easily
+
+07:52
+Have a customer with a damaged
+vehicle walk around the vehicle
+
+07:55
+just like you take a check
+capture when you capture checks
+
+07:59
+or something like that.
+
+08:00
+You could have the customer
+actually walk around the bike
+
+08:03
+with some or the vehicle with
+some level of steer in terms
+
+08:07
+of having the arrows aligned
+and so on and so forth and get a
+
+08:10
+360 degree view and also have them
+explaining what's actually happened
+
+08:13
+to the car and then I can actually
+start generating an estimate
+
+08:17
+that sort of gets better and
+better as they actually go around
+
+08:19
+so you get like Like, lots of...
+
+08:22
+And then we can actually start
+with something that sort of
+
+08:25
+like oscillates a lot in terms
+of what the estimate looks
+
+08:27
+like, but then it actually sort
+of converges as you go around and
+
+08:31
+it also checks with the facts of
+the accident and so on and so forth
+
+08:33
+to see if there's any problems with
+what's actually being mentioned.
+
+08:36
+So that's one of the use cases
+we're working on.
+
+08:38
+So essentially what's happening
+there, it's actually sort of
+
+08:41
+aligning what's happening in audio
+that someone's describing versus
+
+08:44
+the video that we're taking of the
+scene to kind of understand what
+
+08:48
+we should do with the estimate.
+
+08:48
+So that's one use case.
+
+08:50
+The second use case that we're
+working on that I'll show
+
+08:53
+you a very quick demo, if
+I can, is this whole idea of data
+
+08:58
+wefting as being able to actually,
+weft is actually in Loom terms.
+
+09:06
+So there's actually a warp which is
+the straight linear threads going
+
+09:10
+and the wefting is actually the
+threads that go across and combine
+
+09:13
+them and that's really what we've
+kind of worked on is basically
+
+09:15
+a data wefting studio that
+pulls together all these media and
+
+09:19
+actually gets together one story.
+
+09:21
+So you might actually have
+a part of the story that's
+
+09:23
+happening in document and
+it kind of analyzes, it sort
+
+09:26
+of organizes that part of it
+that comes in video, it organizes
+
+09:29
+that part of it that comes in audio
+that organizes it and I'm going
+
+09:33
+to switch to the demo right now.
+
+09:36
+So what I have behind the scenes
+is a whole bunch of recordings.
+
+09:40
+And if you stop by the booth,
+we might be able to show you
+
+09:42
+what we do with video and
+so on and so forth.
+
+09:44
+There's a whole bunch of recordings
+that we have behind the scenes
+
+09:46
+that we can actually talk
+to the recordings.
+
+09:47
+And I can actually say
+something like, find me.
+
+10:13
+Based on the analyzed calls, the
+following customer experienced
+
+10:17
+life events that create an
+opportunity for selling insurance.
+
+10:20
+John Feller had a new car
+purchase and car trading.
+
+10:23
+So these are all the little
+examples in terms of the life
+
+10:25
+events that have actually
+come up in the information.
+
+10:28
+But it really doesn't
+matter what you ask it.
+
+10:31
+I don't have to
+pre-format the information.
+
+10:34
+I can just basically have that
+embedding, and I'm basically
+
+10:36
+talking to that embedding.
+
+10:38
+So what's really magical here is
+that I'm talking to it in text,
+
+10:42
+but it's actually returning audio.
+
+10:45
+There is no transcription
+behind the scenes.
+
+10:47
+None of that stuff is happening.
+
+10:48
+The same thing could happen with
+video and so on and so forth.
+
+10:52
+And if I have a combination
+of audio and video and so
+
+10:54
+on and so forth, we'll be
+able to work with that as well.
+
+10:55
+I don't have that actually
+in our demos yet.
+
+10:58
+But maybe if you could stop
+by our booth or something like
+
+10:59
+that, I might be able to show you.
+
+11:01
+But this is actually quite
+magical, because you're talking
+
+11:04
+in text, but it's returning
+stuff back in audio.
+
+11:08
+Does that make sense?
+
+11:13
+And one last thing I
+want to show you.
+
+11:20
+So on this one, it's basically,
+it's like a longitudinal issue.
+
+11:24
+It's like one recording.
+
+11:26
+And I'm basically looking
+across all those recordings
+
+11:28
+and all the documents and coming
+up with these little cards that
+
+11:31
+tell you exactly what's going on.
+
+11:33
+So more if you actually
+stop by our booth.
+
+11:36
+One more minute, sorry.
+
+11:52
+And this is basically, I
+was showing you before,
+
+11:55
+the signal grid, this is
+basically the pulse grid.
+
+11:57
+So this is one of those things
+where I have like a constantly
+
+12:00
+running view of what the KPIs
+are doing for the enterprise.
+
+12:04
+So this is basically a
+Lending Club example.
+
+12:06
+It's looking at exactly
+what's happened, what's
+
+12:08
+driving like a default rate
+or something like that.
+
+12:10
+Again, I'll be able to show
+you some of this stuff when
+
+12:13
+you stop by the booth.
+
+12:16
+So what I'm showing you is there's
+like a couple stages of processing
+
+12:20
+and there's a couple stages of
+interaction one interaction thing
+
+12:23
+I was showing you before and this
+is the second interaction thing.
+
+12:25
+There's two ways of actually
+interacting with your information
+
+12:30
+So, we have some benchmarks as
+well in terms of what it takes
+
+12:35
+to run up a lot of structured data.
+
+12:37
+Maybe a lot of structured
+and some unstructured data.
+
+12:40
+At that time, we're not dealing
+with a lot of unstructured data.
+
+12:43
+But we're seeing really, really
+big numbers in terms of the
+
+12:45
+advantage of actually using
+GPU technology for structured data.
+
+12:49
+I don't know if it's entirely
+representative, but these
+
+12:52
+are the numbers that we're
+actually putting up with like TPC
+
+12:55
+benchmarks and so on and so forth.
+
+12:57
+So there's a lot to be said
+for actually moving even
+
+12:59
+direct processing.
+
+13:00
+I think that's what we're
+hearing at today's keynote.
+
+13:03
+It's actually, we might see
+some real good advantages to
+
+13:07
+switching over to GPU technologies
+for even structured processing.
+
+13:11
+That was it.
+
