@@ -1,0 +1,117 @@
+/**
+ * header.css — Fixed site header and navigation styles
+ *
+ * Sections:
+ *   1. CSS Variables (header dimensions for layout offsets)
+ *   2. Fixed header positioning & page offset
+ *   3. Header colors & typography
+ *   4. Navigation
+ */
+
+
+/* ==========================================================================
+   1. CSS Variables
+   ========================================================================== */
+
+:root {
+  --header-h: 56px;    /* actual header height: 54px line-height + 1px border-bottom */
+  --header-gap: 48px;  /* breathing room below header */
+  scroll-padding-top: calc(var(--header-h) + 46px); /* anchor jumps clear the fixed header */
+}
+
+
+/* ==========================================================================
+   2. Fixed positioning & page offset
+   ========================================================================== */
+
+.site-header {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 500;
+  background-color: #3d4a7a;
+  border-top: none !important;
+  border-bottom: 1px solid #4d5a8a;
+}
+
+/* Push page content below the fixed header */
+.page-content {
+  padding-top: calc(var(--header-h) + var(--header-gap) + 30px) !important;
+}
+
+
+/* ==========================================================================
+   3. Header colors & typography
+   ========================================================================== */
+
+.site-header .site-title,
+.site-header .site-title:visited,
+.site-header .page-link {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.site-header .page-link:hover,
+.site-header .site-title:hover {
+  color: #b0c8e0;
+}
+
+.site-header .wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;
+  padding: 0.8rem 2rem;
+}
+
+
+/* ==========================================================================
+   4. Navigation
+   ========================================================================== */
+
+.site-nav {
+  float: none;
+  margin-left: auto;
+}
+
+@media (max-width: 600px) {
+  .site-nav {
+    background-color: #3d4a7a;
+    border: 1px solid #4d5a8a;
+    border-radius: 5px;
+  }
+
+  .site-nav .trigger {
+    background-color: #3d4a7a;
+    border: none;
+    border-radius: 0;
+  }
+
+  .site-nav .menu-icon > svg path {
+    fill: #ffffff;
+  }
+}
+
+.site-nav .trigger {
+  display: flex;
+  gap: 0;
+}
+
+.site-nav .page-link {
+  padding: 0.5rem 1.1rem;
+  border-radius: 6px;
+  border: none;
+  transition: background 0.2s;
+  text-decoration: none;
+  margin: 0;
+}
+
+.site-nav .page-link:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.site-nav .page-link-active {
+  background: rgba(0,0,0,0.25);
+  font-weight: 600;
+}
