@@ -14,4 +14,25 @@
   {%- if jekyll.environment == 'production' and site.google_analytics -%}
     {%- include google-analytics.html -%}
   {%- endif -%}
+  <style>
+    :root {
+      --header-h: 56px;       /* actual header height: 54px line-height + 1px border-bottom */
+      --header-gap: 48px;     /* breathing room below header */
+      scroll-padding-top: calc(var(--header-h) + 46px); /* anchor jumps clear the fixed header */
+    }
+    /* Sticky site header */
+    .site-header {
+      position: fixed !important;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 500;
+      background-color: #fdfdfd;
+      border-top: none !important;
+    }
+    /* Push page content below the fixed header */
+    .page-content {
+      padding-top: calc(var(--header-h) + var(--header-gap) + 30px) !important;
+    }
+  </style>
 </head>

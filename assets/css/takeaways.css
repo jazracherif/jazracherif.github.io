@@ -179,3 +179,16 @@ takeaway-tag[name="algo"]       { background-color: #c026d3; } takeaway-tag[name
 .takeaway-table .tk-sep td {
   padding-top: 0.6em;
 }
+
+/* ── 5. Session title ───────────────────────────────────────────────────── */
+
+.post-content h4 {
+  margin-top: 2.2em;
+  margin-bottom: 0.15em;
+  padding-bottom: 0.3em;
+  border-bottom: 2px solid #111827;
+  font-size: 1em;
+  font-weight: 700;
+}
+
+

@@ -1,0 +1,226 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOC — "On this page" sidebar (desktop) + floating dialog (mobile)
+   Activated via `toc: true` in post frontmatter.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Desktop sidebar ──────────────────────────────────────────────────────── */
+
+.toc-sidebar {
+  position: fixed;
+  top: calc(var(--header-h, 56px) + var(--header-gap, 48px) + 30px);
+  /* +30px matches Minima's .page-content { padding: 30px 0 }, so the TOC
+     starts at the same vertical position as the post title. */
+  /* Align left edge just right of the centered 740px content column.
+     Content right edge = 50vw + 370px (half of 740px). Add 20px gap. */
+  left: calc(50% + 370px + 20px);
+  width: 220px;
+  max-height: calc(100vh - var(--header-h, 56px) - var(--header-gap, 48px) - 46px);
+  /* -46px = -30px (page-content top padding, so TOC top aligns with title)
+              -16px (bottom breathing room above viewport edge) */
+  overflow-y: auto;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0 10px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  z-index: 100; /* below the fixed site-header (z-index 500) and mobile toggle (200) */
+  display: none;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+
+/* Show sidebar only when viewport is wide enough that the TOC right edge
+   (50vw + 370 + 20 + 220 = 50vw + 610) fits without overflow: vw ≥ 1240px. */
+@media (min-width: 1240px) {
+  .toc-sidebar {
+    display: block;
+  }
+}
+
+.toc-sidebar__title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #6b7280;
+  margin: 0 0 8px 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* ── Shared link list styles (used in both sidebar and dialog) ────────────── */
+
+.toc-list,
+.toc-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Collapsible children ─────────────────────────────────────────────────── */
+
+/* Children lists are hidden by default and shown when their parent is active */
+.toc-children {
+  display: none;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.toc-children--open {
+  display: block;
+}
+
+.toc-list li {
+  margin: 0;
+  padding: 0;
+}
+
+.toc-sidebar .toc-link,
+.toc-dialog .toc-link {
+  display: block;
+  padding: 3px 6px;
+  color: #4b5563;
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  border-radius: 0 3px 3px 0;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+  line-height: 1.35;
+  margin-bottom: 1px;
+  outline: none;
+  -webkit-tap-highlight-color: transparent; /* suppress iOS blue flash on tap */
+}
+.toc-sidebar .toc-link:visited,
+.toc-dialog .toc-link:visited {
+  color: #4b5563;
+}
+
+/* Depth indentation */
+.toc-link[data-depth="0"] { padding-left: 6px;  font-weight: 500; }
+.toc-link[data-depth="1"] { padding-left: 14px; }
+.toc-link[data-depth="2"] { padding-left: 22px; font-size: 0.8rem; color: #6b7280; }
+
+.toc-sidebar .toc-link:hover,
+.toc-dialog .toc-link:hover {
+  color: #111827;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+.toc-sidebar .toc-link.is-active,
+.toc-dialog .toc-link.is-active {
+  color: #0f766e;
+  font-weight: 600;
+  border-left-color: #0f766e;
+}
+
+/* ── Mobile floating toggle button ───────────────────────────────────────── */
+
+.toc-toggle {
+  display: none;           /* hidden on desktop */
+  position: fixed;
+  bottom: 24px;
+  right: 20px;
+  z-index: 200;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  background: #111827;
+  color: #ffffff;
+  border: none;
+  border-radius: 24px; /* large value produces a pill shape regardless of button height */
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+  -webkit-tap-highlight-color: transparent; /* suppress iOS blue flash on tap */
+}
+
+/* Show the floating button on viewports too narrow for the sidebar */
+@media (max-width: 1239px) {
+  .toc-toggle {
+    display: flex;
+  }
+}
+
+/* ── Mobile <dialog> panel ───────────────────────────────────────────────── */
+
+dialog.toc-dialog {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: auto;
+  width: 100%;
+  max-width: 100%;
+  max-height: 65vh;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.18);
+}
+
+dialog.toc-dialog[open] {
+  animation: toc-slide-up 0.22s ease-out;
+}
+
+@keyframes toc-slide-up {
+  from { transform: translateY(100%); opacity: 0.6; }
+  to   { transform: translateY(0);    opacity: 1;   }
+}
+
+dialog.toc-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.toc-dialog__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.toc-dialog__title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #111827;
+  margin: 0;
+}
+
+.toc-dialog__close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.toc-dialog__close:hover {
+  color: #111827;
+  background: #f3f4f6;
+}
+
+/* Scrollable list area inside dialog.
+   52px = dialog header height (title + padding + border). */
+.toc-dialog .toc-list-wrap {
+  overflow-y: auto;
+  max-height: calc(65vh - 52px);
+  padding: 8px 8px 24px;
+}
+
+/* Slightly larger tap targets inside dialog */
+.toc-dialog .toc-link {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}

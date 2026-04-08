@@ -4,31 +4,23 @@ title: "Accelerated Analytics at GTC 2026"
 date: 2026-04-06 00:00:00 -0700
 categories: []
 tags: []
+toc: true
 ---
 
-One of the big surprises at GTC2026 was the focus on accelerated Analytics for Enterprise AI. In this post, i dive into the annoucements and cover the several session covering these topics
-
-<div class="tldr">
-<p class="tldr-label">TL;DR</p>
-<ol>
-  <li><strong>KEY_POINT_1</strong> — Brief explanation.</li>
-  <li><strong>KEY_POINT_2</strong> — Brief explanation.</li>
-  <li><strong>KEY_POINT_3</strong> — Brief explanation.</li>
-</ol>
-</div>
-
-### <FIRST_SECTION_HEADING>
-
-we will cover the following 
+One of the big surprises at GTC2026 was the focus on accelerated Analytics for Enterprise AI. In this post, i provide key links and takeaways to interesting session covering data analytics at GTC.
 
 ### Technical Deep Dives
 
-#### [🔗](https://www.nvidia.com/en-us/on-demand/session/gtc26-s81769/) The Era of GPU Data Processing: From SQL to Search and Back Again
+#### [🔗 The Era of GPU Data Processing: From SQL to Search and Back Again](https://www.nvidia.com/en-us/on-demand/session/gtc26-s81769/) 
 
-<small><strong>Joshua Patterson</strong> · VP, Solutions Architecture, NVIDIA<br><strong>Todd Mostak</strong> · Sr. Director of Engineering, NVIDIA</small>
+<small>
+<strong>Joshua Patterson</strong> · VP, Solutions Architecture, NVIDIA<br>
+<strong>Todd Mostak</strong> · Sr. Director of Engineering, NVIDIA
+</small>
+
+CPU performance improvement on TPCH has flattened. The session explores this problem and the way it can be mitigated with the Help of the NVIDIA ecosystem, including using Vera CPU, using GPU accelerated databases, and designing the cluster to maximize the overlap of compute intensive vs IO intensive task for analytics operators.
 
 <details class="session-abstract"><summary>Session overview</summary><p>This session delivers a technical state of the union on GPU-accelerated data processing across SQL/DataFrames, vector search, ML, and decision optimization. Learn how GPU-native engines enable interactive analytics on massive lakehouse-scale datasets, real-time semantic and vector search over billions of embeddings, and makes the hardest ML and decision science workloads tractable, cost-efficient, and energy-efficient. The talk highlights the implications for high-impact scientific and enterprise computing, then looks ahead to what's in flight for 2026 and beyond, outlining concrete architectural patterns and practical guidance for building the next generation of GPU-accelerated data platforms and using them in your day-to-day work.</p></details>
-
 
 **Takeaways**
 
@@ -41,16 +33,15 @@ we will cover the following
 <tr>
   <td colspan="2" class="tk-content">
     <takeaway-tag name="benchmark"></takeaway-tag>
-    <takeaway-tag name="pain"></takeaway-tag>
-    <takeaway-tag name="tco"></takeaway-tag>
     <span class="tk-body">
-      SQL Server and peers show only 15–20% gains every two years probably just due to CPU refresh cycles. An interesting number from trino Usage at Airbnb says <em>(@ 12:20)</em>: 2% of queries consume 92% of cluster resources.
+      Speakers argue that over the past few years CPU performance for analytics has not improved by orders of magnitude. For example SQL Server and peers show only 15–20% gains every two years probably just due to CPU refresh cycles. They are argue NVIDIA can help push the field forward
     </span>
+    <img src="/assets/img/gtc-2026/sessions/s81769-gpu-data-processing-tpch-over-time.png" alt="">    
   </td>
 </tr>
 
 <tr>
-  <td class="tk-head"><strong>2. Vera is the surprising GPU companion story</strong></td>
+  <td class="tk-head"><strong>2. Vera CPU accelerates analytics for free</strong></td>
   <td class="tk-time">@ 05:17</td>
 </tr>
 <tr>
@@ -60,13 +51,14 @@ we will cover the following
     <takeaway-tag name="design"></takeaway-tag>
     <takeaway-tag name="tco"></takeaway-tag>
     <span class="tk-body">
-      Some of the attributes taht makes Vera good for analytics and processing are: 1) massive amount of Memory Bw 1.2 TB/s, 2) "tons of cross-section BW avoid numa locality pb with multi socket machines 3) lost of BW/per core at 14 GB/s per core (3× x86/ARM), Vera gives analytics workloads a 2.5–3× lift with zero recompilation. Starburst, Kinetica, Redpanda all validate this. More GPU headroom per watt is the secondary win.
+      Vera CPU shows impressive performance improvements for analytics workloads. Some of the attributes that makes it a good fit are: 1) massive amount of Memory BW (1.2 TB/s) 2) "tons of cross-section BW that avoid numa locality problem seen in multi socket machines 3) Lots of BW/per core (14 GB/s per core, 3× that of x86/ARM) <br>
+      -> Vera gives analytics workloads a 2.5–3× lift with zero recompilation. Starburst, Kinetica, Redpanda all validate this. More GPU headroom per watt is the secondary win.
     </span>
   </td>
 </tr>
 
 <tr>
-  <td class="tk-head"><strong>3. Only 10% of enterprise unstructured data is properly indexed — cuVS closes that gap</strong></td>
+  <td class="tk-head"><strong>3. Enterprise unstructured data: cuVS helps close the indexing gap</strong></td>
   <td class="tk-time">@ 08:54</td>
 </tr>
 <tr>
@@ -74,72 +66,62 @@ we will cover the following
     <takeaway-tag name="benchmark"></takeaway-tag>
     <takeaway-tag name="pain"></takeaway-tag>
     <span class="tk-body">
-      GPU-accelerated cagra (a graph HNSW variant) hits 10–13× faster indexing vs CPU HNSW at equivalent accuracy, on a cheaper instance. Plugin integration with Milvus, Elasticsearch, and OpenSearch means no rewrite required.
+      90% of enterprise data is unstructured but only 10% is properly indexed. GPU-accelerated CAGRA (a graph nearest neighbot algorithm for HNSW) hits 10–13× faster indexing vs CPU HNSW at equivalent accuracy, on a cheaper instance. CuVS Plugin integration with Milvus, Elasticsearch, and OpenSearch means no rewrite required.
     </span>
   </td>
 </tr>
 
 <tr>
-  <td class="tk-head"><strong>4. DuckDB on a single GB300: 21 seconds for TPC-H 1 TB</strong></td>
+  <td class="tk-head"><strong>4. 2% of queries consume 92% of cluster resources.</strong></td>
+  <td class="tk-time">@ 11:15</td>
+</tr>
+<tr>
+  <td colspan="2" class="tk-content">
+    <takeaway-tag name="benchmark"></takeaway-tag>
+    <span class="tk-body">
+      An interesting number from trino Usage at Airbnb says that 2% of queries consume 92% of cluster resources.
+    </span>
+    <img src="/assets/img/gtc-2026/sessions/s81769-gpu-data-processing-small-number-of-big-queries.png" alt="">    
+  </td>
+</tr>
+
+
+<tr>
+  <td class="tk-head"><strong>4. Sirius on DuckDB on a single GB300: 21 seconds for TPC-H 1 TB</strong></td>
   <td class="tk-time">@ 19:01</td>
 </tr>
 <tr>
   <td colspan="2" class="tk-content">
     <takeaway-tag name="benchmark"></takeaway-tag>
     <takeaway-tag name="tco"></takeaway-tag>
-    <takeaway-tag name="memory-cap"></takeaway-tag>
-    <span class="tk-body">
-      The speakers were careful not to name the existing world record, but the implication was clear. The Sirius cuDF-DuckDB integration delivers 7× TCO on ClickBench. Transwarp's TPC-DS 150 GB run clocked 26× faster than CPU DuckDB on the same GPU.
-    </span>
-  </td>
-</tr>
-
-<tr>
-  <td class="tk-head"><strong>5. Heavy AI / OmniSci going open source late Q2 2026</strong></td>
-  <td class="tk-time">@ 19:45</td>
-</tr>
-<tr>
-  <td colspan="2" class="tk-content">
     <takeaway-tag name="oss"></takeaway-tag>
     <span class="tk-body">
-      Full stack: LLVM compilation engine, Vulkan in-process rendering, geospatial/time series support, fast OLAP. Todd Mostak is now at NVIDIA leading this. Worth watching for anyone who wanted GPU-native SQL without the enterprise price tag.
+      The speakers reference a later session on SiriusDB showcasing how fast the acceleration is. The Sirius cuDF-DuckDB integration delivers 7× TCO on ClickBench. Transwarp's TPC-DS 150 GB run clocked 26× faster than CPU DuckDB on the same GPU. 
+      <br>
+      Another accelerated Database mentioned <em>(@19:45)</em> is Heavy AI / OmniSci will be open sourced in late Q2 2026. It features LLVM compilation engine, Vulkan in-process rendering, geospatial/time series support, fast OLAP. Todd Mostak is now at NVIDIA leading this. Worth watching for anyone who wanted GPU-native SQL without the enterprise price tag.
     </span>
   </td>
 </tr>
 
 <tr>
-  <td class="tk-head"><strong>6. GPU Direct Storage collapses the memory hierarchy</strong></td>
+  <td class="tk-head"><strong>5. Theseus's Async mini-executor architecture + GPU Direct Storage help break the memory wall</strong></td>
   <td class="tk-time">@ 20:41</td>
 </tr>
 <tr>
   <td colspan="2" class="tk-content">
-    <takeaway-tag name="storage"></takeaway-tag>
-    <takeaway-tag name="memory-cap"></takeaway-tag>
     <takeaway-tag name="design"></takeaway-tag>
+    <takeaway-tag name="memory-cap"></takeaway-tag>
+    <takeaway-tag name="storage"></takeaway-tag>
     <span class="tk-body">
-      Theseus engine was able to run TPCH-100TB on 2 DGX A100 servers (each with 8× A100 80GB/GPU, 640GB total GPU HBM2e memory, 2TB/s per-GPU memory bandwidth, connected via NVLink 3.0 at 600GB/s) + 200Gbs Infiniband + GPU Direct Storage. GDS enables all GPUs to talk directly to storage network instead of waiting for data to be served via a single CPU attached to the system. The practical consequence: petabytes of NVMe storage becomes queryable working memory.
+      The Theseus engine from Voltron was able to run TPCH-100TB on 2 DGX A100 servers (each with 8× A100 80GB/GPU, 640GB total GPU HBM2e memory, 2TB/s per-GPU memory bandwidth, connected via NVLink 3.0 at 600GB/s) + 200Gbs Infiniband + GPU Direct Storage. GDS enables all GPUs to talk directly to storage network instead of waiting for data to be served via a single CPU attached to the system. The practical consequence: petabytes of NVMe storage becomes queryable working memory. Replacing the monolithic executor with specialized actors — compute, memory-tier management, prefetch/decode, networking — enabled true overlap of I/O and compute. The speakers described it as "an agent swarm for query processing." See the <a href="https://arxiv.org/pdf/2508.05029">Theseus paper</a> for more on the architecture.
+
     </span>
+    <img src="/assets/img/gtc-2026/sessions/s81769-gpu-data-processing-theseus-breaking-memory-barrier.png" alt="">    
   </td>
 </tr>
 
 <tr>
-  <td class="tk-head"><strong>7. Async mini-executor decomposition was Theseus's secret</strong></td>
-  <td class="tk-time">@ 22:52</td>
-</tr>
-<tr>
-  <td colspan="2" class="tk-content">
-    <takeaway-tag name="design"></takeaway-tag>
-    <takeaway-tag name="comm"></takeaway-tag>
-    <takeaway-tag name="storage"></takeaway-tag>
-    <takeaway-tag name="memory-cap"></takeaway-tag>
-    <span class="tk-body">
-      Replacing the monolithic executor with specialized actors — compute, memory-tier management, prefetch/decode, networking — enabled true overlap of I/O and compute. The speakers described it as "an agent swarm for query processing." See the <a href="https://arxiv.org/pdf/2508.05029">Theseus paper</a> for more on the architecture.
-    </span>
-  </td>
-</tr>
-
-<tr>
-  <td class="tk-head"><strong>8. SPACE MICE cluster for Data Analytics</strong></td>
+  <td class="tk-head"><strong>6. SPACE MICE, a reference design to push Data Analytics cluster to the next level </strong></td>
   <td class="tk-time">@ 24:53</td>
 </tr>
 <tr>
@@ -150,8 +132,9 @@ we will cover the following
     <takeaway-tag name="memory-cap"></takeaway-tag>
     <takeaway-tag name="benchmark"></takeaway-tag>
     <span class="tk-body">
-      The cluster design uses NVLink for all GPU-to-GPU shuffle (east-west, ~1.8 TB/s) while repurposing CX8 NICs entirely for storage I/O (north-south, 3–4 TB/s). The two networks run simultaneously and non-overlapping. 18 GPUs × 100 TB reachable per TB of GPU memory = ~1.8 PB per rack. Vera Rubin (144 GPUs) pushes this to ~5 PB.
+      This design consists of 1) 1 gb200 NVL72 2) 9 dgx B300 3) 10 rtx pro 6000 nodes 4) 20 RTX 4500. NVLink is mainly for all GPU-to-GPU shuffle (east-west, ~1.8 TB/s) while CX8 NICs are dedicated to for storage I/O (north-south, 3–4 TB/s). The two networks run simultaneously and non-overlapping. 18 GPUs × 100 TB reachable per TB of GPU memory = ~1.8 PB per rack. Vera Rubin (144 GPUs) pushes this to ~5 PB.
     </span>
+    <img src="/assets/img/gtc-2026/sessions/s81769-gpu-data-processing-space-mice-cluster.png" alt="">
   </td>
 </tr>
 
@@ -159,9 +142,12 @@ we will cover the following
 
 
 
-#### [🔗](https://www.nvidia.com/en-us/on-demand/session/gtc26-s81563/) Unlock Fast, Cost-Effective Interactive Analytics on Massive Data Lakehouses
+#### [🔗 Unlock Fast, Cost-Effective Interactive Analytics on Massive Data Lakehouses](https://www.nvidia.com/en-us/on-demand/session/gtc26-s81563/) 
 
 <small><strong>Greg Kimball</strong> · Software Engineering Manager, NVIDIA<br><strong>Zoltán Arnold Nagy</strong> · Sr. Software Engineer, IBM Research</small>
+
+<img src="/assets/img/gtc-2026/sessions/s81563-lakehouse-analytics-presto-session.jpeg" alt="">
+
 
 <details class="session-abstract"><summary>Session overview</summary><p>Running interactive SQL at scale is still far slower, and more expensive, than it should be. This session explores how GPU acceleration fundamentally changes that equation. We'll dive into open-source community work speeding up the popular open data lakehouse engine Presto—work that required rethinking not just the core execution engine, but also the surrounding system components that drive performance at scale. We'll walk through benchmark results, lessons from real enterprise deployments, and the architectural details that actually matter in practice. You'll leave with concrete guidance for GPU-accelerating your own data processing workloads to achieve better performance at lower cost.</p></details>
 
@@ -184,7 +170,7 @@ we will cover the following
 </tr>
 
 <tr>
-  <td class="tk-head"><strong>2. Table scan / Parquet I/O dominates — not compute</strong></td>
+  <td class="tk-head"><strong>2. Table scan & Parquet I/O dominates — not compute</strong></td>
   <td class="tk-time">@ 07:22</td>
 </tr>
 <tr>
@@ -301,9 +287,11 @@ we will cover the following
 
 </table>
 
-#### [🔗](https://www.nvidia.com/en-us/on-demand/session/gtc26-s81870/) Achieving 8x Lower Cost Analytics with GPU-Accelerated DuckDB
+#### [🔗 Achieving 8x Lower Cost Analytics with GPU-Accelerated DuckDB](https://www.nvidia.com/en-us/on-demand/session/gtc26-s81870/) 
 
 <small><strong>Bobbi Yogatama</strong> · Sr. Systems Software Engineer, NVIDIA<br><strong>Xiangyao Yu</strong> · Assistant Professor, University of Wisconsin-Madison</small>
+
+<img src="/assets/img/gtc-2026/sessions/s81870-duckdb-sirius-session.jpeg" alt="">
 
 <details class="session-abstract"><summary>Session overview</summary><p>DuckDB has become the analytical engine of choice everywhere—from notebooks and embedded applications to production data workflows. At the same time GPUs have rapidly evolved into powerful and cost-efficient engines for general-purpose parallel compute. Sirius brings these two trends together by enabling GPU-native execution for DuckDB—without requiring users to change how they write queries. In this session, we'll explore how Sirius offloads DuckDB workloads to GPUs, accelerating analytics by up to 8x at the same hardware rental cost. Learn how this new architecture combines DuckDB's simplicity with the power of GPU compute, unlocking faster, more cost-efficient interactive analytics while preserving the elegance of a single-node engine.</p></details>
 
@@ -413,7 +401,7 @@ we will cover the following
 
 </table>
 
-#### [🔗](https://www.nvidia.com/en-us/on-demand/session/gtc26-s81873/) Shatter the Memory Wall: Composable Building Blocks for Massive Scale Analytics
+#### [🔗 Shatter the Memory Wall: Composable Building Blocks for Massive Scale Analytics](https://www.nvidia.com/en-us/on-demand/session/gtc26-s81873/)
 
 <small><strong>Felipe Aramburu</strong> · Distinguished Solutions Architect, NVIDIA<br><strong>Rodrigo Aramburu</strong> · Developer Relations for Data Processing, NVIDIA</small>
 
@@ -526,7 +514,7 @@ we will cover the following
 </table>
 
 
-#### [🔗](https://www.nvidia.com/en-us/on-demand/session/gtc26-s81614/) Top-K Selection at the Speed of Light
+#### [🔗 Top-K Selection at the Speed of Light](https://www.nvidia.com/en-us/on-demand/session/gtc26-s81614/)
 
 <small><strong>Christina Zhang</strong> · DevTech Compute Engineer, NVIDIA<br><strong>Elias Stehle</strong> · Senior Systems Software Engineer, NVIDIA<br><strong>Yue Weng</strong> · DevTech, NVIDIA</small>
 
@@ -639,7 +627,7 @@ we will cover the following
 
 ### Industry Use Cases
 
-#### [🔗](https://www.nvidia.com/en-us/on-demand/session/gtc26-ex82286/) The Agentic AI Data Factory: Why Agents Need a GPU-Native Data Platform to Create Real Value (Presented by Capgemini)
+#### [🔗 The Agentic AI Data Factory: Why Agents Need a GPU-Native Data Platform to Create Real Value (Presented by Capgemini)](https://www.nvidia.com/en-us/on-demand/session/gtc26-ex82286/)
 
 <small><strong>Rajesh Iyer</strong> · Global Head of ML and Gen AI for Financial Services, Capgemini</small>
 
@@ -717,7 +705,7 @@ we will cover the following
 
 </table>
 
-#### [🔗](https://www.nvidia.com/en-us/on-demand/session/gtc26-s81678/) How Snap Saves Millions with Accelerated Apache Spark
+#### [🔗 How Snap Saves Millions with Accelerated Apache Spark](https://www.nvidia.com/en-us/on-demand/session/gtc26-s81678/)
 
 <small><strong>Liang Chen</strong> · Staff Software Engineer, Snap, Inc.<br><strong>Prudhvi Vatala</strong> · Sr. Engineering Manager, Snap, Inc.</small>
 
@@ -830,7 +818,7 @@ we will cover the following
 
 ### Training Labs
 
-#### [🔗](https://www.nvidia.com/en-us/on-demand/session/gtc26-dlit81754/) From Ingestion to Inference: Mastering the High-Performance GPU Data Science Pipeline
+#### [🔗 From Ingestion to Inference: Mastering the High-Performance GPU Data Science Pipeline](https://www.nvidia.com/en-us/on-demand/session/gtc26-dlit81754/)
 
 <small><strong>Allison Ding</strong> · Senior Developer Advocate, Data Science, NVIDIA</small>
 
@@ -938,7 +926,7 @@ we will cover the following
 
 </table>
 
-#### [🔗](https://www.nvidia.com/en-us/on-demand/session/gtc26-dlit81642/) Accelerate Apache Spark With GPU and AI: A Hands-On Workshop
+#### [🔗 Accelerate Apache Spark With GPU and AI: A Hands-On Workshop](https://www.nvidia.com/en-us/on-demand/session/gtc26-dlit81642/)
 
 <small><strong>Hirakendu Das</strong> · Principal Software Engineer, NVIDIA<br><strong>Navin Kumar</strong> · Sr. System Software Engineer, NVIDIA<br><strong>Rishi Chandra</strong> · Systems Software Engineer, NVIDIA</small>
 
@@ -1047,7 +1035,7 @@ we will cover the following
 
 </table>
 
-#### [🔗](https://www.nvidia.com/en-us/on-demand/session/gtc26-dlit81546/) Supercharge Tabular ML Models With GPU-Accelerated Feature Engineering
+#### [🔗 Supercharge Tabular ML Models With GPU-Accelerated Feature Engineering](https://www.nvidia.com/en-us/on-demand/session/gtc26-dlit81546/)
 
 <small><strong>Chris Deotte</strong> · Sr. Data Scientist, NVIDIA<br><strong>Ronay Ak</strong> · Sr. Data Scientist, NVIDIA</small>
 
@@ -1158,17 +1146,65 @@ we will cover the following
 
 [🔗](https://www.nvidia.com/gtc/session-catalog/sessions/gtc26-cwes81481/) <strong>Next-Gen Data Systems: GPU Acceleration for SQL and Vector Databases</strong>
 
-<small>Tanmay Gujar · Developer Technology Engineer, NVIDIA<br>Corey Nolet · Distinguished Engineer, Unstructured Data Processing & Database Acceleration, NVIDIA<br>Felipe Aramburu · Distinguished Solutions Architect, NVIDIA<br>Manas Singh · TPM Vector Search, NVIDIA<br>Benjamin Karsin · Senior Developer Technology Engineer, NVIDIA<br>Greg Kimball · Software Engineering Manager, NVIDIA</small>
+<small><strong>Tanmay Gujar</strong> · Developer Technology Engineer, NVIDIA<br><strong>Corey Nolet</strong> · Distinguished Engineer, Unstructured Data Processing & Database Acceleration, NVIDIA<br><strong>Felipe Aramburu</strong> · Distinguished Solutions Architect, NVIDIA<br><strong>Manas Singh</strong> · TPM Vector Search, NVIDIA<br><strong>Benjamin Karsin</strong> · Senior Developer Technology Engineer, NVIDIA<br><strong>Greg Kimball</strong> · Software Engineering Manager, NVIDIA</small>
 
 
 [🔗](https://www.nvidia.com/gtc/session-catalog/sessions/gtc26-cwes82212/) <strong>Boost Data Science Pipelines With Accelerated Libraries</strong>
 
-<small>Greg Kimball · Software Engineering Manager, NVIDIA<br>Alexandria Barghi · Senior Software Engineer, NVIDIA<br>Divye Gala · Senior Software Engineer, NVIDIA<br>Vyas Ramasubramani · Sr. Systems Software Engineer, NVIDIA<br>Bobby Evans · Distinguished Software Engineer, NVIDIA</small>
+<small><strong>Greg Kimball</strong> · Software Engineering Manager, NVIDIA<br><strong>Alexandria Barghi</strong> · Senior Software Engineer, NVIDIA<br><strong>Divye Gala</strong> · Senior Software Engineer, NVIDIA<br><strong>Vyas Ramasubramani</strong> · Sr. Systems Software Engineer, NVIDIA<br><strong>Bobby Evans</strong> · Distinguished Software Engineer, NVIDIA</small>
 
 
+<br>
 
 ---
 
+### Cross-Session Pain Points
+
+These problems surfaced repeatedly across multiple sessions — from production deployments to research talks — suggesting they are the real friction in GPU-accelerated analytics today.
+
+#### 1. I/O is the ceiling, not compute
+
+Every session that measured bottlenecks found the same thing: once GPUs are fast enough, storage throughput becomes the wall. The Presto GPU profiler showed the Parquet data-source operator dwarfing joins and filters combined. DuckDB Sirius's hot-run breakthrough came largely from S3 read coalescing (700 → 200 requests), not from faster kernels. The Spark session noted that I/O-bound jobs see little GPU benefit at all. The implication: investing in faster compute before fixing data movement is often wasted effort.
+
+**What helps:** GPU Direct Storage (bypassing host memory), smarter read coalescing, Delta Binary Pack encoding for Parquet integer columns, parallel CPU reader instances feeding GPU memory directly.
+
+#### 2. Memory spill kills consistency more than it kills speed
+
+Snap's 54 TB memory spill on a single join job was not primarily a speed problem — it was a consistency problem. Task duration spread was wide, SLA risk was real, and disks were hammered. The composable analytics session showed TPC-H Q9 "blew up aggressively" without cuCascade's downgrade policy. The Spark workshop identified misconfigured `shufflePartitions` as the leading cause of unexpected spill. In all three contexts, the fix was not more GPU memory — it was smarter spill management (transparency, graceful degradation, better config defaults).
+
+**What helps:** cuCascade's topology-aware spill and downgrade policy; monitoring spill bytes in event logs as the primary tuning signal; sizing `maxPartitionBytes` and `shufflePartitions` before deploying to production.
+
+#### 3. GPU migration stalls at the qualification step
+
+Multiple sessions described the same failure mode: teams benchmark GPU Spark or GPU SQL, see good numbers, then stall before production. The Spark workshop quantified it: the manual qualify → POC → config → production loop "generally stops somewhere before getting the workloads migrated." Snap spent eight months navigating GPU procurement, infrastructure gaps, and fallback design before shipping. Capgemini's data factory required three years to reach production. The bottleneck is rarely technical; it is the absence of tooling that automates the path from benchmark to production.
+
+**What helps:** Project Aether (single `aether run` command, SQLite history, EMR/Dataproc support); explicit fallback tiers (GPU GKE → CPU GKE → Dataproc) so that partial adoption carries no reliability risk.
+
+#### 4. UDFs and unsupported operators create invisible performance cliffs
+
+GPU acceleration in Spark and DuckDB works until it doesn't. Any UDF in a Spark GPU job forces a full GPU→CPU PCIe round trip plus columnar-to-row conversion — the compute the GPU would have accelerated most is the one operation sent to CPU. In DuckDB/Sirius, an unsupported operator falls back the entire query to DuckDB CPU. In Presto GPU, a CPU fallback adds a columnar↔row conversion cost on both sides of the unsupported operator. None of these penalties are visible in high-level query metrics.
+
+**What helps:** Profiler traces that show per-operator CPU/GPU split; Ether Assistant's LLM pipeline to rewrite UDFs as GPU-native `evaluateColumnar()` overrides; choosing DuckDB/Sirius's clean-fallback design over hybrid scheduling.
+
+#### 5. Unstructured data lacks the indexing infrastructure that structured data has
+
+Only 10% of enterprise unstructured data is properly indexed (GPU Accelerated Data Processing session). Capgemini's three-year effort hit a concrete wall: unified multimodal embedding — getting audio, video, and text into the same vector space — is not a solved problem, especially when temporal relationships (motion, kinetics) matter. The absence of good motion-aware embedding models makes agentic workflows over video+audio fragile.
+
+**What helps:** GPU-accelerated CAGRA vector indexing (10–13× faster than CPU HNSW at equivalent accuracy); 12Labs for temporal video embeddings as an interim option; accepting that motion-aware cross-modal retrieval is an active research area, not a solved stack component.
+
+#### 6. Slow feature engineering loops limit ML experimentation at scale
+
+The Supercharge Tabular ML session made the cost explicit: k-fold smoothed target encoding across three combined columns takes 40 seconds on CPU for 16M rows. At 100M+ rows, it becomes overnight batch work. This is not a model-training problem — it is a feature-hypothesis-testing problem. Every 10× slowdown in the experiment loop means fewer features explored in a sprint, which directly caps model quality.
+
+**What helps:** `%load_ext cudf.pandas` and `%load_ext cuml.accel` (zero-code-change, same API); `cuml.TargetEncoder` with built-in k-fold to eliminate both the speed bottleneck and the leakage risk in one call; GPU cuts the loop to 3.6 seconds (11×), making real-time feature iteration feasible.
+
+---
+
+
+<style>
+  .post-content h4 a { color: #111827; text-decoration: none; }
+  .post-content h4 a:hover { color: #2a7ae2; text-decoration: none; }
+</style>
 
 <script>
   document.querySelectorAll('.post-content a').forEach(function(a) {

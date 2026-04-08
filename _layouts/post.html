@@ -4,6 +4,9 @@ comments: true
 ---
 <link rel="stylesheet" href="{{ "/assets/css/post-images.css" | relative_url }}">
 <link rel="stylesheet" href="{{ "/assets/css/takeaways.css" | relative_url }}">
+{%- if page.toc -%}
+<link rel="stylesheet" href="{{ "/assets/css/toc.css" | relative_url }}">
+{%- endif -%}
 {%- if page.extra_css -%}
   {%- for css in page.extra_css -%}
   <link rel="stylesheet" href="{{ css | relative_url }}">
@@ -15,6 +18,29 @@ comments: true
 </style>
 <style>
   .post-header-tags { margin-top: 0.6rem; display: flex; flex-wrap: wrap; gap: 0.3rem; }
+</style>
+<style>
+  /* Heading anchor links (# permalink) */
+  .post-content h2[id],
+  .post-content h3[id],
+  .post-content h4[id] { position: relative; }
+
+  .heading-anchor {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 0.35em;
+    font-size: 0.75em;
+    font-weight: 400;
+    color: #9ca3af;
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    user-select: none;
+  }
+  h2:hover .heading-anchor,
+  h3:hover .heading-anchor,
+  h4:hover .heading-anchor { opacity: 1; }
+  .heading-anchor:hover { color: #374151; text-decoration: none; }
 </style>
 <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
@@ -53,6 +79,46 @@ comments: true
 
   <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
 </article>
+<script>
+  (function () {
+    var content = document.querySelector('.post-content');
+    if (!content) return;
+    content.querySelectorAll('h2[id], h3[id], h4[id]').forEach(function (h) {
+      var a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.className = 'heading-anchor';
+      a.setAttribute('aria-label', 'Link to this section');
+      a.textContent = '#';
+      h.appendChild(a);
+    });
+  }());
+</script>
+
+{%- if page.toc -%}
+<!-- TOC sidebar (desktop) -->
+<nav id="toc-sidebar" class="toc-sidebar" aria-label="On this page">
+  <p class="toc-sidebar__title">On this page</p>
+  <ul class="toc-list"></ul>
+</nav>
+
+<!-- TOC floating button (mobile) -->
+<button id="toc-toggle-btn" class="toc-toggle" aria-label="Table of contents">
+  ☰ Contents
+</button>
+
+<!-- TOC dialog panel (mobile) -->
+<dialog id="toc-dialog" class="toc-dialog" aria-label="Table of contents">
+  <div class="toc-dialog__header">
+    <p class="toc-dialog__title">On this page</p>
+    <button class="toc-dialog__close" id="toc-dialog-close" aria-label="Close">&#x2715;</button>
+  </div>
+  <div class="toc-list-wrap">
+    <ul class="toc-list" id="toc-dialog-list"></ul>
+  </div>
+</dialog>
+
+<script src="{{ "/assets/js/toc.js" | relative_url }}"></script>
+{%- endif -%}
 
 <!-- Image Modal -->
 <div id="imageModal" class="image-modal">
