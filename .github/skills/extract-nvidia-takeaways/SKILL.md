@@ -82,6 +82,7 @@ Each takeaway gets **as many category tags as genuinely apply**. Apply every tag
 | `tag-pain` | Pain Point | Limitations, bottlenecks, unsolved problems, known gaps, OOM failures |
 | `tag-oss` | Open Source | Open source releases, public repos, community upstreaming, official endorsements |
 | `tag-algo` | Algorithm | Novel algorithmic techniques, iteration fusion, adaptive strategies, lazy evaluation, radix methods |
+| `tag-tools` | Tools | Observability tooling, profilers, telemetry layers, custom instrumentation, developer tooling built or evaluated |
 
 Tag format (placed inline in `tk-content`, see Step 5):
 ```html

@@ -87,16 +87,17 @@ takeaway-tag {
   line-height: 1.6;
 }
 
-takeaway-tag[name="benchmark"]  { background-color: #7c3aed; } takeaway-tag[name="benchmark"]::before  { content: "Benchmark"; }
-takeaway-tag[name="memory-bw"]  { background-color: #2563eb; } takeaway-tag[name="memory-bw"]::before  { content: "Memory BW"; }
-takeaway-tag[name="memory-cap"] { background-color: #0891b2; } takeaway-tag[name="memory-cap"]::before { content: "Memory Cap"; }
-takeaway-tag[name="tco"]        { background-color: #16a34a; } takeaway-tag[name="tco"]::before        { content: "TCO"; }
+takeaway-tag[name="pain"]       { background-color: #dc2626; } takeaway-tag[name="pain"]::before       { content: "Pain Point"; }
+takeaway-tag[name="memory-bw"]  { background-color: #2563eb; } takeaway-tag[name="memory-bw"]::before  { content: "Memory Bandwidth"; }
+takeaway-tag[name="memory-cap"] { background-color: #0891b2; } takeaway-tag[name="memory-cap"]::before { content: "Memory Capacity"; }
 takeaway-tag[name="comm"]       { background-color: #ea580c; } takeaway-tag[name="comm"]::before       { content: "Communication"; }
 takeaway-tag[name="storage"]    { background-color: #d97706; } takeaway-tag[name="storage"]::before    { content: "Storage I/O"; }
-takeaway-tag[name="design"]       { background-color: #0f766e; } takeaway-tag[name="design"]::before       { content: "Design"; }
-takeaway-tag[name="pain"]       { background-color: #dc2626; } takeaway-tag[name="pain"]::before       { content: "Pain Point"; }
-takeaway-tag[name="oss"]        { background-color: #6b7280; } takeaway-tag[name="oss"]::before        { content: "Open Source"; }
+takeaway-tag[name="design"]     { background-color: #0f766e; } takeaway-tag[name="design"]::before     { content: "Design"; }
 takeaway-tag[name="algo"]       { background-color: #c026d3; } takeaway-tag[name="algo"]::before       { content: "Algorithm"; }
+takeaway-tag[name="tools"]      { background-color: #0369a1; } takeaway-tag[name="tools"]::before      { content: "Tools"; }
+takeaway-tag[name="benchmark"]  { background-color: #7c3aed; } takeaway-tag[name="benchmark"]::before  { content: "Benchmark"; }
+takeaway-tag[name="tco"]        { background-color: #16a34a; } takeaway-tag[name="tco"]::before        { content: "TCO"; }
+takeaway-tag[name="oss"]        { background-color: #6b7280; } takeaway-tag[name="oss"]::before        { content: "Open Source"; }
 
 /* ── 3. Takeaway card layout (legacy) ──────────────────────────────────── */
 .takeaways {
