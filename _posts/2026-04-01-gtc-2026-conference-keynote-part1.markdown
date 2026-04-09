@@ -72,15 +72,7 @@ With the stage now set (the packed keynote venue, Jensen's excitement about the 
 
 *[Part 2: Intro, Analytics, CUDA-X & Inference →](/nvidia/gtc/keynote/gpu/hardware/2026/04/03/gtc-2026-conference-keynote-part2.html)*
 
-<script>
-  document.querySelectorAll('.post-content a').forEach(function(a) {
-    var href = a.getAttribute('href');
-    if (href && !href.startsWith('#')) {
-      a.setAttribute('target', '_blank');
-      a.setAttribute('rel', 'noopener noreferrer');
-    }
-  });
-</script>
+
 
 ---
 

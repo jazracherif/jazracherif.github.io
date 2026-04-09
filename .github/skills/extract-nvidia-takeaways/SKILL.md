@@ -140,6 +140,14 @@ Rules:
 - **Maximum 7 takeaways per session.** If you identify more, combine closely related points into a single card
 - Takeaway headlines must be prefixed with their index number: `1. Headline`, `2. Headline`, etc.
 - Apply all tags that meaningfully apply to the takeaway content — see the category table in Step 4 for guidance on what co-occurs
+- **Images:** when a takeaway has a single image, use a plain `<img>` tag. When it has two or more, wrap them in `<div class="image-grid">` (defined in `post-images.css`) — this renders a 2-column responsive grid on desktop, single column on mobile:
+
+```html
+<div class="image-grid">
+  <img src="/assets/img/gtc-2026/sessions/image-one.png" alt="...">
+  <img src="/assets/img/gtc-2026/sessions/image-two.png" alt="...">
+</div>
+```
 
 ### Step 6 — Insert into the draft (if applicable)
 
@@ -195,3 +203,7 @@ If the user is working on a blog post draft and a session entry already exists f
 
 - The `_data/nvidia/transcripts/` folder is committed to git but excluded from the Jekyll build via `_config.yml`. The transcripts never appear on the public website.
 - Session transcripts from NVIDIA On-Demand are AI-generated and may contain speaker-name errors or garbled technical terms. If a number looks suspicious, flag it rather than silently correcting it.
+
+## Related Skills
+
+- **compress-images** — Before adding any screenshot or image to a takeaway, always load and follow the compress-images skill (`/.github/skills/compress-images/SKILL.md`). Use `sips -Z 1200` to resize PNGs to a 1200 px max edge and rename the file to a descriptive slug (e.g. `s81769-gpu-data-processing-tpch-over-time.png`) before referencing it in the post.

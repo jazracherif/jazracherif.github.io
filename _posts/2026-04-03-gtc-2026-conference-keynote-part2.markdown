@@ -88,12 +88,4 @@ The first hour of the keynote established the foundations: CUDA's flywheel, NVID
 
 *← [Part 1: Overview & Context](/nvidia/gtc/keynote/gpu/hardware/2026/04/01/gtc-2026-conference-keynote-part1.html) · [Part 3: Vera Rubin Hardware, OpenClaw & Robotics →](/nvidia/gtc/keynote/gpu/hardware/2026/04/05/gtc-2026-conference-keynote-part3.html)*
 
-<script>
-  document.querySelectorAll('.post-content a').forEach(function(a) {
-    var href = a.getAttribute('href');
-    if (href && !href.startsWith('#')) {
-      a.setAttribute('target', '_blank');
-      a.setAttribute('rel', 'noopener noreferrer');
-    }
-  });
-</script>
+

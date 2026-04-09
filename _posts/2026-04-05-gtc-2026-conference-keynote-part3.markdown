@@ -131,15 +131,7 @@ Full keynote is available [here](https://www.nvidia.com/gtc/keynote/) and the sl
 
 *← [Part 2: Intro, Analytics, CUDA-X & Inference](/nvidia/gtc/keynote/gpu/hardware/2026/04/03/gtc-2026-conference-keynote-part2.html)*
 
-<script>
-  document.querySelectorAll('.post-content a').forEach(function(a) {
-    var href = a.getAttribute('href');
-    if (href && !href.startsWith('#')) {
-      a.setAttribute('target', '_blank');
-      a.setAttribute('rel', 'noopener noreferrer');
-    }
-  });
-</script>
+
 
 ---
 

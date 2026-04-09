@@ -120,6 +120,17 @@
   align-items: center;
 }
 
+/* Inner container that hugs the image so arrows are anchored to its edges */
+.image-modal-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Match the max dimensions of the modal image */
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
 .image-modal img {
   max-width: 90%;
   max-height: 90%;
@@ -142,6 +153,72 @@
 
 .image-modal-close:hover {
   color: #ccc;
+}
+
+/* Prev / Next navigation arrows inside the lightbox */
+.image-modal-prev,
+.image-modal-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  /* Large enough to be an easy click target */
+  font-size: 48px;
+  line-height: 1;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+  /* Stack above the modal image */
+  z-index: 10000;
+  display: none; /* hidden until JS shows them */
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+/* Place arrows just outside the image wrapper edges (left / right on desktop) */
+.image-modal-prev {
+  right: 100%;
+  margin-right: 8px;
+}
+
+.image-modal-next {
+  left: 100%;
+  margin-left: 8px;
+}
+
+.image-modal-prev:hover,
+.image-modal-next:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* On narrow screens (iPhone), stack arrows above / below the image.
+   ‹ rotated -90° becomes an up chevron; › rotated +90° becomes a down chevron. */
+@media (max-width: 680px) {
+  .image-modal-prev {
+    /* Reset left/right desktop positioning */
+    right: auto;
+    top: auto;
+    /* Place above the image, centered horizontally */
+    bottom: 100%;
+    left: 50%;
+    margin-right: 0;
+    margin-bottom: 8px;
+    /* ‹ points left; +90° clockwise rotates it to point upward */
+    transform: translateX(-50%) rotate(90deg);
+  }
+
+  .image-modal-next {
+    /* Reset left/right desktop positioning */
+    left: 50%;
+    top: 100%;
+    margin-left: 0;
+    margin-top: 8px;
+    transform: translateX(-50%) rotate(90deg);
+  }
 }
 
 

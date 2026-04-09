@@ -1,6 +1,6 @@
 ---
 name: compress-images
-description: "Use when: compressing images, reducing image file size, optimizing images for the web, shrinking PNGs or JPEGs, reducing page weight from images. Uses macOS sips to resize and re-encode images without noticeable quality loss."
+description: "Use when: compressing images, reducing image file size, optimizing images for the web, shrinking PNGs or JPEGs, reducing page weight from images. Also use when: adding an image (e.g. 'add image X') — always compress before inserting the image tag. Uses macOS sips to resize and re-encode images without noticeable quality loss."
 ---
 
 # Compress Images
@@ -18,6 +18,8 @@ Use macOS built-in `sips` — no install required.
 
 These values keep images visually indistinguishable from the originals while cutting file sizes by 60–80%.
 Do **not** lower quality below 90% or resize below 1200 px unless the user explicitly asks.
+
+**Screenshots with text:** Check the original pixel dimensions with `sips --getProperty pixelWidth` before resizing. If the longest edge is already ≤ 1400 px, skip the resize step entirely — resizing screenshots down causes blurry text. Do **not** use `-Z` in a way that would upscale the image.
 
 ## Workflow
 
