@@ -6,9 +6,10 @@
  * Behaviour:
  *  - Clicking any image inside .post-content opens a full-screen overlay.
  *  - When the clicked image lives inside an .image-grid, the modal collects
- *    all sibling images and exposes ‹ / › arrows to step through them.
+ *    all sibling images and exposes prev / next arrows to step through them.
  *  - The prev arrow is hidden on the first image; the next arrow is hidden
- *    on the last image (no wrapping).
+ *    on the last image (no wrapping) via visibility/pointer-events toggles.
+ *    This preserves arrow slot width and prevents image shifting.
  *  - For standalone images (outside a grid) no arrows are shown.
  *  - The modal closes on: background click, × button, or Escape key.
  *  - Left / Right arrow keys navigate while the modal is open.
@@ -44,10 +45,15 @@
 
   function updateArrows() {
     const multi = gridImages.length > 1;
-    // Show prev only when there is a preceding image in the grid
-    prevBtn.style.display = (multi && gridIndex > 0) ? 'flex' : 'none';
-    // Show next only when there is a following image in the grid
-    nextBtn.style.display = (multi && gridIndex < gridImages.length - 1) ? 'flex' : 'none';
+    const showPrev = multi && gridIndex > 0;
+    const showNext = multi && gridIndex < gridImages.length - 1;
+
+    // Hide using visibility so button width remains reserved and the image stays centered.
+    prevBtn.style.visibility = showPrev ? 'visible' : 'hidden';
+    prevBtn.style.pointerEvents = showPrev ? 'auto' : 'none';
+
+    nextBtn.style.visibility = showNext ? 'visible' : 'hidden';
+    nextBtn.style.pointerEvents = showNext ? 'auto' : 'none';
   }
 
   /* ── Image click — open and populate grid context ───────────────────── */

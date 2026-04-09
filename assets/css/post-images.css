@@ -17,7 +17,9 @@
  * 
  * Lightbox Modal:
  * - Full-screen dark overlay (90% opacity black background)
- * - Images displayed at 90% viewport size
+ * - Images constrained by viewport units (80vw / 88vh desktop)
+ * - Prev/next controls are fixed-width flex slots to avoid image shifting
+ * - Arrow icons are CSS mask vectors (font-independent, cross-browser)
  * - Close via X button, background click, or Escape key
  * - Prevents page scrolling when active
  */
@@ -122,18 +124,27 @@
 
 /* Inner container that hugs the image so arrows are anchored to its edges */
 .image-modal-inner {
-  position: relative;
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  /* Match the max dimensions of the modal image */
-  max-width: 90vw;
+  gap: 8px;
+  max-width: 96vw;
   max-height: 90vh;
 }
 
+/* Add extra desktop breathing room while keeping mobile baseline unchanged */
+@media (min-width: 681px) {
+  .image-modal-inner {
+    gap: 54px;
+  }
+}
+
 .image-modal img {
-  max-width: 90%;
-  max-height: 90%;
+  /* Viewport units instead of percentages: avoids circular dependency
+     when the container is content-sized through flex */
+  max-width: 80vw;
+  max-height: 88vh;
   object-fit: contain;
   border-radius: 0;
   box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
@@ -155,39 +166,53 @@
   color: #ccc;
 }
 
-/* Prev / Next navigation arrows inside the lightbox */
+/* Prev / Next navigation arrows — regular flex items, no absolute positioning.
+   Being in the normal flex flow means their placement is computed identically
+   by Chrome, Safari, and Firefox. */
 .image-modal-prev,
 .image-modal-next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  -webkit-appearance: none;
+  appearance: none;
+  flex-shrink: 0;
   background: rgba(255, 255, 255, 0.15);
   border: none;
-  color: #fff;
-  /* Large enough to be an easy click target */
-  font-size: 48px;
-  line-height: 1;
-  padding: 8px 16px;
+  padding: 0;
+  width: 44px;
+  height: 60px;
+  color: transparent;
+  font-size: 0;
   cursor: pointer;
   border-radius: 4px;
   transition: background 0.2s ease;
-  /* Stack above the modal image */
   z-index: 10000;
-  display: none; /* hidden until JS shows them */
+  /* Keep both button slots in layout to prevent image shifting while navigating */
+  display: flex;
+  visibility: hidden;
+  pointer-events: none;
   align-items: center;
   justify-content: center;
   user-select: none;
 }
 
-/* Place arrows just outside the image wrapper edges (left / right on desktop) */
-.image-modal-prev {
-  right: 100%;
-  margin-right: 8px;
+/* Draw chevrons as vector masks so icon rendering is independent of browser fonts */
+.image-modal-prev::before,
+.image-modal-next::before {
+  content: "";
+  width: 16px;
+  height: 24px;
+  background-color: #fff;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 24'%3E%3Cpolyline points='3,2 13,12 3,22' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 24'%3E%3Cpolyline points='3,2 13,12 3,22' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
-.image-modal-next {
-  left: 100%;
-  margin-left: 8px;
+.image-modal-prev::before {
+  transform: rotate(180deg);
 }
 
 .image-modal-prev:hover,
@@ -195,29 +220,22 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* On narrow screens (iPhone), stack arrows above / below the image.
-   ‹ rotated -90° becomes an up chevron; › rotated +90° becomes a down chevron. */
+/* On narrow screens shrink the buttons so the image keeps most of the width */
 @media (max-width: 680px) {
-  .image-modal-prev {
-    /* Reset left/right desktop positioning */
-    right: auto;
-    top: auto;
-    /* Place above the image, centered horizontally */
-    bottom: 100%;
-    left: 50%;
-    margin-right: 0;
-    margin-bottom: 8px;
-    /* ‹ points left; +90° clockwise rotates it to point upward */
-    transform: translateX(-50%) rotate(90deg);
+  .image-modal-prev,
+  .image-modal-next {
+    width: 32px;
+    height: 48px;
   }
 
-  .image-modal-next {
-    /* Reset left/right desktop positioning */
-    left: 50%;
-    top: 100%;
-    margin-left: 0;
-    margin-top: 8px;
-    transform: translateX(-50%) rotate(90deg);
+  .image-modal-prev::before,
+  .image-modal-next::before {
+    width: 13px;
+    height: 20px;
+  }
+
+  .image-modal img {
+    max-width: 76vw;
   }
 }
 

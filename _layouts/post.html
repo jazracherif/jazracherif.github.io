@@ -133,11 +133,11 @@ comments: true
 <!-- Image Modal -->
 <div id="imageModal" class="image-modal">
   <span class="image-modal-close">&times;</span>
-  <!-- Inner wrapper shrinks to the image size so arrows sit just outside it -->
+  <!-- Flex row: prev-button | image | next-button — no absolute positioning -->
   <div class="image-modal-inner">
-    <button class="image-modal-prev" aria-label="Previous image">&#8249;</button>
+    <button class="image-modal-prev" aria-label="Previous image" type="button">&#10094;</button>
     <img id="modalImage" src="" alt="">
-    <button class="image-modal-next" aria-label="Next image">&#8250;</button>
+    <button class="image-modal-next" aria-label="Next image" type="button">&#10095;</button>
   </div>
 </div>
 
