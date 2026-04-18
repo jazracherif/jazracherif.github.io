@@ -1,6 +1,5 @@
 ---
 layout: default
-comments: false
 ---
 <link rel="stylesheet" href="{{ "/assets/css/post-images.css" | relative_url }}">
 <link rel="stylesheet" href="{{ "/assets/css/takeaways.css" | relative_url }}">
@@ -71,7 +70,8 @@ comments: false
     Spotted a factual error? Interested in this topic? reach me at <a href="mailto:{{ site.email }}">{{ site.email }}</a> or on <a href="https://www.linkedin.com/in/cherifjazra/" target="_blank" rel="noopener noreferrer">LinkedIn</a>.
   </div>
 
-  {%- if site.disqus.shortname -%}
+
+  {%- if page.comments == true and site.disqus.shortname -%}
     <div style="margin-top: 80px; padding-top: 60px; border-top: 1px solid #e8e8e8;">
       {%- include disqus_comments.html -%}
     </div>
