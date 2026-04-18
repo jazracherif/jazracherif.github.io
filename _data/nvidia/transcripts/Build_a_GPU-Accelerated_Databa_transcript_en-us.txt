@@ -1,0 +1,1261 @@
+session: https://www.nvidia.com/en-us/on-demand/session/gtc26-s82203/
+
+Build a GPU-Accelerated Database Engine With CUDA
+
+
+00:06
+Hello, everyone.
+
+00:07
+Today, we are going to take a
+look at building a GPU accelerated
+
+00:10
+database engine with CUDA.
+
+00:14
+Before we begin, a couple
+of words about Zoho.
+
+00:17
+So Zoho is a privately held
+bootstrap software service
+
+00:21
+company who has been in the
+industry for 30 years.
+
+00:24
+We have over 60 apps and
+we are serving customers
+
+00:27
+in over 150 countries.
+
+00:31
+Here is a look at the broad
+ecosystem of apps that Zoho offers.
+
+00:34
+So we have an app or a set of
+apps for every business need.
+
+00:38
+Customer relationship, sales,
+marketing, HR, finance,
+
+00:44
+legal, IT and security,
+and analytics, and more.
+
+00:51
+So, back on topic.
+
+00:53
+So why do we need to build
+a database engine, right?
+
+00:56
+Databases are a key technological
+component in any SaaS
+
+00:59
+application stack.
+
+01:01
+Monitoring and tuning
+performance of databases
+
+01:04
+is necessary to improve
+customer experience and TCO.
+
+01:08
+Zoho has over 60 apps, so we have
+a need for every kind of database
+
+01:11
+engine out there, transactional,
+analytical, time series databases,
+
+01:16
+and graph databases.
+
+01:19
+So how do you go about improving
+database performance?
+
+01:22
+There are two angles here.
+
+01:24
+One would be scaling up, that
+is getting maximum possible
+
+01:27
+performance from a single machine.
+
+01:30
+Another would be scaling out.
+
+01:31
+When we hit the limits of a single
+machine, then we distribute the
+
+01:35
+workload across multiple machines.
+
+01:37
+So in scaling up, here are
+a couple of things that we
+
+01:40
+could do to improve performance.
+
+01:42
+One would be to create indices
+on the most frequently accessed
+
+01:45
+columns, but we have to be
+mindful of the insert slowdowns.
+
+01:49
+Then we can normalize or
+denormalize the data as needed.
+
+01:54
+We can also tune the knobs
+present in database engines in
+
+01:57
+an attempt to improve performance.
+
+01:59
+And we can also look at workload
+specific engines like the
+
+02:02
+ones mentioned before.
+
+02:04
+So once we've exhausted all
+the software options, we can
+
+02:07
+start looking at hardware options,
+which is upgrading to a better
+
+02:10
+CPU, adding more RAM, more SSDs.
+
+02:13
+And there's also one other
+thing we could do, which is
+
+02:16
+we can take a look at accelerators,
+like GPUs, FPGAs, or SAs.
+
+02:21
+That's where we have Velociraptor.
+
+02:26
+So Velociraptor is a
+GPU-accelerated, analytical
+
+02:29
+data engine built for business
+intelligence and OLAP workloads.
+
+02:34
+It is available as a Postgres
+extension, allowing easier
+
+02:37
+integration into existing
+application pipelines.
+
+02:39
+So we choose Postgres because
+it is open source, has a strong
+
+02:43
+and vibrant ecosystem, and
+it is easily extendable.
+
+02:47
+In fact, Velociraptor plugs
+into Postgres as an executer
+
+02:50
+extension, and it is being
+used by our application teams
+
+02:54
+and other dbRME teams.
+
+02:57
+Velociraptor powers Zoho Analytics'
+biggest customers to crunch
+
+03:00
+from massive amounts of data
+significantly faster.
+
+03:04
+Zoho Analytics is our end-to-end
+data analytics and business
+
+03:07
+intelligence platform.
+
+03:09
+So it allows customers to
+pull in data from over 500
+
+03:13
+sources and generate reports
+and dashboards on them.
+
+03:17
+It also includes AI-assisted
+techniques like automatic
+
+03:21
+insight generation, natural
+language querying,
+
+03:25
+And you can use our AI agents
+called AskZia to generate
+
+03:30
+dashboards, handle boards,
+and data pipelines.
+
+03:34
+So what can Velociraptor do?
+
+03:37
+For one, it can process all 22
+queries in the DPCS benchmark
+
+03:41
+under scale factor of 1000
+under two minutes on a single GPU
+
+03:46
+with 90 gigabytes of memory usage.
+
+03:49
+So we used to look at some
+query execution times.
+
+03:53
+The longest query executes
+in under eight seconds.
+
+03:55
+The shortest one runs
+in under a second.
+
+03:58
+And the median query execution
+time is five seconds.
+
+04:03
+So now, a look under the hood.
+
+04:05
+So here is a simplified
+look at the query execution
+
+04:07
+flow in Velociraptor.
+
+04:09
+When the query hits the
+database engine, the query
+
+04:12
+string is fed to the parser,
+which generates the AST.
+
+04:15
+The AST is then fed to the planner,
+which generates a plan tree.
+
+04:19
+The plan tree encodes the kind
+of operations and the order
+
+04:22
+in which they need to be performed.
+
+04:24
+It then undergoes a conversion
+process, we'll take a look
+
+04:27
+at it in a minute why, and
+the converter plan is then fed
+
+04:31
+to the code generation layer which
+generates the binaries which are
+
+04:34
+necessary for executing the query.
+
+04:36
+The execution state and the
+data are fed to the GPU runtime
+
+04:39
+through the executor.
+
+04:41
+The GPU runtime then crunches
+the data and uses back the
+
+04:44
+result which is sent to the client.
+
+04:48
+Plan conversion.
+
+04:49
+So plan conversion allows
+us to make modifications to
+
+04:52
+the plan without affecting
+fallback behavior.
+
+04:54
+Postgres, for example, can
+choose between a hash-based
+
+04:58
+group by, or a sort-based
+group by, depending on situations
+
+05:01
+or conditions, like the work
+memory and the expected cardinal.
+
+05:05
+While this may be optimal for a
+CPU-based, sorry, while this may be
+
+05:08
+optimal for a CPU-based engine, it
+will not be for a GPU-based engine.
+
+05:13
+So plan conversion.
+
+05:15
+Allows us to keep the original
+plan untouched in case we
+
+05:18
+need to fall back due to situations
+like out of memory.
+
+05:24
+It also allows us to switch to a
+different front-end if necessary.
+
+05:27
+We initially started with
+Apache Calcite, later switched
+
+05:31
+to Postgres as it is used by our
+application teams and DBRD teams.
+
+05:35
+Plan conversion allowed us
+to keep the original code
+
+05:38
+generation and execution layers
+with minimal modifications.
+
+05:43
+Code generation.
+
+05:44
+Cvgenrate query-specific C++
+or CUDA code to handle the
+
+05:47
+expressions and the query.
+
+05:49
+Some string generating functions
+and functions with deep call
+
+05:52
+scenes or recursions are still
+handled on the CPU and all other
+
+05:56
+functions are handled on the GPU.
+
+05:58
+In our experience, GPU code
+compilation for the same amount
+
+06:02
+of code is expensive, meaning
+it takes more time compared
+
+06:05
+to CPU code compilation, likely
+due to the compiler doing
+
+06:08
+a lot See you in the next video.
+
+06:11
+And we also use precompiled
+headers to cut down on the
+
+06:13
+compilation time.
+
+06:15
+We have a code cache where the
+generated code and the compiled
+
+06:19
+binary are stored in a compressed
+form to reduce memory usage.
+
+06:22
+We also hoist literals to
+help with caches.
+
+06:27
+Now onto the storage layer.
+
+06:29
+So typically data is stored
+row by row, meaning data
+
+06:31
+from the different columns
+are stored together.
+
+06:34
+This is fine for transactional
+workloads, but this can lead
+
+06:37
+to increased IO overhead in
+situations where the query
+
+06:40
+only requires a couple of columns,
+say from hundreds of columns,
+
+06:44
+maybe in the underlying table.
+
+06:46
+An alternate way to organize
+data is to store data from
+
+06:49
+the same column together,
+a columnar way, a column store.
+
+06:53
+This allows us to eliminate
+the unnecessary column tools.
+
+06:58
+and block filtering.
+
+07:00
+So here we organize data into
+blocks of n rows.
+
+07:03
+We also store metadata like
+the minimum and maximum value
+
+07:06
+of each of these blocks.
+
+07:08
+The metadata can be used to
+eliminate unnecessary block
+
+07:11
+reads, depending on the expressions
+in the filtered product library.
+
+07:14
+So an example here.
+
+07:16
+Here we have a set of blocks
+along with the corresponding
+
+07:18
+minimum and maximum values.
+
+07:20
+Let's say we get a query which
+requires us to fetch, say, the
+
+07:23
+set of rows from a table in which
+the value of x is less than 20.
+
+07:28
+For a given block, if the
+minimum value of the block
+
+07:31
+is greater than or equal to
+20, we know for a fact that
+
+07:34
+no row inside the block will be
+passed through the filter, right?
+
+07:38
+So instead of the typical
+way of fetching all the rows
+
+07:41
+and filtering them and processing
+them to figure out which rows
+
+07:45
+to keep and which rows to
+throw away, we can use the minimum
+
+07:48
+and maximum values, the metadata
+and the expressions to figure
+
+07:52
+out and eliminate the unnecessary
+blocks from ever being read.
+
+07:57
+Compression.
+
+07:58
+So we can also reduce IO overhead
+by compressing the data.
+
+08:02
+Compression will be limited in a
+row store because each row contains
+
+08:05
+data from different columns,
+which is different data types.
+
+08:09
+A column store increases effective
+compression ratio because
+
+08:11
+the data from the same column,
+meaning the same data type,
+
+08:14
+are stored together.
+
+08:18
+Execution involves transferring
+data to the GPU, so use techniques
+
+08:21
+like late materialization
+to minimize the overhead.
+
+08:25
+So instead of the typical way
+of fetching data from a table in
+
+08:29
+which all of the columns involved
+in the query are fetched at
+
+08:32
+once, late materialization changes
+this by fetching only the necessary
+
+08:35
+columns which are necessary for the
+current operation and bets on the
+
+08:40
+operation to eliminate most of the
+rows and fetch only the necessary
+
+08:43
+data blocks from I'm going
+to call it before the process.
+
+08:48
+Execution involves data transfer
+to the GPU again.
+
+08:51
+So we use pinbuffers to reach
+maximum transfer throughput, right?
+
+08:56
+The memory that we get
+from operating system
+
+08:59
+is usually pageable, right?
+
+09:01
+Meaning the pages can be
+swapped out at any time.
+
+09:03
+But PCI Express
+transfer happens via DMA.
+
+09:06
+As such, it needs a
+physical memory address.
+
+09:09
+So the pages need to be
+pinned in memory.
+
+09:11
+We could schedule a pageable memory
+transfer from the CPU to GPU, but
+
+09:15
+it would result in significantly
+reduced throughput as shown here.
+
+09:18
+That's because the GPU driver
+internally has to use a pin buffer
+
+09:22
+to bounce out the transmission.
+
+09:24
+So, we directly use a pin buffer
+to get maximum transfer throughput.
+
+09:29
+Use of NUMA pinning to
+speed up transfers in
+
+09:31
+multi-socketed systems.
+
+09:32
+So in multi-socketed systems,
+the CPU to GPU transfer will
+
+09:36
+have to go through the CPU
+to CPU interconnect if the
+
+09:39
+communicating CPU process and the
+GPU are on different NUMA domains.
+
+09:44
+And this issue will be amplified
+when there are multiple GPUs
+
+09:46
+and they are fully loaded.
+
+09:48
+So we make sure that the CPU
+process and the GPU are on
+
+09:51
+the same NUMA domain to avoid this.
+
+09:56
+Data transfer has three stages,
+which is reading file from
+
+10:00
+the disk or from the page
+cache and transferring it
+
+10:04
+through the interconnector and
+then decompressing it on the GPU.
+
+10:07
+So we built a three-stage pipeline
+to do all of this simultaneously.
+
+10:12
+We use NVCOM, an excellent
+library from NVIDIA to handle
+
+10:16
+cascaded compression and to
+handle LZ4, we have a custom
+
+10:19
+kernel built in-house.
+
+10:23
+So here's a look at some
+performance numbers.
+
+10:25
+The blue bars here represent
+the maximum transfer bandwidth
+
+10:30
+of the interconnector, which
+in this case is PCI Express
+
+10:33
+Gen 4 with eight links.
+
+10:34
+So as such, we are limited
+at 13 gigabytes per second.
+
+10:39
+The yellow bars here represent the
+end-to-end throughput of the GPU
+
+10:42
+accelerator decompression pipeline.
+
+10:44
+So as you can see, GPU acceleration
+of decompression allows us
+
+10:48
+to blow past the limits of an
+interconnector, at least in cases
+
+10:50
+with significantly, at least in
+cases with highly compressed data.
+
+10:55
+Even in cases of low compression
+ratios, we get a decent
+
+10:58
+performance boost.
+
+11:02
+So, it is another set of numbers,
+this time on a much beefier system.
+
+11:07
+The interconnect bandwidth here is
+58 Gbps, because the interconnect
+
+11:11
+here is PCIe Gen 5 at full width.
+
+11:14
+And the memory bandwidth of H200 is
+also 8.5 times the previous system.
+
+11:19
+So we get another pretty
+good set of numbers.
+
+11:24
+You might have seen from the past
+two slides that double-quotient
+
+11:28
+decompression, at least with
+low compression ratios, suffers
+
+11:31
+from lower performance when
+compared to, say, Integer.
+
+11:35
+That is because we
+use LZ4 to compress
+
+11:37
+double-quotients and strings.
+
+11:42
+And LZ4 does not get as good
+of a decompression throughput
+
+11:46
+in a compactor cascade.
+
+11:47
+That is because its decompression
+performance is tied to the
+
+11:51
+compression ratio.
+
+11:55
+So far, you have seen a
+whole bunch of optimizations
+
+11:58
+like columnar storage, block
+filtering, compression,
+
+12:02
+and late materialization
+to cut down on the amount of
+
+12:04
+data that is read and transferred.
+
+12:07
+PIN prefers a NUMA PINning to
+reach maximum transfer throughput.
+
+12:12
+GPU accelerated decompression
+to exceed the limits of
+
+12:14
+the interconnect.
+
+12:15
+Despite all of these optimizations,
+the actual time spent on executing
+
+12:19
+the query on the GPU in a
+benchmark like TPC-H is only
+
+12:23
+25% of the end-to-end time.
+
+12:26
+So we are still bottlenecked by
+the interconnect and decompression.
+
+12:32
+Now look at how some
+of the operators are
+
+12:34
+implemented in Velociraptor.
+
+12:36
+So, sort, specifically single
+column sort, is handled using
+
+12:39
+primitives from Thrust, another
+excellence factory from NVIDIA.
+
+12:43
+Multi-column sort is handled
+with a custom algorithm built
+
+12:47
+on top of Thrust, inspired
+from LSB radix sort.
+
+12:51
+String sort. So initially we
+had a comparison based sorting
+
+12:54
+algorithm and it provided decent
+performance for shorter strings.
+
+12:59
+But its performance began to
+falter when, say, the string's
+
+13:02
+length exceeded 200 bytes.
+
+13:04
+It became so bad that it
+became slower than CP-based
+
+13:07
+molecular data starting.
+
+13:08
+So we switched to a different
+technique inspired from MSB
+
+13:12
+radix art, wherein we partition
+the input into groups of N bytes
+
+13:18
+and then eliminate the completed
+rows between each processing step.
+
+13:23
+Join and group play.
+
+13:24
+So these can be handled
+using one of two techniques,
+
+13:28
+either hash-based strategy
+or sort-based strategy.
+
+13:30
+In the hash-based strategy, we
+go with the custom linear probing
+
+13:33
+hash table that we built in-house.
+
+13:35
+In the sort-based strategy,
+we use one of the previous
+
+13:38
+sorting techniques, and along
+with that, binary search for joins
+
+13:42
+or reductions for group plays.
+
+13:46
+Now, challenges.
+
+13:48
+Limited transfer bandwidth and slow
+transfer for smaller data sizes.
+
+13:53
+The movement from PCI Express
+Gen 3 to Gen 4 took a long
+
+13:56
+time, and PCI Express Gen 5
+was only available in GPUs costing
+
+14:00
+north of $20,000 until recently.
+
+14:02
+The base could
+certainly use a boost.
+
+14:05
+Say, for example, NVLink is
+going to be at 900 gigabytes per
+
+14:08
+second for a hosted device soon,
+and PCI Express Gen 6 will only
+
+14:12
+be at 128 gigabytes per second.
+
+14:15
+We hope this changes as NVLink
+and CXL are optioned for Excel.
+
+14:19
+We specifically want to see NVLink
+as a CPU-to-GPU interconnect.
+
+14:23
+We know for a fact that it
+is available in systems like
+
+14:26
+Grace, Opera, and Glace, Papel,
+but we also would like to
+
+14:29
+see it in x86 systems.
+
+14:31
+Quite frankly, we are happy about
+the NVLink fusion partnership
+
+14:36
+between Intel and NVIDIA.
+
+14:38
+We also hope that NVLink or
+CXL improves data transfer
+
+14:42
+speeds for smaller data sizes.
+
+14:44
+This is because due to the
+optimizations that I mentioned
+
+14:47
+before, like say, for example,
+block filtering, compression,
+
+14:50
+and late materialization, sometimes
+we end up transferring a really
+
+14:53
+small amount of data per batch.
+
+14:57
+Limited VRAM.
+
+14:59
+So, memory capacity on GPUs
+that costing less than $5,000
+
+15:02
+are remained at 40 GB for
+the past three generations.
+
+15:06
+We really hope this changes.
+
+15:08
+I understand this is a big ask
+considering the current RAM
+
+15:11
+prices, but one can hope, right?
+
+15:14
+Support for CXL memory expansion
+and SO-CAM or SSD onboard
+
+15:18
+will have been scenarios where
+we have to spill the intermediate
+
+15:21
+results to somewhere.
+
+15:24
+Compression and decompression.
+
+15:27
+So cascaded techniques,
+which use RLE-delta and
+
+15:29
+with Apache underneath,
+which we use to compress
+
+15:31
+integer columns, has really
+good decompression performance.
+
+15:35
+LZ4, on the other hand, which
+we use for compressing strings
+
+15:37
+and double equation, has low
+performance when it has, at
+
+15:40
+least when it comes to low
+compression ratios.
+
+15:43
+So the on-chip LZ4 decompression
+engine on NVIDIA Blackwell
+
+15:46
+is something that we are really
+looking forward to.
+
+15:50
+And our future work, handling
+out of core data.
+
+15:54
+Initially, Velociraptor could
+only operate on data which
+
+15:56
+fit inside GPU's memory.
+
+15:58
+While we still had pretty good
+performance, this was limiting.
+
+16:01
+So we switched to a block-based or
+a batch-based parsing technique,
+
+16:05
+which allowed us to, say for
+example, handle TPC-H scale factor
+
+16:09
+100 on a GPU with 16 gigabytes
+of memory, and by extension,
+
+16:13
+TPC-H scale factor 1000 on
+a GPU with 90 gigabytes of memory.
+
+16:18
+And if you want to be a little bit
+restricting, we can also run TPC-H
+
+16:21
+scale factor 1000 on a 48 gigabyte
+GPU if we allow spilling to
+
+16:25
+the CPU's RAM on certain scenarios.
+
+16:28
+Now spilling is supported for
+group by snow, and we also intend
+
+16:32
+to expand that to joints and sores.
+
+16:35
+Scaling out.
+
+16:37
+Now we have a pretty good system
+that offers good performance
+
+16:41
+within a single node.
+
+16:42
+And of course, our next goal
+is to handle much larger data
+
+16:45
+sets, assets we intend to
+scale out to multiple nodes.
+
+16:49
+And we have really good distributed
+engine built in-house, we plan to
+
+16:52
+integrate Velociraptor into that.
+
+16:55
+Expanding operator
+coverage, specifically
+
+16:56
+string operations and UDFs.
+
+16:59
+Well, as mentioned earlier,
+some of the string operations
+
+17:02
+still run on the CPU, specifically
+ones that allocate memory
+
+17:05
+or have deep function callsales.
+
+17:07
+We intend to port those to
+the GPU soon and UDFs.
+
+17:11
+We have pretty good coverage
+of the UDFs used inside Zoho
+
+17:13
+Analytics, but this is one
+thing that expands with use
+
+17:17
+cases and new feature sets.
+
+17:19
+So this is something that we
+are playing catch up with.
+
+17:22
+Optimizing primitives.
+
+17:25
+Some of the kernels return
+inside Velociraptor where
+
+17:28
+it didn't say five, six years ago.
+
+17:30
+And there has been, and there
+have been some new and interesting
+
+17:33
+developments in the world
+of research when it comes
+
+17:36
+to GPX-related database engines.
+
+17:38
+So we plan to look at the
+research, compare ourselves
+
+17:42
+with the state of the art and apply
+optimizations where necessary.
+
+17:47
+And finally, some suggestions
+for the audience.
+
+17:50
+Try out GPU accelerated analytics
+if you haven't already.
+
+17:53
+You can experience this on
+Apache Spark, via the RAPIDS
+
+17:56
+plugin, or on DuckDB via Sirius.
+
+17:59
+If you plan to get hands-on
+at a lower level, please take
+
+18:02
+a look at QDF, RAPIDS, or Sirius.
+
+18:05
+And if you're interested in
+trying out Velociraptor, please
+
+18:08
+get in touch with Titus Andrews
+at Zoho Analytics.
+

@@ -22,7 +22,7 @@ Then there were many sessions covering these developments. In this post, I cover
 
 4. Finally, <strong>Felipe</strong> and <strong>Rodrigo Aramburu</strong> go one layer deeper with [cuCascade and a custom telemetry tool](#s81873), the composable building blocks behind Sirius's ability to handle datasets far larger than GPU memory.
 
-*This is Part 1 of a 3-part series on Accelerated Analytics at GTC 2026. In separate posts I will also cover additional sessions from Industry and training labs, and give my overall takeaway of the whole conference.*
+*This is Part 1 of my series on Accelerated Analytics at GTC 2026. Read [Part 2: Industry Use Cases and Training Labs](/nvidia/gtc/analytics/gpu/2026/04/17/accelerated-analytics-at-gtc-2026-part2-industry-cases-and-training-labs.html).*
 
 ### Technical Deep Dives
 
@@ -607,14 +607,14 @@ The four sessions share a common vocabulary captured in the takeaway tags. Here 
 <tr>
   <td colspan="2" class="tk-content">
     <ul class="tk-body">
-      <li>CPU analytics is stagnating at 15–20% improvement per generation [<a href="#s81769">GPU Era</a>]</li>
-      <li>90% of enterprise data is unstructured and only 10% is properly indexed [<a href="#s81769">GPU Era</a>]</li>
-      <li>At Airbnb, 2% of Trino queries consume 92% of cluster resources [<a href="#s81769">GPU Era</a>]</li>
-      <li>Parquet I/O — not compute — is the dominant GPU analytics bottleneck [<a href="#s81563">Presto</a>]</li>
-      <li>AWS S3 imposes an undocumented per-VM bandwidth ceiling [<a href="#s81563">Presto</a>]</li>
-      <li>UDF support in libcuDF remains incomplete, blocking broader adoption [<a href="#s81563">Presto</a>]</li>
-      <li>Prior hybrid CPU-GPU scheduling research (Mordred, CoGaDB, HetExchange) produced too much complexity and too many performance cliffs [<a href="#s81870">Sirius</a>]</li>
-      <li>Existing observability tools (OpenTelemetry, Grafana, Prometheus, NSYS) are too heavyweight for always-on distributed GPU analytics [<a href="#s81873">cuCascade</a>]</li>
+      <li>[<a href="#s81769">GPU Era</a>] CPU analytics is stagnating at 15–20% improvement per generation</li>
+      <li>[<a href="#s81769">GPU Era</a>] 90% of enterprise data is unstructured and only 10% is properly indexed</li>
+      <li>[<a href="#s81769">GPU Era</a>] At Airbnb, 2% of Trino queries consume 92% of cluster resources</li>
+      <li>[<a href="#s81563">Presto</a>] Parquet I/O — not compute — is the dominant GPU analytics bottleneck</li>
+      <li>[<a href="#s81563">Presto</a>] AWS S3 imposes an undocumented per-VM bandwidth ceiling</li>
+      <li>[<a href="#s81563">Presto</a>] UDF support in libcuDF remains incomplete, blocking broader adoption</li>
+      <li>[<a href="#s81870">Sirius</a>] Prior hybrid CPU-GPU scheduling research (Mordred, CoGaDB, HetExchange) produced too much complexity and too many performance cliffs</li>
+      <li>[<a href="#s81873">cuCascade</a>] Existing observability tools (OpenTelemetry, Grafana, Prometheus, NSYS) are too heavyweight for always-on distributed GPU analytics</li>
     </ul>
   </td>
 </tr>
@@ -625,11 +625,11 @@ The four sessions share a common vocabulary captured in the takeaway tags. Here 
 <tr>
   <td colspan="2" class="tk-content">
     <ul class="tk-body">
-      <li>Vera CPU provides 1.2 TB/s system BW and 14 GB/s per core — 3× that of x86/ARM [<a href="#s81769">GPU Era</a>]</li>
-      <li>A100 HBM delivers 2 TB/s per GPU; NVLink 3.0 runs at 600 GB/s between GPUs — the combination made Theseus's 100 TB run viable [<a href="#s81769">GPU Era</a>]</li>
-      <li>NVLink 5 on Blackwell achieves 1.8 TB/s bi-directional shuffle BW in Presto [<a href="#s81563">Presto</a>]</li>
-      <li>Sirius's pinned memory buffer doubles host-to-GPU transfer throughput on GB300 [<a href="#s81870">Sirius</a>]</li>
-      <li>The cuCascade session framed bandwidth — not compute — as the primary cost of GPU analytics [<a href="#s81873">cuCascade</a>]</li>
+      <li>[<a href="#s81769">GPU Era</a>] Vera CPU provides 1.2 TB/s system BW and 14 GB/s per core — 3× that of x86/ARM</li>
+      <li>[<a href="#s81769">GPU Era</a>] A100 HBM delivers 2 TB/s per GPU; NVLink 3.0 runs at 600 GB/s between GPUs — the combination made Theseus's 100 TB run viable</li>
+      <li>[<a href="#s81563">Presto</a>] NVLink 5 on Blackwell achieves 1.8 TB/s bi-directional shuffle BW in Presto</li>
+      <li>[<a href="#s81870">Sirius</a>] Sirius's pinned memory buffer doubles host-to-GPU transfer throughput on GB300</li>
+      <li>[<a href="#s81873">cuCascade</a>] The cuCascade session framed bandwidth — not compute — as the primary cost of GPU analytics</li>
     </ul>
   </td>
 </tr>
@@ -640,10 +640,10 @@ The four sessions share a common vocabulary captured in the takeaway tags. Here 
 <tr>
   <td colspan="2" class="tk-content">
     <ul class="tk-body">
-      <li>Theseus processed 100 TB on 1.28 TB of GPU working memory — a 20× ratio via multi-tier spilling [<a href="#s81873">cuCascade</a>]</li>
-      <li>cuCascade enforces memory reservation and allocation policies to prevent OOM before it occurs [<a href="#s81873">cuCascade</a>]</li>
-      <li>During the live 21-second SF1K run, cuCascade's downgrade policy silently prevented Q9 from OOM-crashing [<a href="#s81873">cuCascade</a>]</li>
-      <li>The SPACE MICE reference design projects 1.8 PB of NVMe per rack as queryable working memory [<a href="#s81769">GPU Era</a>]</li>
+      <li>[<a href="#s81873">cuCascade</a>] Theseus processed 100 TB on 1.28 TB of GPU working memory — a 20× ratio via multi-tier spilling</li>
+      <li>[<a href="#s81873">cuCascade</a>] cuCascade enforces memory reservation and allocation policies to prevent OOM before it occurs</li>
+      <li>[<a href="#s81873">cuCascade</a>] During the live 21-second SF1K run, cuCascade's downgrade policy silently prevented Q9 from OOM-crashing</li>
+      <li>[<a href="#s81769">GPU Era</a>] The SPACE MICE reference design projects 1.8 PB of NVMe per rack as queryable working memory</li>
     </ul>
   </td>
 </tr>
@@ -654,10 +654,10 @@ The four sessions share a common vocabulary captured in the takeaway tags. Here 
 <tr>
   <td colspan="2" class="tk-content">
     <ul class="tk-body">
-      <li>NVLink 3.0 (600 GB/s) + InfiniBand (200 Gbps) made querying 100 TB on just 2 DGX nodes possible [<a href="#s81769">GPU Era</a>]</li>
-      <li>Presto's UCXExchange selects NVLink when present and falls back gracefully to RoCE or TCP — proved decisive in slashing query times to 60 s [<a href="#s81563">Presto</a>]</li>
-      <li>SPACE MICE separates east-west NVLink shuffle (~1.8 TB/s) from north-south CX8 storage I/O (3–4 TB/s) — both networks run simultaneously without contention [<a href="#s81769">GPU Era</a>]</li>
-      <li>cuCascade adds topology-aware data routing that lets cuDF operators cross GPU boundaries — natively multi-GPU without cuDF itself being redesigned [<a href="#s81873">cuCascade</a>]</li>
+      <li>[<a href="#s81769">GPU Era</a>] NVLink 3.0 (600 GB/s) + InfiniBand (200 Gbps) made querying 100 TB on just 2 DGX nodes possible</li>
+      <li>[<a href="#s81769">GPU Era</a>] SPACE MICE separates east-west NVLink shuffle (~1.8 TB/s) from north-south CX8 storage I/O (3–4 TB/s) — both networks run simultaneously without contention</li>      
+      <li>[<a href="#s81563">Presto</a>] Presto's UCXExchange selects NVLink when present and falls back gracefully to RoCE or TCP — proved decisive in slashing query times to 60 s</li>
+      <li>[<a href="#s81873">cuCascade</a>] cuCascade adds topology-aware data routing that lets cuDF operators cross GPU boundaries — natively multi-GPU without cuDF itself being redesigned</li>
     </ul>
   </td>
 </tr>
@@ -668,13 +668,13 @@ The four sessions share a common vocabulary captured in the takeaway tags. Here 
 <tr>
   <td colspan="2" class="tk-content">
     <ul class="tk-body">
-      <li>Parquet table scan accounted for 60–70% of runtime in Presto GPU — tuning is almost entirely an I/O problem [<a href="#s81563">Presto</a>]</li>
-      <li>Delta Binary Packed encoding and NUMA pinning cut runtime by ~30% without changing any compute logic [<a href="#s81563">Presto</a>]</li>
-      <li>Velox's async cache coalesces 700 small Parquet reads into ~200 large ones, dropping hot-run time to ~20 s [<a href="#s81563">Presto</a>]</li>
-      <li>GPU Direct Storage makes petabytes of NVMe storage directly queryable GPU working memory [<a href="#s81769">GPU Era</a>]</li>
-      <li>CX8 NICs in SPACE MICE are dedicated to north-south storage I/O at 3–4 TB/s [<a href="#s81769">GPU Era</a>]</li>
-      <li>Sirius bypasses the OS page cache by maintaining its own pinned memory buffer — data transfers in compressed form and decompresses on-GPU [<a href="#s81870">Sirius</a>]</li>
-      <li>cuCascade adds support for the vortex columnar file format [<a href="#s81873">cuCascade</a>]</li>
+      <li>[<a href="#s81563">Presto</a>] Parquet table scan accounted for 60–70% of runtime in Presto GPU — tuning is almost entirely an I/O problem</li>
+      <li>[<a href="#s81563">Presto</a>] Delta Binary Packed encoding and NUMA pinning cut runtime by ~30% without changing any compute logic</li>
+      <li>[<a href="#s81563">Presto</a>] Velox's async cache coalesces 700 small Parquet reads into ~200 large ones, dropping hot-run time to ~20 s</li>
+      <li>[<a href="#s81769">GPU Era</a>] GPU Direct Storage makes petabytes of NVMe storage directly queryable GPU working memory</li>
+      <li>[<a href="#s81769">GPU Era</a>] CX8 NICs in SPACE MICE are dedicated to north-south storage I/O at 3–4 TB/s</li>
+      <li>[<a href="#s81870">Sirius</a>] Sirius bypasses the OS page cache by maintaining its own pinned memory buffer — data transfers in compressed form and decompresses on-GPU</li>
+      <li>[<a href="#s81873">cuCascade</a>] cuCascade adds support for the vortex columnar file format</li>
     </ul>
   </td>
 </tr>
@@ -685,11 +685,11 @@ The four sessions share a common vocabulary captured in the takeaway tags. Here 
 <tr>
   <td colspan="2" class="tk-content">
     <ul class="tk-body">
-      <li>Theseus decomposed the monolithic executor into specialized actors — compute, prefetch, networking — to overlap I/O and compute [<a href="#s81769">GPU Era</a>]</li>
-      <li>SPACE MICE separates east-west and north-south networks so NVLink shuffle never competes with storage I/O [<a href="#s81769">GPU Era</a>]</li>
-      <li>Sirius chose strict GPU-or-full-DuckDB-fallback, deliberately avoiding the hybrid scheduling complexity that plagued prior research [<a href="#s81870">Sirius</a>]</li>
-      <li>Sirius separates the compute executor from the spilling executor so spilling can proceed concurrently with in-flight GPU computation [<a href="#s81870">Sirius</a>]</li>
-      <li>cuCascade follows MICE principles — Modular, Interoperable, Composable, Extensible — with a downgrade policy that handles memory pressure transparently [<a href="#s81873">cuCascade</a>]</li>
+      <li>[<a href="#s81769">GPU Era</a>] Theseus decomposed the monolithic executor into specialized actors — compute, prefetch, networking — to overlap I/O and compute</li>
+      <li>[<a href="#s81769">GPU Era</a>] SPACE MICE separates east-west and north-south networks so NVLink shuffle never competes with storage I/O</li>
+      <li>[<a href="#s81870">Sirius</a>] Sirius chose strict GPU-or-full-DuckDB-fallback, deliberately avoiding the hybrid scheduling complexity that plagued prior research</li>
+      <li>[<a href="#s81870">Sirius</a>] Sirius separates the compute executor from the spilling executor so spilling can proceed concurrently with in-flight GPU computation</li>
+      <li>[<a href="#s81873">cuCascade</a>] cuCascade follows MICE principles — Modular, Interoperable, Composable, Extensible — with a downgrade policy that handles memory pressure transparently</li>
     </ul>
   </td>
 </tr>
@@ -700,10 +700,10 @@ The four sessions share a common vocabulary captured in the takeaway tags. Here 
 <tr>
   <td colspan="2" class="tk-content">
     <ul class="tk-body">
-      <li>CAGRA is a GPU-native graph nearest-neighbor algorithm that replaces CPU HNSW with 10–13× faster indexing [<a href="#s81769">GPU Era</a>]</li>
-      <li>Delta Binary Packed encoding for integer columns makes Parquet data "scream fast on GPU" [<a href="#s81563">Presto</a>]</li>
-      <li>Velox's async cache predicts required blocks via metadata reads and coalesces nearby fetches before issuing I/O [<a href="#s81563">Presto</a>]</li>
-      <li>Memory frugality as an algorithmic inversion of the CPU paradigm: spend extra compute to shrink memory footprint and reduce access frequency [<a href="#s81873">cuCascade</a>]</li>
+      <li>[<a href="#s81769">GPU Era</a>] CAGRA is a GPU-native graph nearest-neighbor algorithm that replaces CPU HNSW with 10–13× faster indexing</li>
+      <li>[<a href="#s81563">Presto</a>] Delta Binary Packed encoding for integer columns makes Parquet data "scream fast on GPU"</li>
+      <li>[<a href="#s81563">Presto</a>] Velox's async cache predicts required blocks via metadata reads and coalesces nearby fetches before issuing I/O</li>
+      <li>[<a href="#s81873">cuCascade</a>] Memory frugality as an algorithmic inversion of the CPU paradigm: spend extra compute to shrink memory footprint and reduce access frequency</li>
     </ul>
   </td>
 </tr>
@@ -714,9 +714,9 @@ The four sessions share a common vocabulary captured in the takeaway tags. Here 
 <tr>
   <td colspan="2" class="tk-content">
     <ul class="tk-body">
-      <li>Custom Rust-based telemetry layer captures per-operator throughput, cluster-wide data movement, and memory tier transitions — at under 0.1% runtime overhead [<a href="#s81873">cuCascade</a>]</li>
-      <li>OpenTelemetry, Grafana, Prometheus, and NSYS were evaluated and rejected as too heavyweight for always-on distributed GPU analytics [<a href="#s81873">cuCascade</a>]</li>
-      <li>The tool was used live alongside Sirius during the 21-second TPC-H SF1K run [<a href="#s81873">cuCascade</a>]</li>
+      <li>[<a href="#s81873">cuCascade</a>] Custom Rust-based telemetry layer captures per-operator throughput, cluster-wide data movement, and memory tier transitions — at under 0.1% runtime overhead</li>
+      <li>[<a href="#s81873">cuCascade</a>] OpenTelemetry, Grafana, Prometheus, and NSYS were evaluated and rejected as too heavyweight for always-on distributed GPU analytics</li>
+      <li>[<a href="#s81873">cuCascade</a>] The tool was used live alongside Sirius during the 21-second TPC-H SF1K run</li>
     </ul>
   </td>
 </tr>
@@ -727,12 +727,12 @@ The four sessions share a common vocabulary captured in the takeaway tags. Here 
 <tr>
   <td colspan="2" class="tk-content">
     <ul class="tk-body">
-      <li>CPU TPC-H results have flatlined at 15–20% generational improvement [<a href="#s81769">GPU Era</a>]</li>
-      <li>Vera CPU delivers a 2.5–3× lift on TPC-DS with zero recompilation [<a href="#s81769">GPU Era</a>]</li>
-      <li>CAGRA indexes 10–13× faster than CPU HNSW at equivalent accuracy [<a href="#s81769">GPU Era</a>]</li>
-      <li>Presto GPU ran 30× faster than a Grace CPU cluster on SF1K; UCX exchange dropped TPC-H from 690 s → 453 s → 60 s [<a href="#s81563">Presto</a>]</li>
-      <li>Sirius completed TPC-H SF1K in 21 seconds across all 22 queries [<a href="#s81870">Sirius</a>]</li>
-      <li>Theseus ran the full 100 TB TPC-H/TPC-DS suite on a single node [<a href="#s81873">cuCascade</a>]</li>
+      <li>[<a href="#s81769">GPU Era</a>] CPU TPC-H results have flatlined at 15–20% generational improvement</li>
+      <li>[<a href="#s81769">GPU Era</a>] Vera CPU delivers a 2.5–3× lift on TPC-DS with zero recompilation</li>
+      <li>[<a href="#s81769">GPU Era</a>] CAGRA indexes 10–13× faster than CPU HNSW at equivalent accuracy</li>
+      <li>[<a href="#s81563">Presto</a>] Presto GPU ran 30× faster than a Grace CPU cluster on SF1K; UCX exchange dropped TPC-H from 690 s → 453 s → 60 s</li>
+      <li>[<a href="#s81870">Sirius</a>] Sirius completed TPC-H SF1K in 21 seconds across all 22 queries</li>
+      <li>[<a href="#s81873">cuCascade</a>] Theseus ran the full 100 TB TPC-H/TPC-DS suite on a single node</li>
     </ul>
   </td>
 </tr>
@@ -743,10 +743,10 @@ The four sessions share a common vocabulary captured in the takeaway tags. Here 
 <tr>
   <td colspan="2" class="tk-content">
     <ul class="tk-body">
-      <li>Sirius delivers 7× TCO over cloud CPU on ClickBench [<a href="#s81769">GPU Era</a>]</li>
-      <li>Presto GPU cuts cost-per-query by 10× vs. Presto CPU at SF1K, with the advantage growing for smaller clusters [<a href="#s81563">Presto</a>]</li>
-      <li>A GH200 at $2/hr delivers 9× the throughput of a comparably priced AWS CPU instance [<a href="#s81870">Sirius</a>]</li>
-      <li>Vera CPU extends the story further with more GPU headroom per watt and zero recompilation cost [<a href="#s81769">GPU Era</a>]</li>
+      <li>[<a href="#s81769">GPU Era</a>] Sirius delivers 7× TCO over cloud CPU on ClickBench</li>
+      <li>[<a href="#s81769">GPU Era</a>] Vera CPU extends the story further with more GPU headroom per watt and zero recompilation cost</li>
+      <li>[<a href="#s81563">Presto</a>] Presto GPU cuts cost-per-query by 10× vs. Presto CPU at SF1K, with the advantage growing for smaller clusters</li>
+      <li>[<a href="#s81870">Sirius</a>] A GH200 at $2/hr delivers 9× the throughput of a comparably priced AWS CPU instance</li>
     </ul>
   </td>
 </tr>
@@ -757,10 +757,10 @@ The four sessions share a common vocabulary captured in the takeaway tags. Here 
 <tr>
   <td colspan="2" class="tk-content">
     <ul class="tk-body">
-      <li>Heavy AI / OmniSci will be open-sourced in Q2 2026, bringing an LLVM compilation engine, Vulkan rendering, and geospatial/time series support [<a href="#s81769">GPU Era</a>]</li>
-      <li>Sirius is now the officially endorsed DuckDB GPU extension, announced on stage by DuckDB creator Hannes Mühleisen — "the blessed way of running queries on GPUs with DuckDB" [<a href="#s81870">Sirius</a>]</li>
-      <li>cuCascade is publicly available at <a href="https://github.com/NVIDIA/cuCascade">github.com/NVIDIA/cuCascade</a>, built from blank slate in three months [<a href="#s81873">cuCascade</a>]</li>
-      <li>libcudf improvements and vortex file format support are community upstreamed [<a href="#s81873">cuCascade</a>]</li>
+      <li>[<a href="#s81769">GPU Era</a>] Heavy AI / OmniSci will be open-sourced in Q2 2026, bringing an LLVM compilation engine, Vulkan rendering, and geospatial/time series support</li>
+      <li>[<a href="#s81870">Sirius</a>] Sirius is now the officially endorsed DuckDB GPU extension, announced on stage by DuckDB creator Hannes Mühleisen — "the blessed way of running queries on GPUs with DuckDB"</li>
+      <li>[<a href="#s81873">cuCascade</a>] cuCascade is publicly available at <a href="https://github.com/NVIDIA/cuCascade">github.com/NVIDIA/cuCascade</a>, built from blank slate in three months</li>
+      <li>[<a href="#s81873">cuCascade</a>] libcudf improvements and vortex file format support are community upstreamed</li>
     </ul>
   </td>
 </tr>
@@ -781,6 +781,10 @@ The four sessions share a common vocabulary captured in the takeaway tags. Here 
   }
   .takeaway-table .tk-content ul.tk-body li { margin-bottom: 0.2em; }
 </style>
+
+---
+
+*[Part 2: Industry Use Cases and Training Labs →](/nvidia/gtc/analytics/gpu/2026/04/17/accelerated-analytics-at-gtc-2026-part2-industry-cases-and-training-labs.html)*
 
 
 

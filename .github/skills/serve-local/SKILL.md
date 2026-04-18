@@ -7,24 +7,13 @@ description: "Use when: rebuilding the website, running Jekyll locally, serving 
 
 ## Workflow
 
-1. **Kill any running Jekyll server** to avoid port conflicts:
+1. **Run the serve script** (kills any existing server, starts a new one with live reload and drafts, and verifies it is up):
    ```bash
-   pkill -f "jekyll serve" 2>/dev/null || true
+   bash .github/skills/serve-local/serve-local.sh
    ```
+   Use `mode=async` so the terminal is not blocked.
 
-2. **Start the server in the background** with live reload and drafts always enabled:
-   ```bash
-   bundle exec jekyll serve --livereload --drafts
-   ```
-   Use `isBackground: true` so the terminal is not blocked.
-
-3. **Wait briefly and verify** the server is up:
-   ```bash
-   sleep 4 && curl -s -o /dev/null -w "%{http_code}" http://localhost:4000
-   ```
-   A `200` response confirms the site is live.
-
-4. **Confirm** to the user that the site is available at <http://localhost:4000>.
+2. **Confirm** to the user that the site is available at <http://localhost:4000>.
 
 ## Rules
 

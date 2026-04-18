@@ -28,51 +28,32 @@ Do **not** lower quality below 90% or resize below 1200 px unless the user expli
    ls -lh assets/img/<subdir>/
    ```
 
-2. **Note filenames with spaces** — they must be individually quoted in all commands below.
+2. **Rename screenshots to clean, descriptive names based on context:**
+   - Use the surrounding markdown content, the image content, or the user's intent to pick a short, descriptive name (e.g. `zoho-t1-execution-time.png`).
+   - **macOS "Screenshot" files have a hidden character:** macOS inserts a **narrow no-break space (U+202F)** between the time and AM/PM (e.g. `Screenshot 2026-04-13 at 2.40.18 PM.png`). **Never try to type or paste these filenames directly.** Instead, use zsh `(@f)` flag to load paths into an array safely, then reference by index to rename:
+     ```zsh
+     FILES=("${(@f)$(find "$DIR" -name "Screenshot*.png" | sort)}")
+     mv "${FILES[1]}" "$DIR/my-descriptive-name-1.png"
+     mv "${FILES[2]}" "$DIR/my-descriptive-name-2.png"
+     ```
+   - **Always rename** to a clean name *before* running the compression script below so all subsequent steps use safe filenames.
 
-3. **Create a unique backup folder in /tmp** and copy originals into it before touching anything:
+3. **Run the interactive `compress-images.sh` script** with the list of files to process:
    ```bash
-   BACKUP_DIR=$(mktemp -d /tmp/compress-images-XXXXXX)
-   cp file1.jpeg file2.png "$BACKUP_DIR/"
-   ```
-   Confirm the copies are there before proceeding:
-   ```bash
-   ls -lh "$BACKUP_DIR/"
-   ```
-   Note the `$BACKUP_DIR` path — you will need it in step 8.
-
-4. **Compress JPEGs** (resize + re-encode):
-   ```bash
-   cd assets/img/<subdir>
-   sips -Z 1200 --setProperty formatOptions 90 file1.jpeg file2.jpeg
+   bash .github/skills/compress-images/compress-images.sh assets/img/<subdir>/file1.jpeg assets/img/<subdir>/file2.png
    ```
 
-5. **Compress PNGs** (resize only — sips does not re-encode PNG quality):
-   ```bash
-   sips -Z 1200 file1.png file2.png
-   ```
+4. **Follow the interactive prompts:**
+   - The script will skip files < 200KB.
+   - It calculates dimensions and skips resizing for screenshots/images whose longest edge is ≤ 1400px.
+   - It will create a backup, process the images, show before/after sizes.
+   - Finally, it will ask if you are satisfied. If you say `n`, it restores them.
 
-6. **Verify sizes** after compression and report before/after to the user:
-   ```bash
-   ls -lh
-   ```
-
-7. **Ask the user if they are satisfied** with the results. Do not proceed to the next step until they confirm.
-
-8. **Delete the backup folder** only after the user confirms:
-   ```bash
-   rm -rf "$BACKUP_DIR"
-   ```
-
-9. **Update any image references** in post files if filenames were also renamed.
+5. **Update any image references** in post files if filenames were also renamed.
 
 ## Rules
 
-- Always run `sips` from the directory containing the images, or quote the full path.
+- Always run `bash .github/skills/compress-images/compress-images.sh` instead of manual `sips` commands when possible.
 - Files with spaces in their names must be **individually quoted**: `"My File.jpeg"` — do not rely on glob expansion.
-- Always **create a unique subfolder** with `mktemp -d /tmp/compress-images-XXXXXX` and copy originals there before running `sips`. Verify the copies exist before compressing. Never dump files directly into `/tmp` root.
-- Always **ask the user for confirmation** before deleting the /tmp backups. Never auto-delete.
-- `sips` **overwrites in-place**. The /tmp backup is the only safety net if the originals are not committed to git.
-- Do not compress images that are already small (< 200 KB) — the savings are negligible and re-encoding degrades quality unnecessarily.
+- Do not compress images that are already small (< 200 KB) — the script handles this automatically.
 - PNG compression via `sips -Z` only resizes; it does not reduce bit depth or palette. For further PNG reduction, a separate tool (e.g. `pngquant`) would be needed — do not use without user confirmation.
-- After compressing, always report the before/after sizes so the user can judge the result.

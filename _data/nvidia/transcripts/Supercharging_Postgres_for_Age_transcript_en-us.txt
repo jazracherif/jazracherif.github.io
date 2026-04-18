@@ -1,0 +1,734 @@
+session: https://www.nvidia.com/en-us/on-demand/session/gtc26-ex82253/
+
+Supercharging Postgres for Agentic Analytics with Rapids Accelerator and Apache Iceberg (Presented by EDB) 
+
+
+00:05
+My name is Kajs Taraki.
+
+00:06
+I'm the Chief Technology Officer
+at Enterprise DB.
+
+00:10
+And today I'm going to be talking
+about supercharging Postgres
+
+00:13
+for agentic analytics with Rapids
+Accelerator and Apache Iceberg.
+
+00:19
+That was a bit of a mouthful,
+but I'll explain what that
+
+00:21
+means in a little bit of detail.
+
+00:23
+But before I get into the content,
+I want to take an opportunity
+
+00:26
+to provide some background
+on Postgres and Enterprise DB.
+
+00:31
+So the world uses Postgres,
+it's the most popular database.
+
+00:35
+It's also the fastest growing
+database in the entire industry.
+
+00:40
+It's used for critical
+infrastructure like policing,
+
+00:43
+military, financial systems,
+healthcare, energy, and so on.
+
+00:49
+At EDB, we play a big role in
+making Postgres successful.
+
+00:55
+For starters, we're the number
+one Postgres contributor.
+
+01:00
+The very book that you're
+all gonna get if you haven't
+
+01:03
+gotten your backpack regarding
+Postgres was written by EDB
+
+01:06
+Technical Leadership.
+
+01:09
+And our unique offering to Postgres
+is we focus on sovereignty.
+
+01:13
+by giving customers complete
+control over their data.
+
+01:17
+And in fact, within three
+years, we expect that 97%
+
+01:20
+of customers will want to build
+their own data and AI platforms.
+
+01:24
+This is why we have customers
+like MasterCard, Samsung,
+
+01:28
+Sony, and the US Navy.
+
+01:30
+To enable our customers, we offer
+a fully open source, sovereign data
+
+01:35
+and AI platform built on Postgres.
+
+01:38
+Our platform is called Postgres AI.
+
+01:42
+So it supports your various
+clients from your traditional
+
+01:47
+users like your DBAs, applications
+like BI dashboards, and now agents.
+
+01:54
+We support a variety of workloads
+from operational or what you'd
+
+01:58
+commonly call transactional.
+
+02:00
+And this is a multimodal Postgres
+database that's relational,
+
+02:04
+document, vector, graph, et cetera.
+
+02:08
+Along with analytical workloads,
+and so this is your traditional
+
+02:12
+warehouse, lake house, et
+cetera, and now agents.
+
+02:15
+So you can build, run, deploy,
+and scale agents on our platform.
+
+02:21
+This is exposed through a series
+of platform services along
+
+02:24
+governance, security, integration,
+migrations, observability,
+
+02:30
+lifecycle, HA, and DR.
+
+02:33
+Okay, and it's across a data
+layer that's heterogeneous,
+
+02:37
+so whether it's on a traditional
+Postgres database, on a lake
+
+02:40
+house, on object storage where you
+have semi-structured, unstructured
+
+02:43
+data, or real-time streams.
+
+02:46
+And my favorite part about this
+is we meet you where you are.
+
+02:50
+We can deploy this platform on
+IBM mainframes, on sovereign
+
+02:54
+data centers, so on-premise,
+all the hyperscalers.
+
+02:58
+We utilize NVIDIA GPU technologies.
+
+03:01
+And lastly, we have our own
+custom hardware offering
+
+03:04
+with a partnership with
+Supermicro and NVIDIA.
+
+03:08
+Now let's talk about how
+EDB Postgres AI can scale
+
+03:11
+agents for analytics.
+
+03:15
+So anyone building agents
+in production right now is
+
+03:19
+running into a hard technical
+challenge where their database
+
+03:21
+is their bottleneck.
+
+03:22
+It's ultimately
+starving your agents.
+
+03:25
+And so this is especially
+pronounced with interactive agents
+
+03:28
+that are providing human feedback.
+
+03:30
+So some customers who are
+using agents for general user
+
+03:33
+experience workflows, they're
+seeing some of these limitations.
+
+03:38
+The main issue is that agents
+generate different query
+
+03:41
+patterns than what databases
+were traditionally designed for.
+
+03:45
+Agent queries are far more
+complex and more random than
+
+03:49
+human-generated queries.
+
+03:51
+In fact, you hit ceiling with
+some of these queries.
+
+03:54
+We see customers hitting timeouts
+with large data sets, thereby
+
+03:58
+starving the agent.
+
+04:00
+Now to fix this, we
+have a few things.
+
+04:02
+We can constrain the agents,
+which is not ideal.
+
+04:05
+You can do an application
+rewrite, or you can do a myriad
+
+04:08
+of complex things to mitigate
+for the database.
+
+04:11
+However, thanks to NVIDIA, we
+have some approaches that are far
+
+04:14
+more effective and do not require
+application rewrite or refactoring.
+
+04:20
+To help understand the solution,
+what I'd like to do is look
+
+04:23
+at a traditional two-tier
+database application.
+
+04:28
+This is grossly simplified,
+but it illustrates the approach
+
+04:30
+we're about to take.
+
+04:31
+You can conceptually think
+of databases of having a
+
+04:35
+front-end and a back-end.
+
+04:36
+The front-end connects with the
+application, or agent in this case.
+
+04:40
+The back-end ultimately
+performs the computation
+
+04:43
+and stores and retrieves
+the data from disk, right?
+
+04:48
+However, we can change the
+back-end implementation.
+
+04:51
+We can use Apache Spark for
+the compute engine and object
+
+04:54
+storage for data.
+
+04:57
+This allows us to horizontally
+scale the database, thereby
+
+05:00
+removing some of these bottlenecks.
+
+05:03
+Next, we can utilize NVIDIA's
+Spark RAPIDS library to
+
+05:06
+further accelerate and scale
+compute by using GPUs.
+
+05:11
+EDB Postgres AI implements the
+solution using Postgres Analytics
+
+05:16
+Accelerator, or PGAA for short.
+
+05:20
+We utilize three components
+in PGAA to make this possible.
+
+05:23
+First, PGAA replicates database
+to object storage into a format
+
+05:28
+like Apache Iceberg.
+
+05:30
+Second, PGAA utilizes DataFusion,
+which is a columnar vectorized
+
+05:36
+open source query engine.
+
+05:38
+So plug and play query engine.
+
+05:41
+Third, we utilize Spark Connect
+capability to offload massive
+
+05:46
+data sets and complex distributed
+joins to the Spark clusters.
+
+05:50
+This is further accelerated
+on GPUs via Spark RAPIDS.
+
+05:54
+So let's look at some benchmarks.
+
+05:57
+We are using the industry
+standard TPC-DS benchmark.
+
+06:01
+And so what I'd like to do is
+orientate yourselves to this graph.
+
+06:05
+The x-axis, we have the data size.
+
+06:08
+And then the y-axis, we show
+how long the queries take.
+
+06:11
+So smaller is better.
+
+06:13
+The orange bars represent what
+Postgres will take without
+
+06:17
+any backend optimizations, right?
+
+06:19
+And so you can see that
+it grows unbounded.
+
+06:21
+It actually times out.
+
+06:24
+That's noted at the
+10 terabyte size.
+
+06:27
+The blue represents vanilla
+Apache Spark with PGAA, and
+
+06:32
+it's a substantial improvement.
+
+06:34
+But green is where it starts
+to get interesting.
+
+06:36
+At green, we're using Spark
+RAPIDS, and in this case,
+
+06:39
+we're using the NVIDIA L40S GPU.
+
+06:42
+And you can see a dramatic
+improvement on the order of
+
+06:45
+100x over standard Postgres.
+
+06:47
+In fact, we have since redone
+these benchmarks on later
+
+06:50
+generation hardware.
+
+06:50
+We used the RTX 6000 Pro on
+Blackwell, and we've seen
+
+06:54
+a further 14x speedup.
+
+06:57
+So this is impressive.
+
+06:58
+Your agents are now
+de-bottlenecked, thanks
+
+07:00
+to PGAA and NVIDIA Spark RAPIDS.
+
+07:04
+And so now, let's look at
+how customers can build a
+
+07:07
+complete solution with PGAA
+and deploy agents.
+
+07:12
+So first, we start with a
+Postgres database and utilize
+
+07:16
+the PGAA extension.
+
+07:18
+We replicate that data set into an
+iceberg formatted file in object
+
+07:23
+storage, which is in the gold box.
+
+07:26
+Then we use Spark Connect to
+scale out across the Spark nodes.
+
+07:31
+Next, we store the metadata
+in an iceberg catalog.
+
+07:35
+We may also want to connect to
+a traditional data warehouse.
+
+07:39
+In this case, we're using Warehouse
+PG, which is an open source
+
+07:43
+data warehouse by Enterprise DB.
+
+07:47
+And now we can actually run
+analytics across our entire
+
+07:49
+data estate, across different
+types of analytics implementations.
+
+07:55
+Now, let's accelerate with Spark
+RAPIDS on NVIDIA GPUs to get
+
+07:58
+that order of 100x improvements.
+
+08:02
+And that's indicated here
+in the green, along with the
+
+08:04
+drop-in Sparks library.
+
+08:07
+Spark RAPIDS library.
+
+08:10
+Okay, now let's generate vectorized
+forms of the database, which
+
+08:15
+is indicated in the boxes
+above the various database.
+
+08:19
+We do this with another extension
+from EDB called AIDB, and this
+
+08:24
+allows you to ultimately build AI
+data pipelines that allows you to
+
+08:28
+do things like vectorization to get
+the semantic meaning of your data.
+
+08:32
+We also need to expose
+MCP endpoints so that
+
+08:36
+the agents via LLMs can
+query the various data stores.
+
+08:41
+Now we're going to build,
+deploy, and run our agents.
+
+08:45
+And we also have to go and
+deploy our local LLMs.
+
+08:48
+And this is all going to
+run on NVIDIA GPUs.
+
+08:52
+OK, so at this point, we're
+going to take a deep breath,
+
+08:54
+because that was a lot of work.
+
+08:56
+And so a lot of customers are
+not in a position to build
+
+08:59
+something like this.
+
+09:00
+This is fairly complex, right?
+
+09:01
+There's a lot of moving parts.
+
+09:03
+There's a lot of
+security to consider.
+
+09:06
+There's a lot of things that
+you need to put in place like
+
+09:08
+governance, guardrails, et cetera.
+
+09:10
+And so this is a very
+large undertaking.
+
+09:13
+So it turns out EDB Postgres
+AI takes this burden away
+
+09:18
+on behalf of customers.
+
+09:19
+And we'll see how it does that.
+
+09:22
+The box throughout all of this is
+ultimately what EDB Postgres AI is.
+
+09:26
+That is our data and AI platform.
+
+09:28
+We solve all of this on behalf
+of our customers.
+
+09:31
+We provide all the composability
+and modularities that you
+
+09:34
+can extend this with any
+additional second-party,
+
+09:36
+third-party components.
+
+09:38
+And it greatly simplifies this.
+
+09:41
+And so we say we ship a complete,
+batteries included, modular,
+
+09:45
+composable, sovereign, open
+source data and AI platform
+
+09:49
+built on Postgres.
+
+09:51
+For our Iceberg catalog, we
+opted for Lakekeeper.
+
+09:54
+It's a much modern version than,
+say, something like Hive Metastore.
+
+09:58
+For our agent lifecycle,
+we're using LANGFLOW for
+
+10:01
+our low- to no-code agent
+authoring environments.
+
+10:05
+And then all model inferencing
+is provided via NVIDIA
+
+10:10
+NIMS containerized models
+running on KSERVE.
+
+10:13
+So we've opted and come up
+with an opinionated way of
+
+10:16
+what we think is the best
+way to go and implement all of
+
+10:19
+this in your sovereign environment.
+
+10:23
+So just to recap, this is
+our data and AI platform
+
+10:27
+called EDB Postgres AI.
+
+10:29
+I'm doing a massive
+disservice to the platform.
+
+10:32
+There are a lot of parts to this.
+
+10:33
+I'm a little bit limited on time.
+
+10:36
+But having said that, we'd
+love to show you more.
+
+10:38
+Please stop by booth 3414,
+where you'll meet the wonderful
+
+10:42
+EDB family, for which there's
+a few in the crowd here.
+
+10:45
+And as one last note, I just
+want to extend a heartfelt
+
+10:48
+thank you to NVIDIA.
+
+10:49
+It's been amazing
+partnering with them.
+
+10:51
+We hope to build more with
+NVIDIA in the future.
+
+10:54
+And so thank you very much.
+We'll see you at 3414.
+
+10:55
+Thank you.
+
