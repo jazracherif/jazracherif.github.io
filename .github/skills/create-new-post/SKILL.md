@@ -53,3 +53,26 @@ tags: []
 - The `title` in frontmatter should preserve the original casing and any special characters (e.g. `#`).
 - Leave `categories` and `tags` as empty arrays `[]` unless the user specifies them.
 - The post body starts empty after the frontmatter closing `---`.
+
+## References
+
+Use kramdown footnote syntax — **never** use numbered bracket format `[1]` or a `## References` heading.
+
+**Reference key format for research papers:** `first-author-lastname-system-or-concept` (all lowercase, hyphen-separated). Never use plain numbers.
+
+Examples:
+- `[^stonebraker-shared-nothing]` — Stonebraker's shared-nothing paper
+- `[^dewitt-gamma]` — DeWitt's Gamma database machine
+- `[^boncz-monetdb]` — Boncz's MonetDB/X100 paper
+- `[^neumann-compilation]` — Neumann's query compilation paper
+
+**Inline citation:**
+```markdown
+Some claim supported by research.[^stonebraker-shared-nothing] Another point.[^boncz-monetdb]
+```
+
+**Footnote definitions** (at the very end of the file, no heading needed — kramdown renders them automatically as a footnotes section):
+```markdown
+[^stonebraker-shared-nothing]: M. Stonebraker. "The Case for Shared Nothing." *IEEE Database Engineering Bulletin*, 9(1), 1986.
+[^boncz-monetdb]: P. Boncz, M. Zukowski, N. Nes. "MonetDB/X100: Hyper-Pipelining Query Execution." *CIDR*, 2005.
+```

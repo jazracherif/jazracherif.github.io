@@ -1,0 +1,79 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Print stylesheet — applied when the user prints or saves as PDF.
+   Loaded by _layouts/post.html via <link media="print">.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media print {
+
+  /* ── Reset page chrome ──────────────────────────────────────────────────── */
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 11pt !important; /* overrides theme's `font: 400 16px/1.5 ...` shorthand */
+    line-height: 1.5 !important;
+  }
+
+  /* ── Hide navigation / chrome / interactive UI ──────────────────────────── */
+  .site-header,
+  .site-footer,
+  .toc-sidebar,
+  .toc-toggle,           /* floating "☰ Contents" button */
+  .toc-dialog,            /* mobile TOC dialog */
+  .heading-anchor,        /* # permalink icons next to headings */
+  .post-header-tags,      /* category tag pills */
+  .disqus-comments,       /* comments section */
+  /* contact box at the bottom of posts */
+  .post-content ~ div[style] { display: none !important; }
+
+  /* ── Constrain content with page margins ──────────────────────────────── */
+  /* @page declares A4 paper size and margins explicitly */
+  @page { size: A4; margin: 1.4cm 1.8cm 2cm; }
+
+  .wrapper,
+  .post,
+  .post-content { max-width: 100% !important; width: 100% !important; padding: 0 !important; }
+
+  /* ── Typography ─────────────────────────────────────────────────────────── */
+  /* !important overrides theme class rules (.post-title 42px, .post-content h2/h3/h4 px values) */
+  h1, { font-size: 17pt !important; letter-spacing: normal !important; }
+  h2, .post-content h2 { font-size: 13pt !important; page-break-before: auto; }
+  h3, .post-content h3 { font-size: 12pt !important; }
+  h4, .post-content h4 { font-size: 11pt !important; }
+
+  /* Avoid orphaned headings at the bottom of a page */
+  h2, h3, h4 { page-break-after: avoid; }
+
+  /* Keep table rows and code blocks together where possible */
+  tr, pre, blockquote, figure { page-break-inside: avoid; }
+
+  /* ── Links — show href after the anchor text ────────────────────────────── */
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #555;
+  }
+  /* Skip href expansion for footnote back-references and same-page anchors */
+  a[href^="#"]::after { content: ""; }
+
+  /* ── Images — constrain to page width and avoid splitting across pages ───── */
+  /* post-images.css sets max-height: 700px (~18cm at print dpi) — cap it */
+  img {
+    max-width: 100% !important;
+    max-height: 5cm !important;
+    width: auto !important;
+    height: auto !important;
+    page-break-inside: avoid;
+    box-shadow: none !important;    /* shadows waste ink */
+    transition: none !important;
+  }
+
+  /* ── Timelines — keep each milestone together on a page ─────────────────── */
+  .milestone-timeline .mt-year { page-break-inside: avoid; }
+
+  /* ── Footnotes ──────────────────────────────────────────────────────────── */
+  .footnotes { border-top: 1px solid #ccc; margin-top: 2em; font-size: 9pt; }
+
+  /* ── Tables ──────────────────────────────────────────────────────────────── */
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #aaa; padding: 4pt 6pt; }
+}
