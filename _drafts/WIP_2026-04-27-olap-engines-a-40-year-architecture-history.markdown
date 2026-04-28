@@ -12,7 +12,7 @@ Every decade, the dominant bottleneck in analytical database engines has shifted
 In the 1980s and early 1990s it was disk I/O — the spinning platter was so slow that the CPU sat idle most of the time.
 By the 2000s it became CPU cache efficiency: data fit in memory, but the engine was thrashing cache lines.
 In the 2010s the problem was multi-core scaling and NUMA topology: dozens of cores sat starved of well-scheduled work.
-Today the frontier is GPU memory bandwidth and the PCIe interconnect.
+Today the frontier is the still-nascent world of accelerated analytics: GPU memory bandwidth, PCIe/NVLink data movement, and heterogeneous execution.
 
 Each transition forced a fundamental rethinking of storage layouts, execution models, and parallelization strategies.
 This post traces those transitions using primary research papers as waypoints.
@@ -21,12 +21,13 @@ The goal is not a catalog of systems, but an explanation of *why* each architect
 <div class="tldr">
 <p class="tldr-label">TL;DR</p>
 <ol>
-  <li><strong>Disk era (1984–2000)</strong> — Shared-nothing MPP with row stores. Column stores were proposed in 1985 but ignored because disk I/O, not CPU, was the constraint.</li>
-  <li><strong>CPU cache era (2000–2008)</strong> — Columnar layouts, late materialization, and vector-at-a-time processing. MonetDB/X100 delivered 1–2 OOM improvement over Volcano on TPC-H.</li>
-  <li><strong>In-memory + compilation era (2007–2014)</strong> — Main memory large enough to hold analytical data. HyPer's LLVM-based query compilation fused operator pipelines into tight machine code rivaling hand-written C++.</li>
-  <li><strong>Many-core + NUMA era (2012–2018)</strong> — Morsel-driven parallelism replaced the Exchange operator with fine-grained work-stealing schedulers. SIMD-aware join algorithms exploited hardware parallelism directly.</li>
-  <li><strong>Composable + disaggregated era (2016–2023)</strong> — Snowflake decoupled storage from compute. Apache Arrow, Parquet, and Substrait enabled interchangeable components (DuckDB, Velox, DataFusion). The Composable Manifesto articulated the paradigm.</li>
-  <li><strong>GPU era (2019–present)</strong> — GPUs offer 8–10× CPU memory bandwidth and massive thread-level parallelism. Systems like Crystal, HetExchange, TQP, Vortex, Maximus, SiriusDB, and Theseus target the remaining barriers: memory capacity, PCIe bottleneck, distributed shuffle, and engineering complexity.</li>
+  <li><strong>Shared-nothing MPP / disk era (1984–1995)</strong> — Gamma and Teradata proved shared-nothing MPP with horizontal partitioning and hybrid hash join. Row stores dominated; the CPU sat idle while disk I/O was the binding constraint.</li>
+  <li><strong>Column store insight + Volcano model (1985–2000)</strong> — Copeland and Khoshafian's DSM showed columnar storage cuts I/O by reading only queried attributes. Graefe's Volcano iterator model became the universal execution abstraction — but both waited a decade for hardware to make their impact felt.</li>
+  <li><strong>Cache-conscious vectorized execution (2000–2008)</strong> — CPUs outpaced disk; cache efficiency became the bottleneck. C-Store formalized late materialization; MonetDB/X100 replaced tuple-at-a-time Volcano with vector-at-a-time processing, delivering 1–2 OOM improvement on TPC-H.</li>
+  <li><strong>In-memory + query compilation (2007–2014)</strong> — DRAM grew large enough to hold analytical datasets. HyPer's LLVM-based compilation fused pipelines into tight machine code rivaling hand-written C++, eliminating Volcano's virtual-dispatch overhead entirely.</li>
+  <li><strong>NUMA-aware morsel-driven parallelism (2012–2018)</strong> — Many-core CPUs exposed NUMA bottlenecks. Morsel-driven parallelism replaced the Exchange operator with work-stealing over fine-grained task morsels; SIMD-aware joins exploited hardware vector units directly.</li>
+  <li><strong>Composable stacks + cloud disaggregation (2016–2023)</strong> — Snowflake decoupled storage from compute. Apache Arrow, Parquet, and Substrait enabled interchangeable components (DuckDB, Velox, DataFusion). The Composable Data Manifesto articulated the new paradigm.</li>
+  <li><strong>Emerging accelerated analytics: GPUs, data movement, and the next OLAP architecture (2019–present)</strong> — This is still a nascent era: GPUs offer 8–10× CPU memory bandwidth and massive thread-level parallelism, but the architecture has not converged. Systems like Crystal, HetExchange, TQP, Vortex, Maximus, SiriusDB, and Theseus push against the remaining barriers: memory capacity, PCIe bottleneck, distributed shuffle, and engineering complexity.</li>
 </ol>
 </div>
 
@@ -440,7 +441,9 @@ SiriusDB (Era 7) is one realization of this design direction.
 
 ---
 
-## Era 7 — GPU-Accelerated Analytics: The New Frontier (2019–present)
+## Era 7 — Emerging Accelerated Analytics: GPUs, Data Movement, and the Next OLAP Architecture (2019–present)
+
+Unlike the earlier eras, this one is still forming. The hardware direction is clear — analytics is becoming bandwidth-bound across CPUs, GPUs, memory tiers, and interconnects — but the database architecture that best exploits that hardware is not yet settled.
 
 ### The Hardware Argument
 
@@ -514,7 +517,7 @@ Results: TPC-H at scale factor 100,000 (**100 TB**) on as few as 2 DGX A100 node
 
 ### Open Problems
 
-The GPU era is not settled. The active research fronts as of 2026:
+Because this accelerated analytics era is still nascent, the active research fronts as of 2026 remain architectural rather than merely implementational:
 
 1. **Spilling and memory tiering**: what happens when a hash table overflows GPU HBM? Efficient spilling from HBM → pinned CPU memory → NVMe SSD without catastrophic bandwidth drops is partially addressed in Vortex and Theseus, but lacks a principled general framework.
 
