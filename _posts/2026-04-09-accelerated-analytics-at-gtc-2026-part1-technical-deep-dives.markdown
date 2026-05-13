@@ -5,6 +5,7 @@ date: 2026-04-09 00:00:00 -0700
 categories: nvidia gtc analytics gpu
 tags: [gtc2026, analytics, rapids, cudf, duckdb, presto, gpu-databases, data-lakehouse]
 toc: true
+label: technical
 ---
 
 

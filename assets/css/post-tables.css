@@ -1,0 +1,61 @@
+/**
+ * post-tables.css
+ *
+ * Reusable table and two-column layout styles for technical posts.
+ *
+ * Classes:
+ *   .compact-table   — auto-width table; shrinks to fit content (not full-width)
+ *   .cpu-gpu         — two-panel flex row used in CPU vs GPU comparison tables
+ */
+
+/* ── Compact auto-width table ───────────────────────────────────────────── */
+/* Use on <table class="compact-table"> wherever full-width looks too sparse. */
+table.compact-table {
+  width: auto;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  margin: 0.75em 0 1.25em 0;
+}
+table.compact-table th {
+  text-align: left;
+  padding: 0.3em 0.8em;
+  border-bottom: 2px solid #d1d5db;
+  font-weight: 600;
+}
+table.compact-table td {
+  padding: 0.25em 0.8em;
+  vertical-align: top;
+}
+/* Keep the left (label) column from wrapping */
+table.compact-table td:first-child {
+  white-space: nowrap;
+}
+/* Use when the first column contains long labels that should wrap naturally. */
+table.compact-table.compact-table-wrap-first td:first-child {
+  white-space: normal;
+}
+
+/* ── Two-panel CPU vs GPU layout ────────────────────────────────────────── */
+/* Used inside .tk-content cells; each panel gets equal flex width. */
+.cpu-gpu {
+  display: flex;
+  gap: 0.3em;
+  margin-top: 0.2em;
+  font-size: 0.91em;
+  line-height: 1.45;
+}
+.cpu-gpu-col {
+  flex: 1;
+  padding: 0.25em 0.4em;
+  border-radius: 3px;
+}
+/* Tiny uppercase label above the panel text */
+.cpu-gpu-label {
+  font-size: 0.85em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 0.12em;
+}
+.cpu-gpu-col.cpu .cpu-gpu-label { color: #6b7280; }
+.cpu-gpu-col.gpu .cpu-gpu-label { color: #2563eb; }

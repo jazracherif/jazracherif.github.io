@@ -328,7 +328,6 @@ code, pre {
   font-size: 0.8rem;
   color: #999;
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
 .post-card-tags {

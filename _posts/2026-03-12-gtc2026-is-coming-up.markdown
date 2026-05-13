@@ -3,6 +3,7 @@ layout: post
 title: "NVIDIA GTC 2026 is coming up!"
 date: 2026-03-12 10:00:00 -0700
 categories: nvidia gtc gpu analytics rapids
+label: conference
 ---
 
 **\#GTC2026** kicks off next week! 🚀

@@ -5,6 +5,7 @@ date: 2026-04-17 00:00:00 -0700
 categories: nvidia gtc analytics gpu
 tags: [gtc2026, analytics, rapids, cudf, cuml, spark-rapids, gpu-databases, triton, postgres, dli]
 toc: true
+label: industry
 ---
 
 *This is Part 2 of my series on Accelerated Analytics at GTC 2026, focusing on 3 industry talks and 2 DLI training workshops. Read [Part 1: Technical Deep Dives](/nvidia/gtc/analytics/gpu/2026/04/09/accelerated-analytics-at-gtc-2026-part1-technical-deep-dives.html).*

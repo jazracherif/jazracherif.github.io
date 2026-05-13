@@ -4,6 +4,7 @@ title: "GPU vs CPU for In-Memory Analytics: Bandwidth Holds as Compute and Cost 
 date: 2026-03-25 00:00:00 -0700
 categories: nvidia gpu hardware amd memory
 tags: []
+label: analysis
 ---
 
 One of the central arguments for GPU-accelerated analytics is that GPU hardware is advancing faster than server CPUs. But for analytics workloads, the outcome depends on more than raw compute: **memory bandwidth**, **memory capacity**, **cost**, and **power efficiency** all matter. This post examines three generations of NVIDIA CPU-GPU superchips against the best contemporary AMD CPUs across three lenses: raw compute parity, a $1M bare-metal capital budget, and equal hourly spend on AWS cloud instances.

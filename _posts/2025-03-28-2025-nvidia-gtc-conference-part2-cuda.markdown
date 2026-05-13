@@ -3,6 +3,7 @@ layout: post
 title:  "NVIDIA GTC 2025 Part 2: Deep Dive into CUDA"
 date:   2025-03-28 10:00:00 -0700
 categories: nvidia gtc cuda gpu rapids
+label: technical
 ---
 
 *This is Part 2 of a 3-part series covering GTC 2025:*

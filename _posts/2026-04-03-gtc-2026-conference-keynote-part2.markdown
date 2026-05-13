@@ -5,6 +5,7 @@ date: 2026-04-03 00:00:00 -0700
 categories: nvidia gtc keynote gpu hardware
 tags: [gtc2026, cuda, analytics, inference, rapids]
 extra_css: ["/assets/css/keynote-table.css"]
+label: conference
 ---
 
 *This is Part 2 of a 3-part breakdown of the GTC 2026 keynote. Start with [Part 1: Overview & Context](/nvidia/gtc/keynote/gpu/hardware/2026/04/01/gtc-2026-conference-keynote-part1.html) or jump to [Part 3: Vera Rubin Hardware, OpenClaw & Robotics](/nvidia/gtc/keynote/gpu/hardware/2026/04/05/gtc-2026-conference-keynote-part3.html). The single-page version is [also available](/nvidia/gtc/keynote/gpu/hardware/2026/04/05/nvidia-gtc-2026-conference-the-keynote.html).*

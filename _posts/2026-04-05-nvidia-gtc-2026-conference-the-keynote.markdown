@@ -5,6 +5,7 @@ date: 2026-04-05 00:00:00 -0700
 categories: nvidia gtc keynote gpu hardware
 tags: [gtc2026, vera-rubin, inference, cuda, groq, openclaw, physical-ai, robotics]
 extra_css: ["/assets/css/keynote-table.css", "/assets/css/milestone-timeline.css"]
+label: conference
 ---
 
 *Prefer a section-by-section breakdown? This keynote is also available as a [3-part series starting with Part 1](/nvidia/gtc/keynote/gpu/hardware/2026/04/01/gtc-2026-conference-keynote-part1.html).*

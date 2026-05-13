@@ -3,6 +3,7 @@ layout: post
 title:  "NVIDIA GTC 2025 Part 3: Exhibit Hall - Hardware and Robotics"
 date:   2025-03-29 10:00:00 -0700
 categories: nvidia gtc hardware robotics datacenter
+label: conference
 ---
 
 *This is Part 3 of a 3-part series covering GTC 2025:*

@@ -3,6 +3,7 @@ layout: post
 title:  "NVIDIA GTC 2025 Part 1: Keynote and Main Announcements"
 date:   2025-03-27 10:00:00 -0700
 categories: nvidia gtc keynote gpu hardware
+label: conference
 ---
 
 I attended NVIDIA's GTC conference in San Jose this year, from March 16th to 21st, and as expected, it was a lot of fun and a very inspiring experience for anyone who is a tech practitioner or is interested in accelerated hardware and CUDA software ecosystem.

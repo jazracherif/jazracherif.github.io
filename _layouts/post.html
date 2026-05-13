@@ -108,7 +108,7 @@ layout: default
 {%- if page.toc -%}
 <!-- TOC sidebar (desktop) -->
 <nav id="toc-sidebar" class="toc-sidebar" aria-label="On this page">
-  <p class="toc-sidebar__title">On this page</p>
+  <p class="toc-sidebar__title"><a href="#" class="toc-sidebar__title-link">On this page</a></p>
   <ul class="toc-list"></ul>
 </nav>
 
@@ -120,7 +120,7 @@ layout: default
 <!-- TOC dialog panel (mobile) -->
 <dialog id="toc-dialog" class="toc-dialog" aria-label="Table of contents">
   <div class="toc-dialog__header">
-    <p class="toc-dialog__title">On this page</p>
+    <p class="toc-dialog__title"><a href="#" class="toc-sidebar__title-link">On this page</a></p>
     <button class="toc-dialog__close" id="toc-dialog-close" aria-label="Close">&#x2715;</button>
   </div>
   <div class="toc-list-wrap">
@@ -143,3 +143,11 @@ layout: default
 </div>
 
 <script src="{{ "/assets/js/image-modal.js" | relative_url }}"></script>
+
+{%- if page.mermaid -%}
+<!-- Mermaid diagram rendering — loaded only on posts that set `mermaid: true` -->
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+</script>
+{%- endif -%}

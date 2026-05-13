@@ -3,6 +3,7 @@ layout: post
 title:  "The Case for GPU-Accelerated Data Analytics"
 date:   2026-03-12 11:00:00 -0700
 categories: database gpu nvidia rapids libcudf
+label: analysis
 ---
 
 For analytics workloads that fit in fast memory, the hardware case for GPU is strengthening — but the story is more nuanced than raw compute numbers suggest.

@@ -15,7 +15,7 @@
 <div class="post-card draft-post">
   <div class="post-card-header">
     <a href="{{ include.post.url | relative_url }}" class="post-card-title">{{ include.post.title }}</a>
-    <span class="post-card-date">{{ include.post.date | date: "%b %-d, %Y" }}</span> <span class="draft-label">DRAFT</span>
+    <span class="post-card-meta">{% if include.post.label %}<span class="badge post-label-{{ include.post.label }}">{{ include.post.label | upcase }}</span> {% endif %}<span class="badge draft-label">DRAFT</span> <span class="post-card-date">{{ include.post.date | date: "%b %-d, %Y" }}</span></span>
   </div>
   {% if include.post.categories.size > 0 %}
   <div class="post-card-tags">
@@ -30,7 +30,7 @@
 <div class="post-card">
   <div class="post-card-header">
     <a href="{{ include.post.url | relative_url }}" class="post-card-title">{{ include.post.title }}</a>
-    <span class="post-card-date">{{ include.post.date | date: "%b %-d, %Y" }}</span>
+    <span class="post-card-meta">{% if include.post.label %}<span class="badge post-label-{{ include.post.label }}">{{ include.post.label | upcase }}</span> {% endif %}<span class="post-card-date">{{ include.post.date | date: "%b %-d, %Y" }}</span></span>
   </div>
   {% if include.post.categories.size > 0 %}
   <div class="post-card-tags">
