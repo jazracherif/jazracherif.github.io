@@ -19,9 +19,10 @@
 # in the templates via {{ site.myvariable }}.
 
 title: Cherif Jazra
+author: Cherif Jazra
 email: cherif@jazra.dev
 description: >- # this means to ignore newlines until "baseurl:"
-  Interested in accelerated agent-driven data insights? Or Just hacking with the DGX Spark? Let's chat!
+  Technical deep dives into GPU-accelerated data systems, NVIDIA RAPIDS, libcudf, CUDA programming, and the future of accelerated analytics.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://jazracherif.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
@@ -41,6 +42,7 @@ header_pages:
 
 plugins:
   - jekyll-feed
+  - jekyll-sitemap
 
 # Disqus Comments
 disqus:

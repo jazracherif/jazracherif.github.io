@@ -4,6 +4,8 @@ title: "Inside RAPIDS libcudf: a deep dive into a simple GroupBy aggregation"
 date: 2026-05-13 00:00:00 -0700
 categories: database gpu nvidia rapids libcudf
 tags: [libcudf, rapids, cuda, gpu-databases, groupby, cuCollections, blackwell, dgx-spark]
+description: "A walkthrough of libcudf's four-phase hash-aggregate fast path for GROUP BY + SUM on GPU — covering CUDA kernel design, cuCollections open-addressing hash tables, shared-memory strategy, and CPU vs GPU execution trade-offs."
+image: /assets/img/libcudf-groupby-top.png
 toc: true
 label: technical
 extra_css:
@@ -11,7 +13,7 @@ extra_css:
   - /assets/css/df-table.css
 ---
 
-![libcudf image](/assets/img/libcudf-groupby-top.png)
+![data flow animation of author explaining libcudf GroupBy hash-aggregat on a whiteboard](/assets/img/libcudf-groupby-top.png)
 
 Traditional OLAP database execution engines were designed for the CPU: optimized for a handful of powerful cores, deep cache hierarchies, and sequential or lightly vectorized processing. In the past decade, however, GPU performance and functionality have greatly advanced, driven largely by the generative AI revolution, to the point of becoming a viable platform for running relational workloads. GPU-accelerated data systems that can run queries orders of magnitude faster than their CPU equivalents will enable the next big revolution in analytics, fuelled by AI agents. Their architecture and programming models are, however, different enough from the CPU, that specialized algorithms must be developed to achieve high performance on analytical workloads. This post aims to illuminate the kind of algorithms NVIDIA's RAPIDS project has built to close that gap. It is the first in a series exploring [libcudf](https://github.com/rapidsai/cudf), NVIDIA's core DataFrame library for single-node GPU data processing.
 
