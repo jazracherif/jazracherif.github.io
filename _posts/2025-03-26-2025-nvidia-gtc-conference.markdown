@@ -3,6 +3,9 @@ layout: post
 title:  "2025 NVIDIA GTC Conference - Summary"
 date:   2025-03-26 10:00:00 -0700
 categories: nvidia gtc conference gpu accelerated-computing
+tags: [gtc2025, nvidia, gpu, keynote, conference]
+description: "A first-hand summary of NVIDIA GTC 2025 in San Jose — key hardware announcements, keynote highlights, CUDA sessions, and exhibit hall impressions."
+image: /assets/img/gtc-2025-cover.jpg
 label: conference
 ---
 

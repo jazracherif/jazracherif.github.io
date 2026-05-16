@@ -3,6 +3,8 @@ layout: post
 title:  "The Case for GPU-Accelerated Data Analytics"
 date:   2026-03-12 11:00:00 -0700
 categories: database gpu nvidia rapids libcudf
+tags: [rapids, libcudf, gpu-databases, analytics, ai-agents, agentic-speculation]
+description: "An analysis of the case for GPU-accelerated analytics: AI agent workloads are exploding demand for structured compute, GPU memory bandwidth holds a durable lead, and NVIDIA RAPIDS/libcudf are the critical software layer."
 label: analysis
 ---
 

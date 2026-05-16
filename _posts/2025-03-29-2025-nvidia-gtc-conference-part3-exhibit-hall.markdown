@@ -3,6 +3,9 @@ layout: post
 title:  "NVIDIA GTC 2025 Part 3: Exhibit Hall - Hardware and Robotics"
 date:   2025-03-29 10:00:00 -0700
 categories: nvidia gtc hardware robotics datacenter
+tags: [gtc2025, nvidia, gb300, blackwell, robotics, datacenter, liquid-cooling]
+description: "Exhibit hall tour at GTC 2025: liquid-cooled server racks, GB300 Grace Blackwell Ultra hardware up close, humanoid robots from NEURA and Agility Robotics, and hands-on demos."
+image: /assets/img/gtc-2025/img13.jpg
 label: conference
 ---
 

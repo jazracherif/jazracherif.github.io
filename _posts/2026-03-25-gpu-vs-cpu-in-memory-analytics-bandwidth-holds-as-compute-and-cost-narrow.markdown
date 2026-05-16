@@ -3,7 +3,8 @@ layout: post
 title: "GPU vs CPU for In-Memory Analytics: Bandwidth Holds as Compute and Cost Advantages Narrow Across Three Generations"
 date: 2026-03-25 00:00:00 -0700
 categories: nvidia gpu hardware amd memory
-tags: []
+tags: [gpu, cpu, analytics, bandwidth, hardware, nvidia, amd, benchmarks]
+description: "A data-driven comparison of GPU vs CPU for in-memory analytics across three hardware generations: memory bandwidth advantages hold firm while compute and cost edges compress."
 label: analysis
 ---
 

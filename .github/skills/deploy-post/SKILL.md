@@ -1,6 +1,6 @@
 ---
 name: deploy-post
-description: "Use when: publishing a post, deploying a draft, moving a post from drafts to live, removing the WIP prefix, promoting a draft post. Removes the WIP_ prefix from a draft file in _drafts/, updates the date to today, sets the label, and moves it to _posts/ so it is published on the website."
+description: "Use when: publishing a post, deploying a draft, moving a post from drafts to live, removing the WIP prefix, promoting a draft post. Removes the WIP_ prefix from a draft file in _drafts/, updates the date to today, sets the label, adds description and image frontmatter for SEO, and moves it to _posts/ so it is published on the website."
 ---
 
 # Deploy Blog Post
@@ -28,19 +28,31 @@ description: "Use when: publishing a post, deploying a draft, moving a post from
    label: technical
    ```
 
-4. **Determine the new filename** by stripping the `WIP_` prefix and updating the date prefix to today:
+4. **Add `description` and `image` frontmatter** for SEO. These are used by `jekyll-seo-tag` to generate `<meta name="description">`, `og:description`, `og:image`, and Twitter card tags.
+
+   - `description`: 1–2 sentence summary of the post, keyword-rich, written in third person. Max ~160 characters for search snippets.
+   - `image`: path to the top/hero image used in the post (e.g. `/assets/img/my-image.png`). Omit if the post has no images.
+
+   ```yaml
+   description: "A walkthrough of ... covering X, Y, and Z."
+   image: /assets/img/my-post-hero.png
+   ```
+
+   Infer both from the post content. If you cannot write an accurate description without guessing, ask the user.
+
+5. **Determine the new filename** by stripping the `WIP_` prefix and updating the date prefix to today:
    ```
    _drafts/WIP_2026-03-23-my-post.markdown
                ↓
    _posts/2026-03-31-my-post.markdown
    ```
 
-5. **Move the file** using the terminal:
+6. **Move the file** using the terminal:
    ```bash
    mv _drafts/WIP_<old-date>-<slug>.markdown _posts/<today-date>-<slug>.markdown
    ```
 
-6. **Confirm** the new file path and the label used. Note that the post will be live on the next site build.
+7. **Confirm** the new file path and the label used. Note that the post will be live on the next site build.
 
 ## Rules
 

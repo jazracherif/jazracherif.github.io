@@ -4,6 +4,8 @@ title: "GTC 2026 Keynote — Part 2: Intro, Analytics, CUDA-X & Inference"
 date: 2026-04-03 00:00:00 -0700
 categories: nvidia gtc keynote gpu hardware
 tags: [gtc2026, cuda, analytics, inference, rapids]
+description: "GTC 2026 keynote Part 2: the 20-year CUDA software flywheel, GPU-accelerated analytics with RAPIDS, CUDA-X ecosystem growth, and inference stack announcements."
+image: /assets/img/gtc-2026/cuda-flywheel.png
 extra_css: ["/assets/css/keynote-table.css"]
 label: conference
 ---

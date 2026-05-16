@@ -3,6 +3,8 @@ layout: post
 title: "NVIDIA GTC 2026 is coming up!"
 date: 2026-03-12 10:00:00 -0700
 categories: nvidia gtc gpu analytics rapids
+tags: [gtc2026, nvidia, rapids, duckdb, gpu-databases, conference]
+description: "A preview of NVIDIA GTC 2026 — upcoming sessions on GPU-accelerated analytics, RAPIDS, DuckDB on GPU, CUDA database programming, and what to expect from Jensen Huang's keynote."
 label: conference
 ---
 

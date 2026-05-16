@@ -4,6 +4,8 @@ title: "GTC 2026 Keynote — Part 1: Overview & Context"
 date: 2026-04-01 00:00:00 -0700
 categories: nvidia gtc keynote gpu hardware
 tags: [gtc2026, vera-rubin, cuda, conference]
+description: "First-hand notes from GTC 2026 keynote Part 1: Jensen Huang's opening, the state of AI compute, and early conference context and announcements."
+image: /assets/img/gtc-2026/IMG_6244.JPG
 label: conference
 ---
 

@@ -3,6 +3,9 @@ layout: post
 title:  "NVIDIA GTC 2025 Part 1: Keynote and Main Announcements"
 date:   2025-03-27 10:00:00 -0700
 categories: nvidia gtc keynote gpu hardware
+tags: [gtc2025, nvidia, vera-rubin, keynote, hardware]
+description: "First-hand coverage of the GTC 2025 keynote: Vera Rubin NVL144 and NVL576 GPU specs, NVIDIA photonics, and AI infrastructure announcements from Jensen Huang."
+image: /assets/img/gtc-2025-cover.jpg
 label: conference
 ---
 

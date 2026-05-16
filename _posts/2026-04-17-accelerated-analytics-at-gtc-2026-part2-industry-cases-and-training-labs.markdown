@@ -4,6 +4,8 @@ title: "NVIDIA GTC 2026 Accelerated Analytics - Part 2: Industry Use Cases and T
 date: 2026-04-17 00:00:00 -0700
 categories: nvidia gtc analytics gpu
 tags: [gtc2026, analytics, rapids, cudf, cuml, spark-rapids, gpu-databases, triton, postgres, dli]
+description: "Industry use cases and hands-on training labs from GTC 2026: EDB Postgres GPU acceleration on TPC-DS, Spark RAPIDS, cuML, Triton inference, and CUDA programming labs."
+image: /assets/img/gtc-2026/sessions/edb-pgaa-tpcds-benchmark.png
 toc: true
 label: industry
 ---

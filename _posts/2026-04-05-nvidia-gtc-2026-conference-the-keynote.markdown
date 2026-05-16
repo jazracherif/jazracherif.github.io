@@ -4,6 +4,8 @@ title: "NVIDIA GTC 2026 Conference: The Keynote"
 date: 2026-04-05 00:00:00 -0700
 categories: nvidia gtc keynote gpu hardware
 tags: [gtc2026, vera-rubin, inference, cuda, groq, openclaw, physical-ai, robotics]
+description: "Full coverage of the NVIDIA GTC 2026 keynote: Vera Rubin GPU hardware, RAPIDS analytics acceleration, CUDA-X ecosystem, Groq partnership, OpenClaw robotics, and physical AI."
+image: /assets/img/gtc-2026/IMG_6244.JPG
 extra_css: ["/assets/css/keynote-table.css", "/assets/css/milestone-timeline.css"]
 label: conference
 ---

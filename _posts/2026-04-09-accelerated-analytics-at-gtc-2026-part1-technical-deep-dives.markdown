@@ -4,6 +4,8 @@ title: "NVIDIA GTC 2026 Accelerated Analytics - Part 1: Technical Deep Dives"
 date: 2026-04-09 00:00:00 -0700
 categories: nvidia gtc analytics gpu
 tags: [gtc2026, analytics, rapids, cudf, duckdb, presto, gpu-databases, data-lakehouse]
+description: "Technical deep dives from GTC 2026 accelerated analytics sessions: the cuDF ecosystem, Presto GPU achieving 30× TPC-H speedup, Parquet scan bottlenecks, NVLink shuffle, and the SPACE MICE cluster architecture."
+image: /assets/img/gtc-2026/sessions/s81769-gpu-data-processing-cudf-ecosystem.png
 toc: true
 label: technical
 ---

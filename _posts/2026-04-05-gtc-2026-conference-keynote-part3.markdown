@@ -4,6 +4,8 @@ title: "GTC 2026 Keynote — Part 3: Vera Rubin Hardware, OpenClaw & Robotics"
 date: 2026-04-05 00:00:00 -0700
 categories: nvidia gtc keynote gpu hardware
 tags: [gtc2026, vera-rubin, groq, openclaw, robotics, physical-ai, dsx]
+description: "GTC 2026 keynote Part 3: Vera Rubin GPU hardware specs and roadmap, the OpenClaw robotics platform, and NVIDIA's vision for physical AI."
+image: /assets/img/gtc-2026/vera-rubin-video.png
 extra_css: ["/assets/css/keynote-table.css", "/assets/css/milestone-timeline.css"]
 label: conference
 ---

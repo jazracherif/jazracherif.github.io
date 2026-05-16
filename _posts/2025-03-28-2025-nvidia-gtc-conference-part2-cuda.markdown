@@ -3,6 +3,9 @@ layout: post
 title:  "NVIDIA GTC 2025 Part 2: Deep Dive into CUDA"
 date:   2025-03-28 10:00:00 -0700
 categories: nvidia gtc cuda gpu rapids
+tags: [gtc2025, cuda, thrust, cutile, rapids, gpu-programming]
+description: "Deep dive into GTC 2025 CUDA developer sessions: the Thrust library, CuTile programming model, CUDA stack layers, and new tools for GPU software development."
+image: /assets/img/gtc-2025/img09.jpg
 label: technical
 ---
 
