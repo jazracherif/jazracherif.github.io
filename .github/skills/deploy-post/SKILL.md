@@ -14,7 +14,7 @@ description: "Use when: publishing a post, deploying a draft, moving a post from
    date: YYYY-MM-DD 00:00:00 -0700
    ```
 
-3. **Set the `label` frontmatter field.** Every post must have exactly one label. Infer it from the post content if the user does not specify one, then confirm your choice with the user before proceeding. The four valid values are:
+3. **Set the `label` frontmatter field.** Every post must have exactly one label. Infer it from the post content if the user does not specify one, then confirm your choice with the user before proceeding. The five valid values are:
 
    | Label        | Color  | Use for                                              |
    |--------------|--------|------------------------------------------------------|
@@ -22,6 +22,7 @@ description: "Use when: publishing a post, deploying a draft, moving a post from
    | `conference` | silver | Conference coverage, keynote summaries, event recaps |
    | `analysis`   | amber  | Benchmarks, comparisons, data-driven investigations  |
    | `industry`   | green  | Funding, company news, industry trends               |
+   | `worldly matters` | indigo | Non-technical essays on philosophy, society, politics, and culture |
 
    Add or update the `label` field in the frontmatter:
    ```yaml
@@ -58,7 +59,7 @@ description: "Use when: publishing a post, deploying a draft, moving a post from
 
 - Always update both the frontmatter `date` field AND the filename to today's date — they must stay in sync.
 - Preserve the time (`00:00:00 -0700`) when updating the date.
-- The `label` field must be one of: `technical`, `conference`, `analysis`, `industry`. No other values are valid.
+- The `label` field must be one of: `technical`, `conference`, `analysis`, `industry`, `worldly matters`. No other values are valid.
 - The destination is always `_posts/`, never a subdirectory.
 - If a file with the same name already exists in `_posts/`, warn the user before overwriting.
 - Ask for confirmation before executing the move if the user has not explicitly said to proceed.

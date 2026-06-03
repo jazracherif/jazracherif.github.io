@@ -12,4 +12,10 @@ permalink: /worldly-matters/
   <p>Together, these explorations inform how I engage with the world as a husband, father of two boys, and Lebanese-American 🇱🇧 🇺🇸.</p>
 </div>
 
-<p style="text-align: center; color: #888; font-style: italic; margin-top: 30px;">I'll be sharing more of my work in these areas soon!</p>
+{% assign worldly_posts = site.posts | where: "label", "worldly matters" %}
+
+<div class="post-list" style="margin-top: 30px;">
+  {% for post in worldly_posts %}
+  {% include post-card.html post=post %}
+  {% endfor %}
+</div>

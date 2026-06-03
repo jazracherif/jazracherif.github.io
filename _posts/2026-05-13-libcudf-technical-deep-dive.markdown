@@ -15,7 +15,7 @@ extra_css:
 
 ![data flow animation of author explaining libcudf GroupBy hash-aggregat on a whiteboard](/assets/img/libcudf-groupby-top.png)
 
-Traditional OLAP database execution engines were designed for the CPU: optimized for a handful of powerful cores, deep cache hierarchies, and sequential or lightly vectorized processing. In the past decade, however, GPU performance and functionality have greatly advanced, driven largely by the generative AI revolution, to the point of becoming a viable platform for running relational workloads. GPU-accelerated data systems that can run queries orders of magnitude faster than their CPU equivalents will enable the next big revolution in analytics, fuelled by AI agents. Their architecture and programming models are, however, different enough from the CPU, that specialized algorithms must be developed to achieve high performance on analytical workloads. This post aims to illuminate the kind of algorithms NVIDIA's RAPIDS project has built to close that gap. It is the first in a series exploring [libcudf](https://github.com/rapidsai/cudf), NVIDIA's core DataFrame library for single-node GPU data processing.
+Traditional OLAP database execution engines were designed for the **CPU**: 1) optimized for a handful of powerful cores, 2) deep cache hierarchies, and 3) sequential or lightly vectorized processing. In the past decade, however, **GPU** performance and functionality have greatly advanced, driven largely by the generative AI revolution, to the point of becoming a viable platform for running relational workloads. GPU-accelerated data systems that can run queries orders of magnitude faster than their CPU equivalents will enable the next big revolution in analytics, fuelled by AI agents. Their architecture and programming models are, however, different enough from the CPU, that specialized algorithms must be developed to achieve high performance on analytical workloads. This post aims to illuminate the kind of algorithms NVIDIA's RAPIDS project has built to close that gap. It is the first in a series exploring [libcudf](https://github.com/rapidsai/cudf), NVIDIA's core DataFrame library for single-node GPU data processing.
 
 
 <div class="tldr">
@@ -27,6 +27,8 @@ Traditional OLAP database execution engines were designed for the CPU: optimized
   <li><strong>For 100M rows, the dominant cost is data structure overhead, not compute.</strong> A significant fraction of total kernel time is spent initialising the oversized hash table (allocated at 2× input size) and scanning it in the Interlude, costs that are independent of key cardinality and grow with input size. <strong>Future posts will explore performance at higher scale factors</strong>.</li>
 </ol>
 </div>
+
+*This report was produced with the help of AI agents.*
 
 
 ## 1. Introduction: Relational Algebra on GPUs
