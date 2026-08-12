@@ -1,0 +1,9 @@
+.paper-abstract {
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+/* Keep the "Abstract:" label upright despite the italic wrapper */
+.paper-abstract strong {
+  font-style: normal;
+}
